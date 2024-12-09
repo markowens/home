@@ -1,0 +1,63 @@
+* Create bootble usb to install ubuntu or other distribution
+  I used rufus on windows to create the usb stick.
+
+* Started Dell laptop and pressed F12 to get boot option.
+  Chose USB stick.
+  
+* Must connect to cat cable for internet initially
+
+* Install OS and initial updates.
+
+* sudo apt install tmux
+
+* sudo apt update
+* sudo apt install build-essential
+  This will install necessary build tools to allow wifi driver to be installed.
+
+* Install driver for WiFi:
+  Download rtl8821cu_linux from web (Cuda driver?)
+  Run the following:
+    - sudo make
+    - sudo make install
+    - modprobe -r 8821cu
+    - modprobe 8821cu
+
+
+* Should now be able to use wifi but will need to authenticate to router.
+
+* Install tiddlywiki so I can restore daily wiki file
+
+* Install git
+
+  - sudo add-apt-repository ppa:git-core/ppa
+  - sudo apt update
+  - sudo apt install git
+
+* Setup SSH for github
+  - https://docs.github.com/en/authentication/connecting-to-github-with-ssh/checking-for-existing-ssh-keys#platform-linux
+  - ssh-keygen -t ed25519 -C "jmark99@apache.org"
+  - eval "$(ssh-agent -s)"
+  - ssh-add ~/.ssh/id_ed25519
+  - Go to github settings and add pub file to settings.
+
+* Download wiki file
+  - cd www
+  - git clone git@github.com:jmark99/wiki.git  
+  - open in TiddlyWiki
+
+* Download bin directory
+  - git clone git@github.com:jmark99/bin.git
+
+* Install Amazon Workspaces Client
+  - https://clients.amazonworkspaces.com/linux-install
+  - Download .deb file
+  - ~/bin/debInstall workspacescient_amd64.deb
+  - Use registration code: SLiad+EUXQ58
+
+* Download jetbrains Toolbox App
+  - Install intellij
+
+* Download accumulo and other dev projects from github
+  - cd dev
+  - git clone 
+
