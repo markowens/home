@@ -72,6 +72,7 @@
         .modal-content {
             max-width: 90%;
             max-height: 90%;
+            position: relative;
         }
         .modal-content img {
             max-width: 100%;
@@ -86,6 +87,7 @@
             color: white;
             font-size: 30px;
             cursor: pointer;
+            z-index: 110;
         }
         .image-title {
             color: white;
@@ -93,19 +95,55 @@
             margin-top: 10px;
             font-size: 18px;
         }
+        .nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            z-index: 110;
+        }
+        .nav-button:hover {
+            background-color: rgba(0,0,0,0.8);
+        }
+        .prev-button {
+            left: 20px;
+        }
+        .next-button {
+            right: 20px;
+        }
+        .modal-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
-    <h1>Sylvia Rayne</h1>
+    <h1>Photo Gallery</h1>
     <div class="gallery" id="gallery"></div>
     
-   <!-- Modal for viewing images -->
+    <!-- Modal for viewing images with navigation -->
     <div class="modal" id="imageModal">
         <span class="close-button" id="closeModal">&times;</span>
-        <div class="modal-content">
-            <img id="modalImage" src="" alt="Full size image">
+        <button class="nav-button prev-button" id="prevButton">&#10094;</button>
+        <div class="modal-container">
+            <div class="modal-content">
+                <img id="modalImage" src="" alt="Full size image">
+            </div>
             <div class="image-title" id="imageTitle"></div>
         </div>
+        <button class="nav-button next-button" id="nextButton">&#10095;</button>
     </div>
 
     <script>
@@ -116,44 +154,14 @@
             const photos = [
                 // In a real application, this array would be populated by your server
                 // with actual filenames from your photos directory
-                'sylvia-100.jpg',
-                'sylvia-101.jpg',
-                'sylvia-102.jpg',
-                'sylvia-103.jpg',
-                'sylvia-104.jpg',
-                'sylvia-105.jpg',
-                'sylvia-106.jpg',
-                'sylvia-107.jpg',
-                'sylvia-108.jpg',
-                'sylvia-109.jpg',
-                'sylvia-110.jpg',
-                'sylvia-111.jpg',
-                'sylvia-112.jpg',
-                'sylvia-113.jpg',
-                'sylvia-114.jpg',
-                'sylvia-115.jpg',
-                'sylvia-116.jpg',
-                'sylvia-117.jpg',
-                'sylvia-118.jpg',
-                'sylvia-119.jpg',
-                'sylvia-120.jpg',
-                'sylvia-121.jpg',
-                'sylvia-122.jpg',
-                'sylvia-123.jpg',
-                'sylvia-124.jpg',
-                'sylvia-125.jpg',
-                'sylvia-126.jpg',
-                'sylvia-127.jpg',
-                'sylvia-128.jpg',
-                'sylvia-129.jpg',
-                'sylvia-130.jpg',
-                'sylvia-131.jpg',
-                'sylvia-132.jpg',
-                'sylvia-133.jpg',
-                'sylvia-134.jpg',
-                'sylvia-135.jpg',
-                'sylvia-136.jpg',
-                'sylvia-137.jpg'
+                'photo1.jpg',
+                'photo2.jpg',
+                'photo3.jpg',
+                'photo4.jpg',
+                'photo5.jpg',
+                'photo6.jpg',
+                'photo7.jpg',
+                'photo8.jpg'
             ];
             
             const gallery = document.getElementById('gallery');
@@ -161,9 +169,13 @@
             const modalImg = document.getElementById('modalImage');
             const imageTitle = document.getElementById('imageTitle');
             const closeModal = document.getElementById('closeModal');
+            const prevButton = document.getElementById('prevButton');
+            const nextButton = document.getElementById('nextButton');
+            
+            let currentPhotoIndex = 0;
             
             // Generate thumbnails
-            photos.forEach(photo => {
+            photos.forEach((photo, index) => {
                 const thumbnail = document.createElement('div');
                 thumbnail.className = 'thumbnail';
                 
@@ -179,25 +191,56 @@
                 
                 // Left click to view
                 thumbnail.addEventListener('click', function(e) {
-                    modalImg.src = photoDir + photo;
-                    imageTitle.textContent = photo;
-                    modal.classList.add('active');
+                    openModal(index);
                     e.preventDefault();
                 });
                 
                 // Right click to download
                 thumbnail.addEventListener('contextmenu', function(e) {
                     e.preventDefault();
-                    const downloadLink = document.createElement('a');
-                    downloadLink.href = photoDir + photo;
-                    downloadLink.download = photo;
-                    document.body.appendChild(downloadLink);
-                    downloadLink.click();
-                    document.body.removeChild(downloadLink);
+                    downloadPhoto(photo);
                 });
                 
                 gallery.appendChild(thumbnail);
             });
+            
+            // Function to open modal with specific photo
+            function openModal(index) {
+                currentPhotoIndex = index;
+                modalImg.src = photoDir + photos[index];
+                imageTitle.textContent = photos[index];
+                modal.classList.add('active');
+            }
+            
+            // Function to download photo
+            function downloadPhoto(photo) {
+                const downloadLink = document.createElement('a');
+                downloadLink.href = photoDir + photo;
+                downloadLink.download = photo;
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            }
+            
+            // Function to show next photo
+            function showNextPhoto() {
+                currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
+                modalImg.src = photoDir + photos[currentPhotoIndex];
+                imageTitle.textContent = photos[currentPhotoIndex];
+            }
+            
+            // Function to show previous photo
+            function showPrevPhoto() {
+                currentPhotoIndex = (currentPhotoIndex - 1 + photos.length) % photos.length;
+                modalImg.src = photoDir + photos[currentPhotoIndex];
+                imageTitle.textContent = photos[currentPhotoIndex];
+            }
+            
+            // Next button click
+            nextButton.addEventListener('click', showNextPhoto);
+            
+            // Previous button click
+            prevButton.addEventListener('click', showPrevPhoto);
             
             // Close modal
             closeModal.addEventListener('click', function() {
@@ -211,10 +254,16 @@
                 }
             });
             
-            // Close modal with Escape key
+            // Keyboard navigation
             document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && modal.classList.contains('active')) {
-                    modal.classList.remove('active');
+                if (modal.classList.contains('active')) {
+                    if (e.key === 'Escape') {
+                        modal.classList.remove('active');
+                    } else if (e.key === 'ArrowRight') {
+                        showNextPhoto();
+                    } else if (e.key === 'ArrowLeft') {
+                        showPrevPhoto();
+                    }
                 }
             });
         });
