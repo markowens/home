@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Gallery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .thumbnail {
+            position: relative;
+            overflow: hidden;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background-color: #fff;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .thumbnail:hover {
+            transform: scale(1.05);
+        }
+        .thumbnail img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            display: block;
+        }
+        .thumbnail p {
+            margin: 8px;
+            font-size: 14px;
+            color: #555;
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+        }
+        .modal-content img {
+            max-width: 100%;
+            max-height: 90vh;
+            display: block;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        .close-button {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
+        .image-title {
+            color: white;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Photo Gallery</h1>
+    <div class="gallery" id="gallery"></div>
+    
+   <!-- Modal for viewing images -->
+    <div class="modal" id="imageModal">
+        <span class="close-button" id="closeModal">&times;</span>
+        <div class="modal-content">
+            <img id="modalImage" src="" alt="Full size image">
+            <div class="image-title" id="imageTitle"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // This part would normally use server-side code to get the list of images
+            // For demo purposes, we'll simulate some photos
+            const photoDir = 'photos/';
+            const photos = [
+                // In a real application, this array would be populated by your server
+                // with actual filenames from your photos directory
+                'sylvia-100.jpg',
+                'sylvia-101.jpg',
+                'sylvia-102.jpg',
+                'sylvia-103.jpg',
+                'sylvia-104.jpg',
+                'sylvia-105.jpg',
+                'sylvia-106.jpg',
+                'sylvia-107.jpg'
+                'sylvia-108.jpg'
+                'sylvia-109.jpg'
+                'sylvia-110.jpg'
+                'sylvia-111.jpg'
+            ];
+            
+            const gallery = document.getElementById('gallery');
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const imageTitle = document.getElementById('imageTitle');
+            const closeModal = document.getElementById('closeModal');
+            
+            // Generate thumbnails
+            photos.forEach(photo => {
+                const thumbnail = document.createElement('div');
+                thumbnail.className = 'thumbnail';
+                
+                const img = document.createElement('img');
+                img.src = photoDir + photo;
+                img.alt = photo;
+                
+                const name = document.createElement('p');
+                name.textContent = photo;
+                
+                thumbnail.appendChild(img);
+                thumbnail.appendChild(name);
+                
+                // Left click to view
+                thumbnail.addEventListener('click', function(e) {
+                    modalImg.src = photoDir + photo;
+                    imageTitle.textContent = photo;
+                    modal.classList.add('active');
+                    e.preventDefault();
+                });
+                
+                // Right click to download
+                thumbnail.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = photoDir + photo;
+                    downloadLink.download = photo;
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+                });
+                
+                gallery.appendChild(thumbnail);
+            });
+            
+            // Close modal
+            closeModal.addEventListener('click', function() {
+                modal.classList.remove('active');
+            });
+            
+            // Also close modal when clicking outside the image
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+            
+            // Close modal with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal.classList.contains('active')) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
