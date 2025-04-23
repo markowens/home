@@ -148,12 +148,9 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // This part would normally use server-side code to get the list of images
-            // For demo purposes, we'll simulate some photos
             const photoDir = 'photos/';
+            const thumbnailDir = photoDir + 'thumbnails/';
             const photos = [
-                // In a real application, this array would be populated by your server
-                // with actual filenames from your photos directory
                 'sylvia-2months-1.jpg',
                 'sylvia-2months-2.jpg',
                 'sylvia-2months-3.jpg',
@@ -163,7 +160,7 @@
                 'sylvia-2months-7.jpg',
                 'sylvia-2months-8.jpg'
             ];
-            
+    
             const gallery = document.getElementById('gallery');
             const modal = document.getElementById('imageModal');
             const modalImg = document.getElementById('modalImage');
@@ -171,48 +168,43 @@
             const closeModal = document.getElementById('closeModal');
             const prevButton = document.getElementById('prevButton');
             const nextButton = document.getElementById('nextButton');
-            
+    
             let currentPhotoIndex = 0;
-            
-            // Generate thumbnails
+    
             photos.forEach((photo, index) => {
                 const thumbnail = document.createElement('div');
                 thumbnail.className = 'thumbnail';
-                
+    
                 const img = document.createElement('img');
-                img.src = photoDir + photo;
+                img.src = thumbnailDir + photo;
                 img.alt = photo;
-                
+    
                 const name = document.createElement('p');
                 name.textContent = photo;
-                
+    
                 thumbnail.appendChild(img);
                 thumbnail.appendChild(name);
-                
-                // Left click to view
+    
                 thumbnail.addEventListener('click', function(e) {
                     openModal(index);
                     e.preventDefault();
                 });
-                
-                // Right click to download
+    
                 thumbnail.addEventListener('contextmenu', function(e) {
                     e.preventDefault();
                     downloadPhoto(photo);
                 });
-                
+    
                 gallery.appendChild(thumbnail);
             });
-            
-            // Function to open modal with specific photo
+    
             function openModal(index) {
                 currentPhotoIndex = index;
                 modalImg.src = photoDir + photos[index];
                 imageTitle.textContent = photos[index];
                 modal.classList.add('active');
             }
-            
-            // Function to download photo
+    
             function downloadPhoto(photo) {
                 const downloadLink = document.createElement('a');
                 downloadLink.href = photoDir + photo;
@@ -221,40 +213,29 @@
                 downloadLink.click();
                 document.body.removeChild(downloadLink);
             }
-            
-            // Function to show next photo
+    
             function showNextPhoto() {
                 currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
                 modalImg.src = photoDir + photos[currentPhotoIndex];
                 imageTitle.textContent = photos[currentPhotoIndex];
             }
-            
-            // Function to show previous photo
+    
             function showPrevPhoto() {
                 currentPhotoIndex = (currentPhotoIndex - 1 + photos.length) % photos.length;
                 modalImg.src = photoDir + photos[currentPhotoIndex];
                 imageTitle.textContent = photos[currentPhotoIndex];
             }
-            
-            // Next button click
+    
             nextButton.addEventListener('click', showNextPhoto);
-            
-            // Previous button click
             prevButton.addEventListener('click', showPrevPhoto);
-            
-            // Close modal
             closeModal.addEventListener('click', function() {
                 modal.classList.remove('active');
             });
-            
-            // Also close modal when clicking outside the image
             modal.addEventListener('click', function(e) {
                 if (e.target === modal) {
                     modal.classList.remove('active');
                 }
             });
-            
-            // Keyboard navigation
             document.addEventListener('keydown', function(e) {
                 if (modal.classList.contains('active')) {
                     if (e.key === 'Escape') {
