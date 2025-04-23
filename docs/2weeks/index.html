@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Gallery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .thumbnail {
+            position: relative;
+            overflow: hidden;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background-color: #fff;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .thumbnail:hover {
+            transform: scale(1.05);
+        }
+        .thumbnail img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            display: block;
+        }
+        .thumbnail p {
+            margin: 8px;
+            font-size: 14px;
+            color: #555;
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        .modal-content img {
+            max-width: 100%;
+            max-height: 90vh;
+            display: block;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        .close-button {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            z-index: 110;
+        }
+        .image-title {
+            color: white;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 18px;
+        }
+        .nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            z-index: 110;
+        }
+        .nav-button:hover {
+            background-color: rgba(0,0,0,0.8);
+        }
+        .prev-button {
+            left: 20px;
+        }
+        .next-button {
+            right: 20px;
+        }
+        .modal-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Photo Gallery</h1>
+    <div class="gallery" id="gallery"></div>
+    
+    <!-- Modal for viewing images with navigation -->
+    <div class="modal" id="imageModal">
+        <span class="close-button" id="closeModal">&times;</span>
+        <button class="nav-button prev-button" id="prevButton">&#10094;</button>
+        <div class="modal-container">
+            <div class="modal-content">
+                <img id="modalImage" src="" alt="Full size image">
+            </div>
+            <div class="image-title" id="imageTitle"></div>
+        </div>
+        <button class="nav-button next-button" id="nextButton">&#10095;</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // This part would normally use server-side code to get the list of images
+            // For demo purposes, we'll simulate some photos
+            const photoDir = 'photos/';
+            const photos = [
+                // In a real application, this array would be populated by your server
+                // with actual filenames from your photos directory
+                'sylvia-100.jpg',
+                'sylvia-101.jpg',
+                'sylvia-102.jpg',
+                'sylvia-103.jpg',
+                'sylvia-104.jpg',
+                'sylvia-105.jpg',
+                'sylvia-106.jpg',
+                'sylvia-107.jpg',
+                'sylvia-108.jpg',
+                'sylvia-109.jpg',
+                'sylvia-110.jpg',
+                'sylvia-111.jpg',
+                'sylvia-112.jpg',
+                'sylvia-113.jpg',
+                'sylvia-114.jpg',
+                'sylvia-115.jpg',
+                'sylvia-116.jpg',
+                'sylvia-117.jpg',
+                'sylvia-118.jpg',
+                'sylvia-119.jpg',
+                'sylvia-120.jpg',
+                'sylvia-121.jpg',
+                'sylvia-122.jpg',
+                'sylvia-123.jpg',
+                'sylvia-124.jpg',
+                'sylvia-125.jpg',
+                'sylvia-126.jpg',
+                'sylvia-127.jpg',
+                'sylvia-128.jpg',
+                'sylvia-129.jpg',
+                'sylvia-130.jpg',
+                'sylvia-131.jpg',
+                'sylvia-132.jpg',
+                'sylvia-133.jpg',
+                'sylvia-134.jpg',
+                'sylvia-135.jpg',
+                'sylvia-136.jpg',
+                'sylvia-137.jpg',
+                'sylvia-138.jpg',
+                'sylvia-139.jpg',
+                'sylvia-140.jpg',
+                'sylvia-141.jpg',
+                'sylvia-142.jpg',
+                'sylvia-143.jpg',
+                'sylvia-144.jpg',
+                'sylvia-145.jpg',
+                'sylvia-146.jpg',
+                'sylvia-147.jpg',
+                'sylvia-148.jpg',
+                'sylvia-149.jpg',
+                'sylvia-150.jpg',
+                'sylvia-151.jpg',
+                'sylvia-152.jpg',
+                'sylvia-153.jpg',
+                'sylvia-154.jpg',
+                'sylvia-155.jpg',
+                'sylvia-156.jpg',
+                'sylvia-157.jpg',
+                'sylvia-158.jpg',
+                'sylvia-159.jpg',
+                'sylvia-160.jpg',
+                'sylvia-161.jpg',
+                'sylvia-162.jpg',
+                'sylvia-163.jpg',
+                'sylvia-164.jpg',
+                'sylvia-165.jpg',
+                'sylvia-166.jpg',
+                'sylvia-167.jpg',
+                'sylvia-168.jpg',
+                'sylvia-169.jpg',
+                'sylvia-170.jpg',
+                'sylvia-171.jpg',
+                'sylvia-172.jpg',
+                'sylvia-173.jpg',
+                'sylvia-174.jpg',
+                'sylvia-175.jpg',
+                'sylvia-176.jpg',
+                'sylvia-177.jpg',
+                'sylvia-178.jpg',
+                'sylvia-179.jpg',
+                'sylvia-180.jpg',
+                'sylvia-181.jpg',
+                'sylvia-182.jpg',
+                'sylvia-183.jpg',
+                'sylvia-184.jpg',
+                'sylvia-185.jpg',
+                'sylvia-186.jpg',
+                'sylvia-187.jpg',
+                'sylvia-188.jpg',
+                'sylvia-189.jpg',
+                'sylvia-190.jpg',
+                'sylvia-191.jpg',
+                'sylvia-192.jpg',
+                'sylvia-193.jpg',
+                'sylvia-194.jpg',
+                'sylvia-195.jpg',
+                'sylvia-196.jpg',
+                'sylvia-197.jpg',
+                'sylvia-198.jpg',
+                'sylvia-199.jpg',
+                'sylvia-200.jpg',
+                'sylvia-201.jpg',
+                'sylvia-202.jpg',
+                'sylvia-203.jpg',
+                'sylvia-204.jpg',
+                'sylvia-205.jpg',
+                'sylvia-206.jpg',
+                'sylvia-207.jpg',
+                'sylvia-208.jpg',
+                'sylvia-209.jpg',
+                'sylvia-210.jpg',
+                'sylvia-211.jpg',
+                'sylvia-212.jpg',
+                'sylvia-213.jpg',
+                'sylvia-214.jpg'
+            ];
+            
+            const gallery = document.getElementById('gallery');
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const imageTitle = document.getElementById('imageTitle');
+            const closeModal = document.getElementById('closeModal');
+            const prevButton = document.getElementById('prevButton');
+            const nextButton = document.getElementById('nextButton');
+            
+            let currentPhotoIndex = 0;
+            
+            // Generate thumbnails
+            photos.forEach((photo, index) => {
+                const thumbnail = document.createElement('div');
+                thumbnail.className = 'thumbnail';
+                
+                const img = document.createElement('img');
+                img.src = photoDir + photo;
+                img.alt = photo;
+                
+                const name = document.createElement('p');
+                name.textContent = photo;
+                
+                thumbnail.appendChild(img);
+                thumbnail.appendChild(name);
+                
+                // Left click to view
+                thumbnail.addEventListener('click', function(e) {
+                    openModal(index);
+                    e.preventDefault();
+                });
+                
+                // Right click to download
+                thumbnail.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                    downloadPhoto(photo);
+                });
+                
+                gallery.appendChild(thumbnail);
+            });
+            
+            // Function to open modal with specific photo
+            function openModal(index) {
+                currentPhotoIndex = index;
+                modalImg.src = photoDir + photos[index];
+                imageTitle.textContent = photos[index];
+                modal.classList.add('active');
+            }
+            
+            // Function to download photo
+            function downloadPhoto(photo) {
+                const downloadLink = document.createElement('a');
+                downloadLink.href = photoDir + photo;
+                downloadLink.download = photo;
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            }
+            
+            // Function to show next photo
+            function showNextPhoto() {
+                currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
+                modalImg.src = photoDir + photos[currentPhotoIndex];
+                imageTitle.textContent = photos[currentPhotoIndex];
+            }
+            
+            // Function to show previous photo
+            function showPrevPhoto() {
+                currentPhotoIndex = (currentPhotoIndex - 1 + photos.length) % photos.length;
+                modalImg.src = photoDir + photos[currentPhotoIndex];
+                imageTitle.textContent = photos[currentPhotoIndex];
+            }
+            
+            // Next button click
+            nextButton.addEventListener('click', showNextPhoto);
+            
+            // Previous button click
+            prevButton.addEventListener('click', showPrevPhoto);
+            
+            // Close modal
+            closeModal.addEventListener('click', function() {
+                modal.classList.remove('active');
+            });
+            
+            // Also close modal when clicking outside the image
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (modal.classList.contains('active')) {
+                    if (e.key === 'Escape') {
+                        modal.classList.remove('active');
+                    } else if (e.key === 'ArrowRight') {
+                        showNextPhoto();
+                    } else if (e.key === 'ArrowLeft') {
+                        showPrevPhoto();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
