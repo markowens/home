@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Photo Gallery</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background-color: #111;
+      color: #fff;
+    }
+
+    h1 {
+      text-align: center;
+      padding: 1rem;
+      margin: 0;
+      background-color: #222;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .gallery img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .gallery img:hover {
+      transform: scale(1.05);
+    }
+
+    /* Modal for full image */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
+    }
+
+    .modal:target {
+      display: flex;
+    }
+
+    .close {
+      position: fixed;
+      top: 20px;
+      right: 30px;
+      font-size: 30px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .close:hover {
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <h1>Photo Gallery</h1>
+  <div class="gallery" id="gallery"></div>
+
+  <!-- Modal container -->
+  <div id="modal" class="modal">
+    <a href="#" class="close">&times;</a>
+    <img id="fullImage" src="" alt="Full-size photo" />
+  </div>
+
+  <script>
+    // CONFIG: relative paths to your photo directories
+    const thumbnailDir = 'photos/thumbnails/';
+    const fullPhotoDir = 'photos/';
+
+    // This list will need to be generated dynamically if you have many photos.
+    // For now, if your photo filenames are known, you can list them here manually.
+    // Example:
+    // const photoNames = ['image1.jpg', 'image2.jpg', 'image3.png'];
+    //
+    // OR if you’re serving via a local server, you can dynamically fetch them using an API route or directory listing.
+
+    async function fetchPhotoList() {
+      // Try to auto-fetch list if your server supports directory listing (optional)
+      try {
+        const res = await fetch(thumbnailDir);
+        const text = await res.text();
+        const matches = [...text.matchAll(/href="([^"]+\.(jpg|jpeg|png|gif|webp))"/gi)];
+        return matches.map(m => m[1]);
+      } catch {
+        // Fallback: manually list your photos here if auto-fetch fails
+        return [
+          // Example filenames:
+          // 'photo1.jpg', 'photo2.jpg', 'photo3.jpg'
+        ];
+      }
+    }
+
+    async function initGallery() {
+      const photoNames = await fetchPhotoList();
+      const gallery = document.getElementById('gallery');
+      if (!photoNames.length) {
+        gallery.innerHTML = '<p style="text-align:center;color:#888;">No thumbnails found.</p>';
+        return;
+      }
+
+      photoNames.forEach(name => {
+        const img = document.createElement('img');
+        img.src = `${thumbnailDir}${name}`;
+        img.alt = name;
+        img.addEventListener('click', () => showFullImage(name));
+        gallery.appendChild(img);
+      });
+    }
+
+    function showFullImage(name) {
+      const modal = document.getElementById('modal');
+      const fullImg = document.getElementById('fullImage');
+      fullImg.src = `${fullPhotoDir}${name}`;
+      modal.style.display = 'flex';
+    }
+
+    document.querySelector('.close').addEventListener('click', () => {
+      document.getElementById('modal').style.display = 'none';
+    });
+
+    window.addEventListener('click', e => {
+      const modal = document.getElementById('modal');
+      if (e.target === modal) modal.style.display = 'none';
+    });
+
+    initGallery();
+  </script>
+</body>
+</html>
