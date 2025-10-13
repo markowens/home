@@ -1,265 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Photo Gallery</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-        .thumbnail {
-            position: relative;
-            overflow: hidden;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            background-color: #fff;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-        .thumbnail:hover {
-            transform: scale(1.05);
-        }
-        .thumbnail img {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            display: block;
-        }
-        .thumbnail p {
-            margin: 8px;
-            font-size: 14px;
-            color: #555;
-            text-align: center;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.8);
-            z-index: 100;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-        .modal.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .modal-content {
-            max-width: 90%;
-            max-height: 90%;
-            position: relative;
-        }
-        .modal-content img {
-            max-width: 100%;
-            max-height: 90vh;
-            display: block;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-        }
-        .close-button {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            color: white;
-            font-size: 30px;
-            cursor: pointer;
-            z-index: 110;
-        }
-        .image-title {
-            color: white;
-            text-align: center;
-            margin-top: 10px;
-            font-size: 18px;
-        }
-        .nav-button {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: rgba(0,0,0,0.5);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 24px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            z-index: 110;
-        }
-        .nav-button:hover {
-            background-color: rgba(0,0,0,0.8);
-        }
-        .prev-button {
-            left: 20px;
-        }
-        .next-button {
-            right: 20px;
-        }
-        .modal-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Photo Gallery</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background-color: #111;
+      color: #fff;
+    }
+
+    h1 {
+      text-align: center;
+      padding: 1rem;
+      margin: 0;
+      background-color: #222;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .gallery img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .gallery img:hover {
+      transform: scale(1.05);
+    }
+
+    /* Modal for full image */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
+    }
+
+    .close {
+      position: fixed;
+      top: 20px;
+      right: 30px;
+      font-size: 30px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: #aaa;
+    }
+  </style>
 </head>
 <body>
-    <h1>Photo Gallery</h1>
-    <div class="gallery" id="gallery"></div>
-    
-    <!-- Modal for viewing images with navigation -->
-    <div class="modal" id="imageModal">
-        <span class="close-button" id="closeModal">&times;</span>
-        <button class="nav-button prev-button" id="prevButton">&#10094;</button>
-        <div class="modal-container">
-            <div class="modal-content">
-                <img id="modalImage" src="" alt="Full size image">
-            </div>
-            <div class="image-title" id="imageTitle"></div>
-        </div>
-        <button class="nav-button next-button" id="nextButton">&#10095;</button>
-    </div>
+  <h1>Photo Gallery</h1>
+  <div class="gallery" id="gallery"></div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const photoDir = 'photos/';
-            const thumbnailDir = photoDir + 'thumbnails/';
-            const photos = [
-                '_M1A3216.jpg',
-                '_M1A3217.jpg',
-                '_M1A3218.jpg',
-                '_M1A3219.jpg',
-                '_M1A3220.jpg',
-                '_M1A3221.jpg',
-                '_M1A3222.jpg',
-                '_M1A3224.jpg',
-                '_M1A3225.jpg',
-                '_M1A3230.jpg',
-                '_M1A3232.jpg',
-                '_M1A3233.jpg',
-                '_M1A3235.jpg',
-                '_M1A3239.jpg',
-                '_M1A3240.jpg',
-                '_M1A3243.jpg',
-                '_M1A3244.jpg',
-                '_M1A3246.jpg'
+  <!-- Modal container -->
+  <div id="modal" class="modal">
+    <span class="close" id="closeBtn">&times;</span>
+    <img id="fullImage" src="" alt="Full-size photo" />
+  </div>
 
-            ];
-    
-            const gallery = document.getElementById('gallery');
-            const modal = document.getElementById('imageModal');
-            const modalImg = document.getElementById('modalImage');
-            const imageTitle = document.getElementById('imageTitle');
-            const closeModal = document.getElementById('closeModal');
-            const prevButton = document.getElementById('prevButton');
-            const nextButton = document.getElementById('nextButton');
-    
-            let currentPhotoIndex = 0;
-    
-            photos.forEach((photo, index) => {
-                const thumbnail = document.createElement('div');
-                thumbnail.className = 'thumbnail';
-    
-                const img = document.createElement('img');
-                img.src = thumbnailDir + photo;
-                img.alt = photo;
-    
-                const name = document.createElement('p');
-                name.textContent = photo;
-    
-                thumbnail.appendChild(img);
-                thumbnail.appendChild(name);
-    
-                thumbnail.addEventListener('click', function(e) {
-                    openModal(index);
-                    e.preventDefault();
-                });
-    
-                thumbnail.addEventListener('contextmenu', function(e) {
-                    e.preventDefault();
-                    downloadPhoto(photo);
-                });
-    
-                gallery.appendChild(thumbnail);
-            });
-    
-            function openModal(index) {
-                currentPhotoIndex = index;
-                modalImg.src = photoDir + photos[index];
-                imageTitle.textContent = photos[index];
-                modal.classList.add('active');
-            }
-    
-            function downloadPhoto(photo) {
-                const downloadLink = document.createElement('a');
-                downloadLink.href = photoDir + photo;
-                downloadLink.download = photo;
-                document.body.appendChild(downloadLink);
-                downloadLink.click();
-                document.body.removeChild(downloadLink);
-            }
-    
-            function showNextPhoto() {
-                currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
-                modalImg.src = photoDir + photos[currentPhotoIndex];
-                imageTitle.textContent = photos[currentPhotoIndex];
-            }
-    
-            function showPrevPhoto() {
-                currentPhotoIndex = (currentPhotoIndex - 1 + photos.length) % photos.length;
-                modalImg.src = photoDir + photos[currentPhotoIndex];
-                imageTitle.textContent = photos[currentPhotoIndex];
-            }
-    
-            nextButton.addEventListener('click', showNextPhoto);
-            prevButton.addEventListener('click', showPrevPhoto);
-            closeModal.addEventListener('click', function() {
-                modal.classList.remove('active');
-            });
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    modal.classList.remove('active');
-                }
-            });
-            document.addEventListener('keydown', function(e) {
-                if (modal.classList.contains('active')) {
-                    if (e.key === 'Escape') {
-                        modal.classList.remove('active');
-                    } else if (e.key === 'ArrowRight') {
-                        showNextPhoto();
-                    } else if (e.key === 'ArrowLeft') {
-                        showPrevPhoto();
-                    }
-                }
-            });
-        });
-    </script>
- 
+  <script>
+    // CONFIG: paths to your photo folders
+    const thumbnailDir = 'photos/thumbnails/';
+    const fullPhotoDir = 'photos/';
+
+    // Manually list your photo filenames here (must exist in both folders)
+    const photoNames = [
+        '_M1A3216.jpg',
+        '_M1A3217.jpg',
+        '_M1A3218.jpg',
+        '_M1A3219.jpg',
+        '_M1A3220.jpg',
+        '_M1A3221.jpg',
+        '_M1A3222.jpg',
+        '_M1A3224.jpg',
+        '_M1A3225.jpg',
+        '_M1A3230.jpg',
+        '_M1A3232.jpg',
+        '_M1A3233.jpg',
+        '_M1A3235.jpg',
+        '_M1A3239.jpg',
+        '_M1A3240.jpg',
+        '_M1A3243.jpg',
+        '_M1A3244.jpg',
+        '_M1A3246.jpg'
+      // add more photo filenames here...
+    ];
+
+    function initGallery() {
+      const gallery = document.getElementById('gallery');
+      photoNames.forEach(name => {
+        const img = document.createElement('img');
+        img.src = `${thumbnailDir}${name}`;
+        img.alt = name;
+        img.addEventListener('click', () => showFullImage(name));
+        gallery.appendChild(img);
+      });
+    }
+
+    function showFullImage(name) {
+      const modal = document.getElementById('modal');
+      const fullImg = document.getElementById('fullImage');
+      fullImg.src = `${fullPhotoDir}${name}`;
+      modal.style.display = 'flex';
+    }
+
+    document.getElementById('closeBtn').addEventListener('click', () => {
+      document.getElementById('modal').style.display = 'none';
+    });
+
+    window.addEventListener('click', e => {
+      const modal = document.getElementById('modal');
+      if (e.target === modal) modal.style.display = 'none';
+    });
+
+    initGallery();
+  </script>
 </body>
 </html>
