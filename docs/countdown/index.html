@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retirement Countdown</title>
+<style>
+  body {
+    font-family: system-ui, sans-serif;
+    background: #f4f4f9;
+    color: #333;
+    margin: 2rem;
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  .stats {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.2rem;
+    line-height: 1.6;
+  }
+  .calendar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+  .month {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    padding: 1rem;
+    width: 250px;
+    transition: transform 0.3s;
+  }
+  .month:hover {
+    transform: scale(1.03);
+  }
+  .month h3 {
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    font-size: 0.9rem;
+  }
+  th {
+    background: #ddd;
+    padding: 0.3rem;
+  }
+  td {
+    padding: 0.3rem;
+    border-radius: 4px;
+  }
+  td.today {
+    background: #ffeeba;
+    font-weight: bold;
+  }
+  td.weekend {
+    color: #aaa;
+  }
+  td.off {
+    background: #f8d7da;
+    font-weight: bold;
+  }
+  td.retirement {
+    background: #c3e6cb;
+    font-weight: bold;
+    border: 2px solid #28a745;
+  }
+  .legend {
+    margin-top: 2rem;
+    text-align: center;
+    font-size: 0.95rem;
+  }
+  .legend-item {
+    display: inline-block;
+    margin: 0.3rem 0.8rem;
+  }
+  .legend-color {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .legend-today { background: #ffeeba; border: 1px solid #e0b000; }
+  .legend-weekend { background: #eee; border: 1px solid #aaa; }
+  .legend-off { background: #f8d7da; border: 1px solid #dc3545; }
+  .legend-retirement { background: #c3e6cb; border: 1px solid #28a745; }
+</style>
+</head>
+<body>
+  <h1>Retirement Countdown</h1>
+  <div class="stats" id="stats">Loading...</div>
+  <div class="calendar" id="calendar"></div>
+
+  <div class="legend">
+    <div class="legend-item"><span class="legend-color legend-today"></span>Today</div>
+    <div class="legend-item"><span class="legend-color legend-weekend"></span>Weekend</div>
+    <div class="legend-item"><span class="legend-color legend-off"></span>Day Off</div>
+    <div class="legend-item"><span class="legend-color legend-retirement"></span>Retirement Day</div>
+  </div>
+
+<script>
+(async function() {
+  const retirementDate = new Date("2026-03-28");
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  // Parse YYYY-MM-DD safely as local date (not UTC)
+  function parseLocalDate(str) {
+    const [y, m, d] = str.split('-').map(Number);
+    const date = new Date(y, m - 1, d);
+    date.setHours(0,0,0,0);
+    return date;
+  }
+
+  // Load days off from file
+  let daysOff = [];
+  try {
+    const resp = await fetch('days_off.txt');
+    if (resp.ok) {
+      const text = await resp.text();
+      daysOff = text.split(/\r?\n/).filter(Boolean).map(line => parseLocalDate(line.trim()));
+      console.log("Loaded days off:", daysOff.map(d => d.toDateString())); // debug
+    }
+  } catch (e) {
+    console.warn("Could not load days_off.txt", e);
+  }
+
+  const sameDay = (d1, d2) =>
+    d1.getFullYear() === d2.getFullYear() &&
+    d1.getMonth() === d2.getMonth() &&
+    d1.getDate() === d2.getDate();
+
+  const isWeekend = d => [0,6].includes(d.getDay());
+  const isDayOff = d => daysOff.some(off => sameDay(off, d));
+
+  // Count totals
+  let totalDays = 0, weekdays = 0, workdays = 0;
+  for (let d = new Date(today); d <= retirementDate; d.setDate(d.getDate() + 1)) {
+    totalDays++;
+    if (!isWeekend(d)) weekdays++;
+    if (!isWeekend(d) && !isDayOff(d)) workdays++;
+  }
+
+  document.getElementById("stats").innerHTML = `
+    <strong>${totalDays}</strong> days remaining<br>
+    <strong>${weekdays}</strong> weekdays remaining<br>
+    <strong>${workdays}</strong> actual workdays remaining
+  `;
+
+  // Calendar generation
+  const calDiv = document.getElementById('calendar');
+  let startMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  const endMonth = new Date(2026, 2, 1); // March 2026
+
+  while (startMonth <= endMonth) {
+    const year = startMonth.getFullYear();
+    const month = startMonth.getMonth();
+    const monthName = startMonth.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+
+    let html = `<div class="month"><h3>${monthName}</h3><table><tr>`;
+    const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    html += days.map(d=>`<th>${d}</th>`).join('') + '</tr><tr>';
+
+    for (let i=0; i<firstDay.getDay(); i++) html += '<td></td>';
+
+    for (let d=1; d<=lastDay.getDate(); d++) {
+      const date = new Date(year, month, d);
+      date.setHours(0,0,0,0);
+      let cls = '';
+
+      if (sameDay(date, today)) cls = 'today';
+      else if (sameDay(date, retirementDate)) cls = 'retirement';
+      else if (isDayOff(date) && !isWeekend(date)) cls = 'off';
+      else if (isWeekend(date)) cls = 'weekend';
+
+      html += `<td class="${cls}">${d}</td>`;
+      if (date.getDay() === 6 && d !== lastDay.getDate()) html += '</tr><tr>';
+    }
+
+    html += '</tr></table></div>';
+    calDiv.insertAdjacentHTML('beforeend', html);
+    startMonth.setMonth(startMonth.getMonth() + 1);
+  }
+})();
+</script>
+    
+</body>
+</html>
