@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yoseph-Eden Wedding Gallery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .thumbnail {
+            position: relative;
+            overflow: hidden;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background-color: #fff;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .thumbnail:hover {
+            transform: scale(1.05);
+        }
+        .thumbnail img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            display: block;
+        }
+        .thumbnail p {
+            margin: 8px;
+            font-size: 14px;
+            color: #555;
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        .modal-content img {
+            max-width: 100%;
+            max-height: 90vh;
+            display: block;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        .close-button {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            z-index: 110;
+        }
+        .image-title {
+            color: white;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 18px;
+        }
+        .nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            z-index: 110;
+        }
+        .nav-button:hover {
+            background-color: rgba(0,0,0,0.8);
+        }
+        .prev-button {
+            left: 20px;
+        }
+        .next-button {
+            right: 20px;
+        }
+        .modal-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Yoseph and Eden Wedding Gallery</h1>
+    <div class="gallery" id="gallery"></div>
+    
+    <!-- Modal for viewing images with navigation -->
+    <div class="modal" id="imageModal">
+        <span class="close-button" id="closeModal">&times;</span>
+        <button class="nav-button prev-button" id="prevButton">&#10094;</button>
+        <div class="modal-container">
+            <div class="modal-content">
+                <img id="modalImage" src="" alt="Full size image">
+            </div>
+            <div class="image-title" id="imageTitle"></div>
+        </div>
+        <button class="nav-button next-button" id="nextButton">&#10095;</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const photoDir = 'photos/';
+            const thumbnailDir = photoDir + 'thumbnails/';
+            const photos = [
+            'yoseph-eden-100.jpg',
+            'yoseph-eden-101.jpg',
+            'yoseph-eden-102.jpg',
+            'yoseph-eden-103.jpg',
+            'yoseph-eden-104.jpg',
+            'yoseph-eden-105.jpg',
+            'yoseph-eden-106.jpg',
+            'yoseph-eden-107.jpg',
+            'yoseph-eden-108.jpg',
+            'yoseph-eden-109.jpg',
+            'yoseph-eden-110.jpg',
+            'yoseph-eden-111.jpg',
+            'yoseph-eden-112.jpg',
+            'yoseph-eden-113.jpg',
+            'yoseph-eden-114.jpg',
+            'yoseph-eden-115.jpg',
+            'yoseph-eden-116.jpg',
+            'yoseph-eden-117.jpg',
+            'yoseph-eden-118.jpg',
+            'yoseph-eden-119.jpg',
+            'yoseph-eden-120.jpg',
+            'yoseph-eden-121.jpg',
+            'yoseph-eden-122.jpg',
+            'yoseph-eden-123.jpg',
+            'yoseph-eden-124.jpg',
+            'yoseph-eden-125.jpg',
+            'yoseph-eden-126.jpg',
+            'yoseph-eden-127.jpg',
+            'yoseph-eden-128.jpg',
+            'yoseph-eden-129.jpg',
+            'yoseph-eden-130.jpg',
+            'yoseph-eden-131.jpg',
+            'yoseph-eden-132.jpg',
+            'yoseph-eden-133.jpg',
+            'yoseph-eden-134.jpg',
+            'yoseph-eden-135.jpg',
+            'yoseph-eden-136.jpg',
+            'yoseph-eden-137.jpg',
+            'yoseph-eden-138.jpg',
+            'yoseph-eden-139.jpg',
+            'yoseph-eden-140.jpg',
+            'yoseph-eden-141.jpg',
+            'yoseph-eden-142.jpg',
+            'yoseph-eden-143.jpg',
+            'yoseph-eden-144.jpg',
+            'yoseph-eden-145.jpg',
+            'yoseph-eden-146.jpg',
+            'yoseph-eden-147.jpg',
+            'yoseph-eden-148.jpg',
+            'yoseph-eden-149.jpg',
+            'yoseph-eden-150.jpg',
+            'yoseph-eden-151.jpg',
+            'yoseph-eden-152.jpg',
+            'yoseph-eden-153.jpg',
+            'yoseph-eden-154.jpg',
+            'yoseph-eden-155.jpg',
+            'yoseph-eden-156.jpg',
+            'yoseph-eden-157.jpg',
+            'yoseph-eden-158.jpg',
+            'yoseph-eden-159.jpg',
+            'yoseph-eden-160.jpg',
+            'yoseph-eden-161.jpg',
+            'yoseph-eden-162.jpg',
+            'yoseph-eden-163.jpg',
+            'yoseph-eden-164.jpg',
+            'yoseph-eden-165.jpg',
+            'yoseph-eden-166.jpg',
+            'yoseph-eden-167.jpg',
+            'yoseph-eden-168.jpg',
+            'yoseph-eden-169.jpg',
+            'yoseph-eden-170.jpg',
+            'yoseph-eden-171.jpg',
+            'yoseph-eden-172.jpg',
+            'yoseph-eden-173.jpg',
+            'yoseph-eden-174.jpg',
+            'yoseph-eden-175.jpg',
+            'yoseph-eden-176.jpg',
+            'yoseph-eden-177.jpg',
+            'yoseph-eden-178.jpg',
+            'yoseph-eden-179.jpg',
+            'yoseph-eden-180.jpg',
+            'yoseph-eden-181.jpg',
+            'yoseph-eden-182.jpg',
+            'yoseph-eden-183.jpg',
+            'yoseph-eden-184.jpg',
+            'yoseph-eden-185.jpg',
+            'yoseph-eden-186.jpg',
+            'yoseph-eden-187.jpg',
+            'yoseph-eden-188.jpg',
+            'yoseph-eden-189.jpg',
+            'yoseph-eden-190.jpg',
+            'yoseph-eden-191.jpg',
+            'yoseph-eden-192.jpg',
+            'yoseph-eden-193.jpg',
+            'yoseph-eden-194.jpg',
+            'yoseph-eden-195.jpg',
+            'yoseph-eden-196.jpg',
+            'yoseph-eden-197.jpg',
+            'yoseph-eden-198.jpg',
+            'yoseph-eden-199.jpg',
+            'yoseph-eden-200.jpg',
+            'yoseph-eden-201.jpg',
+            'yoseph-eden-202.jpg',
+            'yoseph-eden-203.jpg',
+            'yoseph-eden-204.jpg',
+            'yoseph-eden-205.jpg',
+            'yoseph-eden-206.jpg',
+            'yoseph-eden-207.jpg',
+            'yoseph-eden-208.jpg',
+            'yoseph-eden-209.jpg',
+            'yoseph-eden-210.jpg',
+            'yoseph-eden-211.jpg',
+            'yoseph-eden-212.jpg',
+            'yoseph-eden-213.jpg',
+            'yoseph-eden-214.jpg',
+            'yoseph-eden-215.jpg',
+            'yoseph-eden-216.jpg',
+            'yoseph-eden-217.jpg',
+            'yoseph-eden-218.jpg',
+            'yoseph-eden-219.jpg',
+            'yoseph-eden-220.jpg',
+            'yoseph-eden-221.jpg',
+            'yoseph-eden-222.jpg',
+            'yoseph-eden-223.jpg',
+            'yoseph-eden-224.jpg',
+            'yoseph-eden-225.jpg',
+            'yoseph-eden-226.jpg',
+            'yoseph-eden-227.jpg',
+            'yoseph-eden-228.jpg',
+            'yoseph-eden-229.jpg',
+            'yoseph-eden-230.jpg',
+            'yoseph-eden-231.jpg',
+            'yoseph-eden-232.jpg',
+            'yoseph-eden-233.jpg',
+            'yoseph-eden-234.jpg',
+            'yoseph-eden-235.jpg',              
+            'yoseph-eden-236.jpg'
+            ];
+    
+            const gallery = document.getElementById('gallery');
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const imageTitle = document.getElementById('imageTitle');
+            const closeModal = document.getElementById('closeModal');
+            const prevButton = document.getElementById('prevButton');
+            const nextButton = document.getElementById('nextButton');
+    
+            let currentPhotoIndex = 0;
+    
+            photos.forEach((photo, index) => {
+                const thumbnail = document.createElement('div');
+                thumbnail.className = 'thumbnail';
+    
+                const img = document.createElement('img');
+                img.src = thumbnailDir + photo;
+                img.alt = photo;
+    
+                const name = document.createElement('p');
+                name.textContent = photo;
+    
+                thumbnail.appendChild(img);
+                thumbnail.appendChild(name);
+    
+                thumbnail.addEventListener('click', function(e) {
+                    openModal(index);
+                    e.preventDefault();
+                });
+    
+                thumbnail.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                    downloadPhoto(photo);
+                });
+    
+                gallery.appendChild(thumbnail);
+            });
+    
+            function openModal(index) {
+                currentPhotoIndex = index;
+                modalImg.src = photoDir + photos[index];
+                imageTitle.textContent = photos[index];
+                modal.classList.add('active');
+            }
+    
+            function downloadPhoto(photo) {
+                const downloadLink = document.createElement('a');
+                downloadLink.href = photoDir + photo;
+                downloadLink.download = photo;
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            }
+    
+            function showNextPhoto() {
+                currentPhotoIndex = (currentPhotoIndex + 1) % photos.length;
+                modalImg.src = photoDir + photos[currentPhotoIndex];
+                imageTitle.textContent = photos[currentPhotoIndex];
+            }
+    
+            function showPrevPhoto() {
+                currentPhotoIndex = (currentPhotoIndex - 1 + photos.length) % photos.length;
+                modalImg.src = photoDir + photos[currentPhotoIndex];
+                imageTitle.textContent = photos[currentPhotoIndex];
+            }
+    
+            nextButton.addEventListener('click', showNextPhoto);
+            prevButton.addEventListener('click', showPrevPhoto);
+            closeModal.addEventListener('click', function() {
+                modal.classList.remove('active');
+            });
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+            document.addEventListener('keydown', function(e) {
+                if (modal.classList.contains('active')) {
+                    if (e.key === 'Escape') {
+                        modal.classList.remove('active');
+                    } else if (e.key === 'ArrowRight') {
+                        showNextPhoto();
+                    } else if (e.key === 'ArrowLeft') {
+                        showPrevPhoto();
+                    }
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
