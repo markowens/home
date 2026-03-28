@@ -20,6 +20,8 @@
     --lens: #7ab8e8;
     --filter: #a3e87a;
     --flash: #e87ac9;
+    --battery: #e8a03a;
+    --storage: #b07ae8;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -73,7 +75,9 @@
   .pill.cam  { border-color: var(--cam);    color: var(--cam); }
   .pill.lens { border-color: var(--lens);   color: var(--lens); }
   .pill.filt { border-color: var(--filter); color: var(--filter); }
-  .pill.flas { border-color: var(--flash);  color: var(--flash); }
+  .pill.flas { border-color: var(--flash);    color: var(--flash); }
+  .pill.batt { border-color: var(--battery); color: var(--battery); }
+  .pill.stor { border-color: var(--storage); color: var(--storage); }
 
   /* MAIN LAYOUT */
   main {
@@ -312,7 +316,9 @@
   .cat-badge.camera { border-color: var(--cam);    color: var(--cam); }
   .cat-badge.lens   { border-color: var(--lens);   color: var(--lens); }
   .cat-badge.filter { border-color: var(--filter); color: var(--filter); }
-  .cat-badge.flash  { border-color: var(--flash);  color: var(--flash); }
+  .cat-badge.flash   { border-color: var(--flash);   color: var(--flash); }
+  .cat-badge.battery { border-color: var(--battery); color: var(--battery); }
+  .cat-badge.storage { border-color: var(--storage); color: var(--storage); }
 
   .condition-dot {
     display: inline-block;
@@ -412,6 +418,8 @@
     <span class="pill lens" id="cnt-lens">0 Lenses</span>
     <span class="pill filt" id="cnt-filt">0 Filters</span>
     <span class="pill flas" id="cnt-flas">0 Flashes</span>
+    <span class="pill batt" id="cnt-batt">0 Batteries</span>
+    <span class="pill stor" id="cnt-stor">0 Cards</span>
   </div>
 </header>
 
@@ -424,7 +432,9 @@
       <button class="cat-tab active" data-cat="camera" onclick="switchCat('camera')">📷 Camera</button>
       <button class="cat-tab" data-cat="lens"   onclick="switchCat('lens')">🔭 Lens</button>
       <button class="cat-tab" data-cat="filter" onclick="switchCat('filter')">🔵 Filter</button>
-      <button class="cat-tab" data-cat="flash"  onclick="switchCat('flash')">⚡ Flash</button>
+      <button class="cat-tab" data-cat="flash"   onclick="switchCat('flash')">⚡ Flash</button>
+      <button class="cat-tab" data-cat="battery" onclick="switchCat('battery')">🔋 Battery</button>
+      <button class="cat-tab" data-cat="storage" onclick="switchCat('storage')">💾 Storage</button>
     </div>
 
     <!-- CAMERA FORM -->
@@ -622,6 +632,84 @@
       <div class="field"><button class="btn-add" onclick="addItem()">+ Add Flash</button></div>
     </div>
 
+
+    <!-- BATTERY FORM -->
+    <div id="form-battery" class="form-grid" style="display:none">
+      <div class="field"><label>Brand</label><input id="bt-brand" placeholder="e.g. Sony, Canon, Wasabi"></div>
+      <div class="field"><label>Model / Part #</label><input id="bt-model" placeholder="e.g. NP-FZ100, EN-EL15c"></div>
+      <div class="field"><label>Battery Type</label>
+        <select id="bt-type">
+          <option value="">— Select —</option>
+          <option>Lithium-Ion (Li-Ion)</option>
+          <option>Nickel-Metal Hydride (NiMH)</option>
+          <option>AA Alkaline</option>
+          <option>AA Lithium</option>
+          <option>CR2 / CR123</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field"><label>Compatible Camera(s)</label><input id="bt-compat" placeholder="e.g. Sony A7 IV, A7R V"></div>
+      <div class="field"><label>Capacity (mAh)</label><input id="bt-mah" type="number" placeholder="e.g. 2280"></div>
+      <div class="field"><label>Voltage (V)</label><input id="bt-volt" type="number" step="0.1" placeholder="e.g. 7.2"></div>
+      <div class="field"><label>OEM or Third-Party</label>
+        <select id="bt-oem">
+          <option value="">— Select —</option>
+          <option>OEM (Original)</option>
+          <option>Third-Party</option>
+        </select>
+      </div>
+      <div class="field"><label>Quantity</label><input id="bt-qty" type="number" placeholder="e.g. 2" min="1"></div>
+      <div class="field"><label>Condition</label>
+        <select id="bt-cond">
+          <option value="">— Select —</option>
+          <option>New</option>
+          <option>Excellent</option>
+          <option>Good</option>
+          <option>Fair (reduced capacity)</option>
+        </select>
+      </div>
+      <div class="field"><label>Purchase Date</label><input id="bt-date" type="date"></div>
+      <div class="field"><label>Purchase Price ($)</label><input id="bt-price" type="number" placeholder="e.g. 35"></div>
+      <div class="field"><label>Notes</label><input id="bt-notes" placeholder="e.g. grip battery, spare"></div>
+      <div class="field"><button class="btn-add" onclick="addItem()">+ Add Battery</button></div>
+    </div>
+
+    <!-- STORAGE FORM -->
+    <div id="form-storage" class="form-grid" style="display:none">
+      <div class="field"><label>Brand</label><input id="st-brand" placeholder="e.g. SanDisk, Lexar, Sony"></div>
+      <div class="field"><label>Model / Series</label><input id="st-model" placeholder="e.g. Extreme Pro, Professional"></div>
+      <div class="field"><label>Card Type</label>
+        <select id="st-type">
+          <option value="">— Select —</option>
+          <option>SD (SDHC / SDXC)</option>
+          <option>CFexpress Type A</option>
+          <option>CFexpress Type B</option>
+          <option>CompactFlash (CF)</option>
+          <option>XQD</option>
+          <option>microSD</option>
+          <option>CFast 2.0</option>
+          <option>SSD (portable)</option>
+        </select>
+      </div>
+      <div class="field"><label>Capacity (GB)</label><input id="st-cap" type="number" placeholder="e.g. 128, 256"></div>
+      <div class="field"><label>Read Speed (MB/s)</label><input id="st-read" type="number" placeholder="e.g. 300"></div>
+      <div class="field"><label>Write Speed (MB/s)</label><input id="st-write" type="number" placeholder="e.g. 260"></div>
+      <div class="field"><label>Speed Class / Rating</label><input id="st-class" placeholder="e.g. V90, UHS-II, U3"></div>
+      <div class="field"><label>Compatible Camera(s)</label><input id="st-compat" placeholder="e.g. Sony A1, Nikon Z9"></div>
+      <div class="field"><label>Condition</label>
+        <select id="st-cond">
+          <option value="">— Select —</option>
+          <option>New</option>
+          <option>Excellent</option>
+          <option>Good</option>
+          <option>Fair</option>
+        </select>
+      </div>
+      <div class="field"><label>Purchase Date</label><input id="st-date" type="date"></div>
+      <div class="field"><label>Purchase Price ($)</label><input id="st-price" type="number" placeholder="e.g. 89"></div>
+      <div class="field"><label>Notes</label><input id="st-notes" placeholder="e.g. dedicated to video, backup card"></div>
+      <div class="field"><button class="btn-add" onclick="addItem()">+ Add Storage Card</button></div>
+    </div>
     <div class="flash-msg" id="flash-msg">✓ Item added to database</div>
   </div>
 
@@ -634,7 +722,9 @@
         <button class="filter-btn" data-f="camera" onclick="setFilter('camera')">Cameras</button>
         <button class="filter-btn" data-f="lens"   onclick="setFilter('lens')">Lenses</button>
         <button class="filter-btn" data-f="filter" onclick="setFilter('filter')">Filters</button>
-        <button class="filter-btn" data-f="flash"  onclick="setFilter('flash')">Flashes</button>
+        <button class="filter-btn" data-f="flash"   onclick="setFilter('flash')">Flashes</button>
+        <button class="filter-btn" data-f="battery" onclick="setFilter('battery')">Batteries</button>
+        <button class="filter-btn" data-f="storage" onclick="setFilter('storage')">Cards</button>
       </div>
       <select class="sort-select" id="sort-sel" onchange="renderTable()">
         <option value="date-desc">Newest First</option>
@@ -689,7 +779,7 @@ let activeFilter = 'all';
 function switchCat(cat) {
   activeCat = cat;
   document.querySelectorAll('.cat-tab').forEach(t => t.classList.toggle('active', t.dataset.cat === cat));
-  ['camera','lens','filter','flash'].forEach(c => {
+  ['camera','lens','filter','flash','battery','storage'].forEach(c => {
     document.getElementById('form-'+c).style.display = (c === cat) ? 'grid' : 'none';
   });
 }
@@ -754,6 +844,34 @@ function addItem() {
     item.price     = v('fl-price');
     item.notes     = v('fl-notes');
     if (!item.brand && !item.model) return shake('fl-brand');
+  } else if (activeCat === 'battery') {
+    item.brand   = v('bt-brand');
+    item.model   = v('bt-model');
+    item.type    = v('bt-type');
+    item.compat  = v('bt-compat');
+    item.mah     = v('bt-mah');
+    item.volt    = v('bt-volt');
+    item.oem     = v('bt-oem');
+    item.qty     = v('bt-qty');
+    item.condition = v('bt-cond');
+    item.date    = v('bt-date');
+    item.price   = v('bt-price');
+    item.notes   = v('bt-notes');
+    if (!item.brand && !item.model) return shake('bt-brand');
+  } else if (activeCat === 'storage') {
+    item.brand   = v('st-brand');
+    item.model   = v('st-model');
+    item.type    = v('st-type');
+    item.capacity= v('st-cap');
+    item.read    = v('st-read');
+    item.write   = v('st-write');
+    item.sclass  = v('st-class');
+    item.compat  = v('st-compat');
+    item.condition = v('st-cond');
+    item.date    = v('st-date');
+    item.price   = v('st-price');
+    item.notes   = v('st-notes');
+    if (!item.brand && !item.type) return shake('st-brand');
   }
 
   gear.push(item);
@@ -838,6 +956,12 @@ function row(item) {
   } else if (cat === 'flash') {
     keySpec = item.power ? item.power + 'Ws' : (item.gn ? 'GN ' + item.gn : '—');
     detail  = [item.ttl === 'Yes' ? 'TTL' : '', item.hss === 'Yes' ? 'HSS' : '', item.pwrSrc].filter(Boolean).join(' · ');
+  } else if (cat === 'battery') {
+    keySpec = item.mah ? item.mah + ' mAh' : '—';
+    detail  = [item.volt ? item.volt + 'V' : '', item.oem, item.compat].filter(Boolean).join(' · ');
+  } else if (cat === 'storage') {
+    keySpec = item.capacity ? item.capacity + ' GB' : '—';
+    detail  = [item.type, item.read ? item.read + ' MB/s read' : '', item.sclass].filter(Boolean).join(' · ');
   }
 
   const condDot = { 'Mint': 'c-mint', 'Excellent': 'c-exc', 'Very Good': 'c-vgood', 'Good': 'c-good', 'Fair': 'c-fair' }[item.condition] || '';
@@ -880,7 +1004,9 @@ function updateCounters() {
   document.getElementById('cnt-cam').textContent  = cnt('camera') + ' Camera' + (cnt('camera') !== 1 ? 's' : '');
   document.getElementById('cnt-lens').textContent = cnt('lens') + ' Lens' + (cnt('lens') !== 1 ? 'es' : '');
   document.getElementById('cnt-filt').textContent = cnt('filter') + ' Filter' + (cnt('filter') !== 1 ? 's' : '');
-  document.getElementById('cnt-flas').textContent = cnt('flash') + ' Flash' + (cnt('flash') !== 1 ? 'es' : '');
+  document.getElementById('cnt-flas').textContent = cnt('flash')   + ' Flash'   + (cnt('flash')   !== 1 ? 'es' : '');
+  document.getElementById('cnt-batt').textContent = cnt('battery') + ' Batter' + (cnt('battery') !== 1 ? 'ies' : 'y');
+  document.getElementById('cnt-stor').textContent = cnt('storage') + ' Card'   + (cnt('storage') !== 1 ? 's' : '');
 }
 
 // ── Export ─────────────────────────────────────────────
