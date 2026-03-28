@@ -354,9 +354,50 @@
     font-size: 0.6rem;
     color: var(--muted);
     letter-spacing: 0.08em;
-    margin-left: auto;
     padding-right: 4px;
   }
+
+  /* Import / Export */
+  .io-btns {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+  }
+  .btn-io {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    padding: 4px 13px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    transition: all 0.14s;
+  }
+  .btn-io:hover { color: var(--text); border-color: var(--text); }
+  .btn-io.export:hover { border-color: var(--accent2); color: var(--accent2); }
+  .btn-io.import:hover { border-color: var(--filter);  color: var(--filter); }
+  #import-file { display: none; }
+
+  .io-toast {
+    display: none;
+    position: fixed;
+    bottom: 24px;
+    right: 28px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 18px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.07em;
+    color: var(--text);
+    z-index: 99;
+    animation: slideUp 0.2s ease;
+  }
+  @keyframes slideUp { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
 </style>
 </head>
 <body>
@@ -604,6 +645,11 @@
       </select>
       <input class="search-box" id="search-box" placeholder="Search gear…" oninput="renderTable()">
       <span class="item-count" id="item-count">0 items</span>
+      <div class="io-btns">
+        <button class="btn-io export" onclick="exportJSON()" title="Export all gear to a .json file">&#11015; Export</button>
+        <button class="btn-io import" onclick="document.getElementById('import-file').click()" title="Import gear from a .json file">&#11014; Import</button>
+        <input type="file" id="import-file" accept=".json" onchange="importJSON(event)">
+      </div>
     </div>
 
     <div class="table-wrap">
@@ -837,9 +883,62 @@ function updateCounters() {
   document.getElementById('cnt-flas').textContent = cnt('flash') + ' Flash' + (cnt('flash') !== 1 ? 'es' : '');
 }
 
+// ── Export ─────────────────────────────────────────────
+function exportJSON() {
+  if (gear.length === 0) { showToast('No gear to export yet.'); return; }
+  const blob = new Blob([JSON.stringify(gear, null, 2)], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  const date = new Date().toISOString().slice(0, 10);
+  a.href     = url;
+  a.download = 'gearvault-' + date + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Exported ' + gear.length + ' item' + (gear.length !== 1 ? 's' : '') + ' — gearvault-' + date + '.json');
+}
+
+// ── Import ─────────────────────────────────────────────
+function importJSON(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!Array.isArray(data)) throw new Error('Invalid format');
+      const existingIds = new Set(gear.map(g => g.id));
+      const newItems = data.filter(g => g.id && g.category && !existingIds.has(g.id));
+      const dupes    = data.length - newItems.length;
+      gear = gear.concat(newItems);
+      save();
+      renderTable();
+      updateCounters();
+      let msg = 'Imported ' + newItems.length + ' new item' + (newItems.length !== 1 ? 's' : '');
+      if (dupes > 0) msg += ' (' + dupes + ' duplicate' + (dupes !== 1 ? 's' : '') + ' skipped)';
+      showToast(msg);
+    } catch(err) {
+      showToast('Import failed — invalid GearVault file.');
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+// ── Toast ──────────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('io-toast');
+  el.textContent = msg;
+  el.style.display = 'block';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.style.display = 'none'; }, 3500);
+}
+
 // ── Init ───────────────────────────────────────────────
 renderTable();
 updateCounters();
 </script>
+
+<div class="io-toast" id="io-toast"></div>
 </body>
 </html>
