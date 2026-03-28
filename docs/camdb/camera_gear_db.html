@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GearVault — Camera Equipment Database</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e0f;
+    --surface: #161618;
+    --surface2: #1e1e21;
+    --border: #2a2a2e;
+    --accent: #e8c97a;
+    --accent2: #7ab8e8;
+    --danger: #e87a7a;
+    --text: #f0ede8;
+    --muted: #7a7a85;
+    --cam: #e8c97a;
+    --lens: #7ab8e8;
+    --filter: #a3e87a;
+    --flash: #e87ac9;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* HEADER */
+  header {
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--surface);
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+  }
+  header .subtitle {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .counter-pills {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+  }
+  .pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+    letter-spacing: 0.05em;
+  }
+  .pill.cam  { border-color: var(--cam);    color: var(--cam); }
+  .pill.lens { border-color: var(--lens);   color: var(--lens); }
+  .pill.filt { border-color: var(--filter); color: var(--filter); }
+  .pill.flas { border-color: var(--flash);  color: var(--flash); }
+
+  /* MAIN LAYOUT */
+  main {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* ===== INPUT SECTION ===== */
+  .input-section {
+    background: var(--surface);
+    border-bottom: 2px solid var(--border);
+    padding: 20px 32px;
+  }
+  .input-section h2 {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  /* Category tabs */
+  .cat-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .cat-tab {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    padding: 6px 16px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .cat-tab:hover { border-color: var(--accent); color: var(--text); }
+  .cat-tab.active[data-cat="camera"] { border-color: var(--cam); color: var(--cam); background: rgba(232,201,122,0.08); }
+  .cat-tab.active[data-cat="lens"]   { border-color: var(--lens); color: var(--lens); background: rgba(122,184,232,0.08); }
+  .cat-tab.active[data-cat="filter"] { border-color: var(--filter); color: var(--filter); background: rgba(163,232,122,0.08); }
+  .cat-tab.active[data-cat="flash"]  { border-color: var(--flash); color: var(--flash); background: rgba(232,122,201,0.08); }
+
+  /* Form grid */
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+    align-items: end;
+  }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .field input, .field select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 7px 10px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+  .field input:focus, .field select:focus { border-color: var(--accent); }
+  .field select option { background: var(--surface2); }
+
+  .btn-add {
+    background: var(--accent);
+    color: #0e0e0f;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 22px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    align-self: end;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+  .btn-add:hover { opacity: 0.88; transform: translateY(-1px); }
+  .btn-add:active { transform: translateY(0); }
+
+  /* flash message */
+  .flash-msg {
+    display: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    padding-top: 6px;
+    animation: fadeIn 0.2s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ===== DATABASE SECTION ===== */
+  .db-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 0 32px 20px;
+  }
+
+  .db-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0 12px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+  .db-toolbar h2 {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .filter-btns {
+    display: flex;
+    gap: 5px;
+    margin-left: 10px;
+  }
+  .filter-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    padding: 3px 11px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: all 0.12s;
+  }
+  .filter-btn:hover { color: var(--text); border-color: var(--text); }
+  .filter-btn.active { color: var(--accent); border-color: var(--accent); background: rgba(232,201,122,0.08); }
+
+  .search-box {
+    margin-left: auto;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 5px 12px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    outline: none;
+    width: 200px;
+    transition: border-color 0.15s;
+  }
+  .search-box:focus { border-color: var(--accent); }
+  .search-box::placeholder { color: var(--muted); }
+
+  .sort-select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 5px 10px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    outline: none;
+    cursor: pointer;
+    letter-spacing: 0.06em;
+  }
+
+  /* TABLE */
+  .table-wrap {
+    flex: 1;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  .table-wrap::-webkit-scrollbar { width: 5px; }
+  .table-wrap::-webkit-scrollbar-track { background: var(--surface); }
+  .table-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+  }
+  thead {
+    position: sticky;
+    top: 0;
+    background: var(--surface2);
+    z-index: 2;
+  }
+  th {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 9px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  td {
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(42,42,46,0.6);
+    color: var(--text);
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .cat-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    padding: 2px 8px;
+    border-radius: 3px;
+    border: 1px solid;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .cat-badge.camera { border-color: var(--cam);    color: var(--cam); }
+  .cat-badge.lens   { border-color: var(--lens);   color: var(--lens); }
+  .cat-badge.filter { border-color: var(--filter); color: var(--filter); }
+  .cat-badge.flash  { border-color: var(--flash);  color: var(--flash); }
+
+  .condition-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-right: 5px;
+  }
+  .c-mint     { background: #7ae8a3; }
+  .c-exc      { background: #a3e87a; }
+  .c-vgood    { background: var(--accent); }
+  .c-good     { background: #e8a87a; }
+  .c-fair     { background: var(--danger); }
+
+  .btn-del {
+    background: none;
+    border: 1px solid transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 0.75rem;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-family: 'DM Mono', monospace;
+    transition: all 0.12s;
+  }
+  .btn-del:hover { border-color: var(--danger); color: var(--danger); }
+
+  .empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--muted);
+  }
+  .empty-state .icon { font-size: 2.5rem; margin-bottom: 10px; opacity: 0.4; }
+  .empty-state p { font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; }
+
+  /* Item count */
+  .item-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    margin-left: auto;
+    padding-right: 4px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>GearVault</h1>
+    <div class="subtitle">Camera Equipment Database</div>
+  </div>
+  <div class="counter-pills">
+    <span class="pill cam"  id="cnt-cam">0 Cameras</span>
+    <span class="pill lens" id="cnt-lens">0 Lenses</span>
+    <span class="pill filt" id="cnt-filt">0 Filters</span>
+    <span class="pill flas" id="cnt-flas">0 Flashes</span>
+  </div>
+</header>
+
+<main>
+  <!-- INPUT SECTION -->
+  <div class="input-section">
+    <h2>Add New Item</h2>
+
+    <div class="cat-tabs">
+      <button class="cat-tab active" data-cat="camera" onclick="switchCat('camera')">📷 Camera</button>
+      <button class="cat-tab" data-cat="lens"   onclick="switchCat('lens')">🔭 Lens</button>
+      <button class="cat-tab" data-cat="filter" onclick="switchCat('filter')">🔵 Filter</button>
+      <button class="cat-tab" data-cat="flash"  onclick="switchCat('flash')">⚡ Flash</button>
+    </div>
+
+    <!-- CAMERA FORM -->
+    <div id="form-camera" class="form-grid">
+      <div class="field"><label>Brand</label><input id="c-brand" placeholder="e.g. Sony, Nikon, Canon"></div>
+      <div class="field"><label>Model</label><input id="c-model" placeholder="e.g. A7R V, D850"></div>
+      <div class="field"><label>Type</label>
+        <select id="c-type">
+          <option value="">— Select —</option>
+          <option>Mirrorless</option>
+          <option>DSLR</option>
+          <option>Rangefinder</option>
+          <option>Medium Format</option>
+          <option>Film</option>
+          <option>Point & Shoot</option>
+        </select>
+      </div>
+      <div class="field"><label>Sensor</label>
+        <select id="c-sensor">
+          <option value="">— Select —</option>
+          <option>Full Frame</option>
+          <option>APS-C</option>
+          <option>Micro Four Thirds</option>
+          <option>Medium Format</option>
+          <option>1 inch</option>
+        </select>
+      </div>
+      <div class="field"><label>Megapixels</label><input id="c-mp" type="number" placeholder="e.g. 61"></div>
+      <div class="field"><label>Mount</label><input id="c-mount" placeholder="e.g. E-Mount, F-Mount"></div>
+      <div class="field"><label>Serial #</label><input id="c-serial" placeholder="Optional"></div>
+      <div class="field"><label>Condition</label>
+        <select id="c-cond">
+          <option value="">— Select —</option>
+          <option>Mint</option>
+          <option>Excellent</option>
+          <option>Very Good</option>
+          <option>Good</option>
+          <option>Fair</option>
+        </select>
+      </div>
+      <div class="field"><label>Purchase Date</label><input id="c-date" type="date"></div>
+      <div class="field"><label>Purchase Price ($)</label><input id="c-price" type="number" placeholder="e.g. 3299"></div>
+      <div class="field"><label>Notes</label><input id="c-notes" placeholder="Optional notes"></div>
+      <div class="field"><button class="btn-add" onclick="addItem()">+ Add Camera</button></div>
+    </div>
+
+    <!-- LENS FORM -->
+    <div id="form-lens" class="form-grid" style="display:none">
+      <div class="field"><label>Brand</label><input id="l-brand" placeholder="e.g. Sigma, Tamron"></div>
+      <div class="field"><label>Model</label><input id="l-model" placeholder="e.g. 35mm Art"></div>
+      <div class="field"><label>Lens Type</label>
+        <select id="l-type">
+          <option value="">— Select —</option>
+          <option>Prime</option>
+          <option>Zoom</option>
+          <option>Macro</option>
+          <option>Tilt-Shift</option>
+          <option>Fisheye</option>
+          <option>Telephoto</option>
+          <option>Wide Angle</option>
+        </select>
+      </div>
+      <div class="field"><label>Focal Length</label><input id="l-focal" placeholder="e.g. 50mm or 24-70mm"></div>
+      <div class="field"><label>Max Aperture</label><input id="l-aperture" placeholder="e.g. f/1.4, f/2.8"></div>
+      <div class="field"><label>Filter Size (mm)</label><input id="l-filter" type="number" placeholder="e.g. 77"></div>
+      <div class="field"><label>Mount</label><input id="l-mount" placeholder="e.g. Canon EF, Nikon Z"></div>
+      <div class="field"><label>IS / OIS?</label>
+        <select id="l-is">
+          <option value="">— Select —</option>
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+      </div>
+      <div class="field"><label>Autofocus?</label>
+        <select id="l-af">
+          <option value="">— Select —</option>
+          <option>Yes</option>
+          <option>Manual Only</option>
+        </select>
+      </div>
+      <div class="field"><label>Condition</label>
+        <select id="l-cond">
+          <option value="">— Select —</option>
+          <option>Mint</option>
+          <option>Excellent</option>
+          <option>Very Good</option>
+          <option>Good</option>
+          <option>Fair</option>
+        </select>
+      </div>
+      <div class="field"><label>Purchase Date</label><input id="l-date" type="date"></div>
+      <div class="field"><label>Purchase Price ($)</label><input id="l-price" type="number" placeholder="e.g. 1299"></div>
+      <div class="field"><label>Notes</label><input id="l-notes" placeholder="Optional notes"></div>
+      <div class="field"><button class="btn-add" onclick="addItem()">+ Add Lens</button></div>
+    </div>
+
+    <!-- FILTER FORM -->
+    <div id="form-filter" class="form-grid" style="display:none">
+      <div class="field"><label>Brand</label><input id="f-brand" placeholder="e.g. B+W, Hoya, Kenko"></div>
+      <div class="field"><label>Filter Type</label>
+        <select id="f-type">
+          <option value="">— Select —</option>
+          <option>UV / Clear</option>
+          <option>CPL (Circular Polarizer)</option>
+          <option>ND (Neutral Density)</option>
+          <option>Variable ND</option>
+          <option>Graduated ND</option>
+          <option>IR (Infrared)</option>
+          <option>Star / Diffusion</option>
+          <option>Color / Special Effect</option>
+          <option>Square / Rectangular</option>
+        </select>
+      </div>
+      <div class="field"><label>Filter Size (mm)</label><input id="f-size" type="number" placeholder="e.g. 77"></div>
+      <div class="field"><label>ND Stops / Strength</label><input id="f-nd" placeholder="e.g. 3-stop, ND1000"></div>
+      <div class="field"><label>Thread Type</label>
+        <select id="f-thread">
+          <option value="">— Select —</option>
+          <option>Screw-in</option>
+          <option>Drop-in</option>
+          <option>Square / Rectangular</option>
+        </select>
+      </div>
+      <div class="field"><label>Coating</label><input id="f-coat" placeholder="e.g. MRC Nano, SCHOTT glass"></div>
+      <div class="field"><label>Condition</label>
+        <select id="f-cond">
+          <option value="">— Select —</option>
+          <option>Mint</option>
+          <option>Excellent</option>
+          <option>Very Good</option>
+          <option>Good</option>
+          <option>Fair</option>
+        </select>
+      </div>
+      <div class="field"><label>Purchase Date</label><input id="f-date" type="date"></div>
+      <div class="field"><label>Purchase Price ($)</label><input id="f-price" type="number" placeholder="e.g. 80"></div>
+      <div class="field"><label>Notes</label><input id="f-notes" placeholder="Optional notes"></div>
+      <div class="field"><button class="btn-add" onclick="addItem()">+ Add Filter</button></div>
+    </div>
+
+    <!-- FLASH FORM -->
+    <div id="form-flash" class="form-grid" style="display:none">
+      <div class="field"><label>Brand</label><input id="fl-brand" placeholder="e.g. Godox, Profoto"></div>
+      <div class="field"><label>Model</label><input id="fl-model" placeholder="e.g. V1, B10"></div>
+      <div class="field"><label>Flash Type</label>
+        <select id="fl-type">
+          <option value="">— Select —</option>
+          <option>Speedlight / Hotshoe</option>
+          <option>Studio Strobe</option>
+          <option>Monolight</option>
+          <option>Ring Flash</option>
+          <option>LED Panel</option>
+          <option>Continuous Light</option>
+        </select>
+      </div>
+      <div class="field"><label>Guide Number</label><input id="fl-gn" placeholder="e.g. 60 (ISO 100, m)"></div>
+      <div class="field"><label>Power (Ws)</label><input id="fl-power" type="number" placeholder="e.g. 400"></div>
+      <div class="field"><label>TTL Compatible?</label>
+        <select id="fl-ttl">
+          <option value="">— Select —</option>
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+      </div>
+      <div class="field"><label>HSS?</label>
+        <select id="fl-hss">
+          <option value="">— Select —</option>
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+      </div>
+      <div class="field"><label>Power Source</label>
+        <select id="fl-pwr">
+          <option value="">— Select —</option>
+          <option>AA Batteries</option>
+          <option>Lithium Battery</option>
+          <option>AC Power</option>
+          <option>Battery Pack</option>
+        </select>
+      </div>
+      <div class="field"><label>Wireless System</label><input id="fl-wireless" placeholder="e.g. Godox X, PocketWizard"></div>
+      <div class="field"><label>Condition</label>
+        <select id="fl-cond">
+          <option value="">— Select —</option>
+          <option>Mint</option>
+          <option>Excellent</option>
+          <option>Very Good</option>
+          <option>Good</option>
+          <option>Fair</option>
+        </select>
+      </div>
+      <div class="field"><label>Purchase Date</label><input id="fl-date" type="date"></div>
+      <div class="field"><label>Purchase Price ($)</label><input id="fl-price" type="number" placeholder="e.g. 650"></div>
+      <div class="field"><label>Notes</label><input id="fl-notes" placeholder="Optional notes"></div>
+      <div class="field"><button class="btn-add" onclick="addItem()">+ Add Flash</button></div>
+    </div>
+
+    <div class="flash-msg" id="flash-msg">✓ Item added to database</div>
+  </div>
+
+  <!-- DATABASE SECTION -->
+  <div class="db-section">
+    <div class="db-toolbar">
+      <h2>Inventory</h2>
+      <div class="filter-btns">
+        <button class="filter-btn active" data-f="all"    onclick="setFilter('all')">All</button>
+        <button class="filter-btn" data-f="camera" onclick="setFilter('camera')">Cameras</button>
+        <button class="filter-btn" data-f="lens"   onclick="setFilter('lens')">Lenses</button>
+        <button class="filter-btn" data-f="filter" onclick="setFilter('filter')">Filters</button>
+        <button class="filter-btn" data-f="flash"  onclick="setFilter('flash')">Flashes</button>
+      </div>
+      <select class="sort-select" id="sort-sel" onchange="renderTable()">
+        <option value="date-desc">Newest First</option>
+        <option value="date-asc">Oldest First</option>
+        <option value="brand">Brand A–Z</option>
+        <option value="price-desc">Price High–Low</option>
+        <option value="price-asc">Price Low–High</option>
+      </select>
+      <input class="search-box" id="search-box" placeholder="Search gear…" oninput="renderTable()">
+      <span class="item-count" id="item-count">0 items</span>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Brand</th>
+            <th>Model / Name</th>
+            <th>Type</th>
+            <th>Key Spec</th>
+            <th>Detail</th>
+            <th>Condition</th>
+            <th>Purchased</th>
+            <th>Price</th>
+            <th>Notes</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="gear-tbody"></tbody>
+      </table>
+      <div class="empty-state" id="empty-state">
+        <div class="icon">📷</div>
+        <p>No gear yet — add your first item above</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+// ── State ──────────────────────────────────────────────
+let gear = JSON.parse(localStorage.getItem('gearvault') || '[]');
+let activeCat = 'camera';
+let activeFilter = 'all';
+
+// ── Category switch ────────────────────────────────────
+function switchCat(cat) {
+  activeCat = cat;
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.toggle('active', t.dataset.cat === cat));
+  ['camera','lens','filter','flash'].forEach(c => {
+    document.getElementById('form-'+c).style.display = (c === cat) ? 'grid' : 'none';
+  });
+}
+
+// ── Add item ───────────────────────────────────────────
+function addItem() {
+  let item = { id: Date.now(), category: activeCat, added: new Date().toISOString() };
+
+  if (activeCat === 'camera') {
+    item.brand     = v('c-brand');
+    item.model     = v('c-model');
+    item.type      = v('c-type');
+    item.sensor    = v('c-sensor');
+    item.mp        = v('c-mp');
+    item.mount     = v('c-mount');
+    item.serial    = v('c-serial');
+    item.condition = v('c-cond');
+    item.date      = v('c-date');
+    item.price     = v('c-price');
+    item.notes     = v('c-notes');
+    if (!item.brand && !item.model) return shake('c-brand');
+  } else if (activeCat === 'lens') {
+    item.brand     = v('l-brand');
+    item.model     = v('l-model');
+    item.type      = v('l-type');
+    item.focal     = v('l-focal');
+    item.aperture  = v('l-aperture');
+    item.filterSize= v('l-filter');
+    item.mount     = v('l-mount');
+    item.is        = v('l-is');
+    item.af        = v('l-af');
+    item.condition = v('l-cond');
+    item.date      = v('l-date');
+    item.price     = v('l-price');
+    item.notes     = v('l-notes');
+    if (!item.brand && !item.model) return shake('l-brand');
+  } else if (activeCat === 'filter') {
+    item.brand     = v('f-brand');
+    item.type      = v('f-type');
+    item.size      = v('f-size');
+    item.nd        = v('f-nd');
+    item.thread    = v('f-thread');
+    item.coating   = v('f-coat');
+    item.condition = v('f-cond');
+    item.date      = v('f-date');
+    item.price     = v('f-price');
+    item.notes     = v('f-notes');
+    item.model     = item.type || '';
+    if (!item.brand && !item.type) return shake('f-brand');
+  } else if (activeCat === 'flash') {
+    item.brand     = v('fl-brand');
+    item.model     = v('fl-model');
+    item.type      = v('fl-type');
+    item.gn        = v('fl-gn');
+    item.power     = v('fl-power');
+    item.ttl       = v('fl-ttl');
+    item.hss       = v('fl-hss');
+    item.pwrSrc    = v('fl-pwr');
+    item.wireless  = v('fl-wireless');
+    item.condition = v('fl-cond');
+    item.date      = v('fl-date');
+    item.price     = v('fl-price');
+    item.notes     = v('fl-notes');
+    if (!item.brand && !item.model) return shake('fl-brand');
+  }
+
+  gear.push(item);
+  save();
+  clearForm(activeCat);
+  showFlash();
+  renderTable();
+  updateCounters();
+}
+
+function v(id) { return document.getElementById(id)?.value?.trim() || ''; }
+
+function shake(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.borderColor = 'var(--danger)';
+  setTimeout(() => el.style.borderColor = '', 800);
+}
+
+function clearForm(cat) {
+  const form = document.getElementById('form-' + cat);
+  form.querySelectorAll('input, select').forEach(el => el.value = '');
+}
+
+function showFlash() {
+  const el = document.getElementById('flash-msg');
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 2000);
+}
+
+// ── Filter & Sort ──────────────────────────────────────
+function setFilter(f) {
+  activeFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.f === f));
+  renderTable();
+}
+
+// ── Render table ───────────────────────────────────────
+function renderTable() {
+  const tbody = document.getElementById('gear-tbody');
+  const empty = document.getElementById('empty-state');
+  const search = document.getElementById('search-box').value.toLowerCase();
+  const sort   = document.getElementById('sort-sel').value;
+
+  let list = gear.filter(item => {
+    if (activeFilter !== 'all' && item.category !== activeFilter) return false;
+    if (search) {
+      const blob = JSON.stringify(item).toLowerCase();
+      if (!blob.includes(search)) return false;
+    }
+    return true;
+  });
+
+  // Sort
+  list.sort((a, b) => {
+    if (sort === 'brand')      return (a.brand||'').localeCompare(b.brand||'');
+    if (sort === 'date-asc')   return new Date(a.added) - new Date(b.added);
+    if (sort === 'date-desc')  return new Date(b.added) - new Date(a.added);
+    if (sort === 'price-desc') return (parseFloat(b.price)||0) - (parseFloat(a.price)||0);
+    if (sort === 'price-asc')  return (parseFloat(a.price)||0) - (parseFloat(b.price)||0);
+    return 0;
+  });
+
+  document.getElementById('item-count').textContent = list.length + ' item' + (list.length !== 1 ? 's' : '');
+  empty.style.display = list.length ? 'none' : 'block';
+  tbody.innerHTML = list.map(row).join('');
+}
+
+function row(item) {
+  const cat = item.category;
+  let keySpec = '', detail = '';
+
+  if (cat === 'camera') {
+    keySpec = item.sensor || '—';
+    detail  = (item.mp ? item.mp + 'MP' : '') + (item.mount ? (item.mp ? ' · ' : '') + item.mount : '');
+  } else if (cat === 'lens') {
+    keySpec = item.focal || '—';
+    detail  = [item.aperture, item.filterSize ? item.filterSize + 'mm filter' : '', item.mount].filter(Boolean).join(' · ');
+  } else if (cat === 'filter') {
+    keySpec = item.size ? item.size + 'mm' : '—';
+    detail  = [item.nd, item.thread, item.coating].filter(Boolean).join(' · ');
+  } else if (cat === 'flash') {
+    keySpec = item.power ? item.power + 'Ws' : (item.gn ? 'GN ' + item.gn : '—');
+    detail  = [item.ttl === 'Yes' ? 'TTL' : '', item.hss === 'Yes' ? 'HSS' : '', item.pwrSrc].filter(Boolean).join(' · ');
+  }
+
+  const condDot = { 'Mint': 'c-mint', 'Excellent': 'c-exc', 'Very Good': 'c-vgood', 'Good': 'c-good', 'Fair': 'c-fair' }[item.condition] || '';
+  const dateStr = item.date ? item.date : (item.added ? new Date(item.added).toLocaleDateString() : '—');
+  const priceStr = item.price ? '$' + parseFloat(item.price).toLocaleString() : '—';
+  const modelDisplay = item.model || item.type || '—';
+
+  return `<tr>
+    <td><span class="cat-badge ${cat}">${cat}</span></td>
+    <td>${esc(item.brand||'—')}</td>
+    <td>${esc(modelDisplay)}</td>
+    <td>${esc(item.type||'—')}</td>
+    <td>${esc(keySpec)}</td>
+    <td style="color:var(--muted);font-size:0.72rem">${esc(detail||'—')}</td>
+    <td>${item.condition ? `<span class="condition-dot ${condDot}"></span>${esc(item.condition)}` : '—'}</td>
+    <td style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted)">${esc(dateStr)}</td>
+    <td style="font-family:'DM Mono',monospace;font-size:0.72rem">${esc(priceStr)}</td>
+    <td style="color:var(--muted);font-size:0.72rem;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(item.notes||'')}">${esc(item.notes||'—')}</td>
+    <td><button class="btn-del" onclick="deleteItem(${item.id})">✕</button></td>
+  </tr>`;
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function deleteItem(id) {
+  gear = gear.filter(g => g.id !== id);
+  save();
+  renderTable();
+  updateCounters();
+}
+
+function save() {
+  localStorage.setItem('gearvault', JSON.stringify(gear));
+}
+
+function updateCounters() {
+  const cnt = cat => gear.filter(g => g.category === cat).length;
+  document.getElementById('cnt-cam').textContent  = cnt('camera') + ' Camera' + (cnt('camera') !== 1 ? 's' : '');
+  document.getElementById('cnt-lens').textContent = cnt('lens') + ' Lens' + (cnt('lens') !== 1 ? 'es' : '');
+  document.getElementById('cnt-filt').textContent = cnt('filter') + ' Filter' + (cnt('filter') !== 1 ? 's' : '');
+  document.getElementById('cnt-flas').textContent = cnt('flash') + ' Flash' + (cnt('flash') !== 1 ? 'es' : '');
+}
+
+// ── Init ───────────────────────────────────────────────
+renderTable();
+updateCounters();
+</script>
+</body>
+</html>
