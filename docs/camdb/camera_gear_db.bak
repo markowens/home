@@ -404,133 +404,6 @@
     animation: slideUp 0.2s ease;
   }
   @keyframes slideUp { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
-
-  /* Edit button */
-  .btn-edit {
-    background: none;
-    border: 1px solid transparent;
-    color: var(--muted);
-    cursor: pointer;
-    font-size: 0.82rem;
-    padding: 3px 7px;
-    border-radius: 3px;
-    font-family: 'DM Mono', monospace;
-    transition: all 0.12s;
-    margin-right: 2px;
-  }
-  .btn-edit:hover { border-color: var(--accent2); color: var(--accent2); }
-
-  /* Modal overlay */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.72);
-    z-index: 200;
-    align-items: center;
-    justify-content: center;
-  }
-  .modal-overlay.open { display: flex; }
-
-  .modal {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    width: min(820px, 95vw);
-    max-height: 88vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    box-shadow: 0 24px 60px rgba(0,0,0,0.6);
-  }
-  .modal-header {
-    display: flex;
-    align-items: center;
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--border);
-    gap: 10px;
-  }
-  .modal-header h3 {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .modal-header .modal-cat {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    padding: 2px 10px;
-    border-radius: 3px;
-    border: 1px solid var(--border);
-    color: var(--text);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-  .modal-close {
-    margin-left: auto;
-    background: none;
-    border: none;
-    color: var(--muted);
-    cursor: pointer;
-    font-size: 1.1rem;
-    line-height: 1;
-    padding: 2px 6px;
-    border-radius: 3px;
-    transition: color 0.12s;
-  }
-  .modal-close:hover { color: var(--danger); }
-
-  .modal-body {
-    padding: 20px;
-    overflow-y: auto;
-    flex: 1;
-  }
-  .modal-body::-webkit-scrollbar { width: 4px; }
-  .modal-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-  .modal-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
-    gap: 10px;
-  }
-
-  .modal-footer {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-end;
-    padding: 12px 20px;
-    border-top: 1px solid var(--border);
-  }
-  .btn-save {
-    background: var(--accent);
-    color: #0e0e0f;
-    border: none;
-    border-radius: 4px;
-    padding: 7px 22px;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: opacity 0.14s;
-  }
-  .btn-save:hover { opacity: 0.85; }
-  .btn-cancel {
-    background: transparent;
-    color: var(--muted);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 7px 18px;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: border-color 0.12s, color 0.12s;
-  }
-  .btn-cancel:hover { border-color: var(--text); color: var(--text); }
 </style>
 </head>
 <body>
@@ -878,7 +751,6 @@
             <th>Model / Name</th>
             <th>Type</th>
             <th>Key Spec</th>
-            <th>Qty</th>
             <th>Detail</th>
             <th>Condition</th>
             <th>Purchased</th>
@@ -895,24 +767,6 @@
       </div>
     </div>
   </div>
-
-<!-- EDIT MODAL -->
-<div class="modal-overlay" id="edit-modal" onclick="handleOverlayClick(event)">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>Edit Item</h3>
-      <span class="modal-cat" id="modal-cat-label"></span>
-      <button class="modal-close" onclick="closeEdit()">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-grid" id="modal-fields"></div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-cancel" onclick="closeEdit()">Cancel</button>
-      <button class="btn-save" onclick="saveEdit()">Save Changes</button>
-    </div>
-  </div>
-</div>
 </main>
 
 <script>
@@ -1109,7 +963,6 @@ function row(item) {
     keySpec = item.capacity ? item.capacity + ' GB' : '—';
     detail  = [item.type, item.read ? item.read + ' MB/s read' : '', item.sclass].filter(Boolean).join(' · ');
   }
-  const qtyCell = (cat === 'battery' && item.qty) ? esc(item.qty) : '—';
 
   const condDot = { 'Mint': 'c-mint', 'Excellent': 'c-exc', 'Very Good': 'c-vgood', 'Good': 'c-good', 'Fair': 'c-fair' }[item.condition] || '';
   const dateStr = item.date ? item.date : (item.added ? new Date(item.added).toLocaleDateString() : '—');
@@ -1122,16 +975,12 @@ function row(item) {
     <td>${esc(modelDisplay)}</td>
     <td>${esc(item.type||'—')}</td>
     <td>${esc(keySpec)}</td>
-    <td style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--muted);text-align:center">${qtyCell}</td>
     <td style="color:var(--muted);font-size:0.72rem">${esc(detail||'—')}</td>
     <td>${item.condition ? `<span class="condition-dot ${condDot}"></span>${esc(item.condition)}` : '—'}</td>
     <td style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted)">${esc(dateStr)}</td>
     <td style="font-family:'DM Mono',monospace;font-size:0.72rem">${esc(priceStr)}</td>
-    <td style="color:var(--muted);font-size:0.72rem;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(item.notes||'')}">${esc(item.notes||'—')}</td>
-    <td style="white-space:nowrap">
-      <button class="btn-edit" onclick="openEdit(${item.id})">✎</button>
-      <button class="btn-del" onclick="deleteItem(${item.id})">✕</button>
-    </td>
+    <td style="color:var(--muted);font-size:0.72rem;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(item.notes||'')}">${esc(item.notes||'—')}</td>
+    <td><button class="btn-del" onclick="deleteItem(${item.id})">✕</button></td>
   </tr>`;
 }
 
@@ -1209,142 +1058,6 @@ function showToast(msg) {
   el.style.display = 'block';
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => { el.style.display = 'none'; }, 3500);
-}
-
-
-// ── Edit Modal ─────────────────────────────────────────
-let editingId = null;
-
-const FIELD_DEFS = {
-  camera: [
-    {key:'brand',     label:'Brand',           type:'text'},
-    {key:'model',     label:'Model',            type:'text'},
-    {key:'type',      label:'Type',             type:'select', opts:['Mirrorless','DSLR','Rangefinder','Medium Format','Film','Point & Shoot']},
-    {key:'sensor',    label:'Sensor',           type:'select', opts:['Full Frame','APS-C','Micro Four Thirds','Medium Format','1 inch']},
-    {key:'mp',        label:'Megapixels',       type:'number'},
-    {key:'mount',     label:'Mount',            type:'text'},
-    {key:'serial',    label:'Serial #',         type:'text'},
-    {key:'condition', label:'Condition',        type:'select', opts:['Mint','Excellent','Very Good','Good','Fair']},
-    {key:'date',      label:'Purchase Date',    type:'date'},
-    {key:'price',     label:'Purchase Price ($)',type:'number'},
-    {key:'notes',     label:'Notes',            type:'text'},
-  ],
-  lens: [
-    {key:'brand',      label:'Brand',            type:'text'},
-    {key:'model',      label:'Model',            type:'text'},
-    {key:'type',       label:'Lens Type',        type:'select', opts:['Prime','Zoom','Macro','Tilt-Shift','Fisheye','Telephoto','Wide Angle']},
-    {key:'focal',      label:'Focal Length',     type:'text'},
-    {key:'aperture',   label:'Max Aperture',     type:'text'},
-    {key:'filterSize', label:'Filter Size (mm)', type:'number'},
-    {key:'mount',      label:'Mount',            type:'text'},
-    {key:'is',         label:'IS / OIS?',        type:'select', opts:['Yes','No']},
-    {key:'af',         label:'Autofocus?',       type:'select', opts:['Yes','Manual Only']},
-    {key:'condition',  label:'Condition',        type:'select', opts:['Mint','Excellent','Very Good','Good','Fair']},
-    {key:'date',       label:'Purchase Date',    type:'date'},
-    {key:'price',      label:'Purchase Price ($)',type:'number'},
-    {key:'notes',      label:'Notes',            type:'text'},
-  ],
-  filter: [
-    {key:'brand',    label:'Brand',            type:'text'},
-    {key:'type',     label:'Filter Type',      type:'select', opts:['UV / Clear','CPL (Circular Polarizer)','ND (Neutral Density)','Variable ND','Graduated ND','IR (Infrared)','Star / Diffusion','Color / Special Effect','Square / Rectangular']},
-    {key:'size',     label:'Filter Size (mm)', type:'number'},
-    {key:'nd',       label:'ND Stops / Strength', type:'text'},
-    {key:'thread',   label:'Thread Type',      type:'select', opts:['Screw-in','Drop-in','Square / Rectangular']},
-    {key:'coating',  label:'Coating',          type:'text'},
-    {key:'condition',label:'Condition',        type:'select', opts:['Mint','Excellent','Very Good','Good','Fair']},
-    {key:'date',     label:'Purchase Date',    type:'date'},
-    {key:'price',    label:'Purchase Price ($)',type:'number'},
-    {key:'notes',    label:'Notes',            type:'text'},
-  ],
-  flash: [
-    {key:'brand',    label:'Brand',            type:'text'},
-    {key:'model',    label:'Model',            type:'text'},
-    {key:'type',     label:'Flash Type',       type:'select', opts:['Speedlight / Hotshoe','Studio Strobe','Monolight','Ring Flash','LED Panel','Continuous Light']},
-    {key:'gn',       label:'Guide Number',     type:'text'},
-    {key:'power',    label:'Power (Ws)',        type:'number'},
-    {key:'ttl',      label:'TTL Compatible?',  type:'select', opts:['Yes','No']},
-    {key:'hss',      label:'HSS?',             type:'select', opts:['Yes','No']},
-    {key:'pwrSrc',   label:'Power Source',     type:'select', opts:['AA Batteries','Lithium Battery','AC Power','Battery Pack']},
-    {key:'wireless', label:'Wireless System',  type:'text'},
-    {key:'condition',label:'Condition',        type:'select', opts:['Mint','Excellent','Very Good','Good','Fair']},
-    {key:'date',     label:'Purchase Date',    type:'date'},
-    {key:'price',    label:'Purchase Price ($)',type:'number'},
-    {key:'notes',    label:'Notes',            type:'text'},
-  ],
-  battery: [
-    {key:'brand',   label:'Brand',             type:'text'},
-    {key:'model',   label:'Model / Part #',    type:'text'},
-    {key:'type',    label:'Battery Type',      type:'select', opts:['Lithium-Ion (Li-Ion)','Nickel-Metal Hydride (NiMH)','AA Alkaline','AA Lithium','CR2 / CR123','Other']},
-    {key:'compat',  label:'Compatible Camera(s)', type:'text'},
-    {key:'mah',     label:'Capacity (mAh)',    type:'number'},
-    {key:'volt',    label:'Voltage (V)',        type:'number'},
-    {key:'oem',     label:'OEM or Third-Party',type:'select', opts:['OEM (Original)','Third-Party']},
-    {key:'qty',     label:'Quantity',           type:'number'},
-    {key:'condition',label:'Condition',        type:'select', opts:['New','Excellent','Good','Fair (reduced capacity)']},
-    {key:'date',    label:'Purchase Date',     type:'date'},
-    {key:'price',   label:'Purchase Price ($)',type:'number'},
-    {key:'notes',   label:'Notes',             type:'text'},
-  ],
-  storage: [
-    {key:'brand',    label:'Brand',             type:'text'},
-    {key:'model',    label:'Model / Series',    type:'text'},
-    {key:'type',     label:'Card Type',         type:'select', opts:['SD (SDHC / SDXC)','CFexpress Type A','CFexpress Type B','CompactFlash (CF)','XQD','microSD','CFast 2.0','SSD (portable)']},
-    {key:'capacity', label:'Capacity (GB)',      type:'number'},
-    {key:'read',     label:'Read Speed (MB/s)', type:'number'},
-    {key:'write',    label:'Write Speed (MB/s)',type:'number'},
-    {key:'sclass',   label:'Speed Class / Rating', type:'text'},
-    {key:'compat',   label:'Compatible Camera(s)', type:'text'},
-    {key:'condition',label:'Condition',        type:'select', opts:['New','Excellent','Good','Fair']},
-    {key:'date',     label:'Purchase Date',    type:'date'},
-    {key:'price',    label:'Purchase Price ($)',type:'number'},
-    {key:'notes',    label:'Notes',            type:'text'},
-  ],
-};
-
-function openEdit(id) {
-  const item = gear.find(g => g.id === id);
-  if (!item) return;
-  editingId = id;
-
-  document.getElementById('modal-cat-label').textContent = item.category;
-  document.getElementById('modal-cat-label').className = 'modal-cat cat-badge ' + item.category;
-
-  const fields = FIELD_DEFS[item.category] || [];
-  const grid = document.getElementById('modal-fields');
-  grid.innerHTML = fields.map(f => {
-    const val = item[f.key] || '';
-    if (f.type === 'select') {
-      const opts = f.opts.map(o => `<option${o === val ? ' selected' : ''}>${o}</option>`).join('');
-      return `<div class="field"><label>${f.label}</label><select id="mf-${f.key}"><option value="">— Select —</option>${opts}</select></div>`;
-    }
-    return `<div class="field"><label>${f.label}</label><input id="mf-${f.key}" type="${f.type}" value="${esc(val)}"></div>`;
-  }).join('');
-
-  document.getElementById('edit-modal').classList.add('open');
-}
-
-function closeEdit() {
-  editingId = null;
-  document.getElementById('edit-modal').classList.remove('open');
-}
-
-function handleOverlayClick(e) {
-  if (e.target === document.getElementById('edit-modal')) closeEdit();
-}
-
-function saveEdit() {
-  const item = gear.find(g => g.id === editingId);
-  if (!item) return;
-  const fields = FIELD_DEFS[item.category] || [];
-  fields.forEach(f => {
-    const el = document.getElementById('mf-' + f.key);
-    if (el) item[f.key] = el.value.trim();
-  });
-  save();
-  renderTable();
-  updateCounters();
-  closeEdit();
-  showToast('\u2713 Changes saved');
 }
 
 // ── Init ───────────────────────────────────────────────
