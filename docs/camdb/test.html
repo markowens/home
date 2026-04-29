@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GearVault — Camera Equipment Database</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e0f;
+    --surface: #161618;
+    --surface2: #1e1e21;
+    --border: #2a2a2e;
+    --accent: #e8c97a;
+    --accent2: #7ab8e8;
+    --danger: #e87a7a;
+    --text: #f0ede8;
+    --muted: #7a7a85;
+    --cam: #e8c97a;
+    --lens: #7ab8e8;
+    --filter: #a3e87a;
+    --flash: #e87ac9;
+    --battery: #e8a03a;
+    --storage: #b07ae8;
+    --hardware: #7ae8d8;
+    --accessory: #e87a7a;
+    --misc: #a0a0b0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* HEADER */
+  header {
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--surface);
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+  }
+  header .subtitle {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .counter-pills {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+  }
+  .pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+    letter-spacing: 0.05em;
+  }
+  .pill.cam  { border-color: var(--cam);    color: var(--cam); }
+  .pill.lens { border-color: var(--lens);   color: var(--lens); }
+  .pill.filt { border-color: var(--filter); color: var(--filter); }
+  .pill.flas { border-color: var(--flash);    color: var(--flash); }
+  .pill.batt { border-color: var(--battery); color: var(--battery); }
+  .pill.stor { border-color: var(--storage);   color: var(--storage); }
+  .pill.hard { border-color: var(--hardware);  color: var(--hardware); }
+  .pill.accs { border-color: var(--accessory); color: var(--accessory); }
+  .pill.misc { border-color: var(--misc);      color: var(--misc); }
+
+  /* MAIN LAYOUT */
+  main {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* ===== INPUT SECTION ===== */
+  .input-section {
+    background: var(--surface);
+    border-bottom: 2px solid var(--border);
+    padding: 20px 32px;
+  }
+  .input-section h2 {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  /* Category tabs */
+  .cat-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .cat-tab {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    padding: 6px 16px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .cat-tab:hover { border-color: var(--accent); color: var(--text); }
+  .cat-tab.active[data-cat="camera"] { border-color: var(--cam); color: var(--cam); background: rgba(232,201,122,0.08); }
+  .cat-tab.active[data-cat="lens"]   { border-color: var(--lens); color: var(--lens); background: rgba(122,184,232,0.08); }
+  .cat-tab.active[data-cat="filter"] { border-color: var(--filter); color: var(--filter); background: rgba(163,232,122,0.08); }
+  .cat-tab.active[data-cat="flash"]     { border-color: var(--flash);     color: var(--flash);     background: rgba(232,122,201,0.08); }
+  .cat-tab.active[data-cat="battery"]   { border-color: var(--battery);   color: var(--battery);   background: rgba(232,160,58,0.08); }
+  .cat-tab.active[data-cat="storage"]   { border-color: var(--storage);   color: var(--storage);   background: rgba(176,122,232,0.08); }
+  .cat-tab.active[data-cat="hardware"]  { border-color: var(--hardware);  color: var(--hardware);  background: rgba(122,232,216,0.08); }
+  .cat-tab.active[data-cat="accessory"] { border-color: var(--accessory); color: var(--accessory); background: rgba(232,122,122,0.08); }
+  .cat-tab.active[data-cat="misc"]      { border-color: var(--misc);      color: var(--misc);      background: rgba(160,160,176,0.08); }
+
+  /* Form grid */
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+    align-items: end;
+  }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .field input, .field select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 7px 10px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+  .field input:focus, .field select:focus { border-color: var(--accent); }
+  .field select option { background: var(--surface2); }
+
+  .btn-add {
+    background: var(--accent);
+    color: #0e0e0f;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 22px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    align-self: end;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+  .btn-add:hover { opacity: 0.88; transform: translateY(-1px); }
+  .btn-add:active { transform: translateY(0); }
+
+  /* flash message */
+  .flash-msg {
+    display: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    padding-top: 6px;
+    animation: fadeIn 0.2s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ===== DATABASE SECTION ===== */
+  .db-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 0 32px 20px;
+  }
+
+  .db-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0 12px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+  .db-toolbar h2 {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .filter-btns {
+    display: flex;
+    gap: 5px;
+    margin-left: 10px;
+  }
+  .filter-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    padding: 3px 11px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: all 0.12s;
+  }
+  .filter-btn:hover { color: var(--text); border-color: var(--text); }
+  .filter-btn.active { color: var(--accent); border-color: var(--accent); background: rgba(232,201,122,0.08); }
+
+  .search-box {
+    margin-left: auto;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 5px 12px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    outline: none;
+    width: 200px;
+    transition: border-color 0.15s;
+  }
+  .search-box:focus { border-color: var(--accent); }
+  .search-box::placeholder { color: var(--muted); }
+
+  .sort-select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 5px 10px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    outline: none;
+    cursor: pointer;
+    letter-spacing: 0.06em;
+  }
+
+  /* TABLE */
+  .table-wrap {
+    flex: 1;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  .table-wrap::-webkit-scrollbar { width: 5px; }
+  .table-wrap::-webkit-scrollbar-track { background: var(--surface); }
+  .table-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.78rem;
+  }
+  thead {
+    position: sticky;
+    top: 0;
+    background: var(--surface2);
+    z-index: 2;
+  }
+  th {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 9px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  td {
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(42,42,46,0.6);
+    color: var(--text);
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .cat-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    padding: 2px 8px;
+    border-radius: 3px;
+    border: 1px solid;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .cat-badge.camera { border-color: var(--cam);    color: var(--cam); }
+  .cat-badge.lens   { border-color: var(--lens);   color: var(--lens); }
+  .cat-badge.filter { border-color: var(--filter); color: var(--filter); }
+  .cat-badge.flash   { border-color: var(--flash);   color: var(--flash); }
+  .cat-badge.battery { border-color: var(--battery); color: var(--battery); }
+  .cat-badge.storage   { border-color: var(--storage);   color: var(--storage); }
+  .cat-badge.hardware  { border-color: var(--hardware);  color: var(--hardware); }
+  .cat-badge.accessory { border-color: var(--accessory); color: var(--accessory); }
+  .cat-badge.misc      { border-color: var(--misc);      color: var(--misc); }
+
+  .condition-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-right: 5px;
+  }
+  .c-mint     { background: #7ae8a3; }
+  .c-exc      { background: #a3e87a; }
+  .c-vgood    { background: var(--accent); }
+  .c-good     { background: #e8a87a; }
+  .c-fair     { background: var(--danger); }
+
+  .btn-del {
+    background: none;
+    border: 1px solid transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 0.75rem;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-family: 'DM Mono', monospace;
+    transition: all 0.12s;
+  }
+  .btn-del:hover { border-color: var(--danger); color: var(--danger); }
+
+  .empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--muted);
+  }
+  .empty-state .icon { font-size: 2.5rem; margin-bottom: 10px; opacity: 0.4; }
+  .empty-state p { font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.1em; }
+
+  /* Item count */
+  .item-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    padding-right: 4px;
+  }
+
+  /* Import / Export */
+  .io-btns {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+  }
+  .btn-io {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    padding: 4px 13px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    transition: all 0.14s;
+  }
+  .btn-io:hover { color: var(--text); border-color: var(--text); }
+  .btn-io.export:hover { border-color: var(--accent2); color: var(--accent2); }
+  .btn-io.import:hover { border-color: var(--filter);  color: var(--filter); }
+  #import-file { display: none; }
+
+  .io-toast {
+    display: none;
+    position: fixed;
+    bottom: 24px;
+    right: 28px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 18px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.07em;
+    color: var(--text);
+    z-index: 99;
+    animation: slideUp 0.2s ease;
+  }
+  @keyframes slideUp { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: translateY(0); } }
+
+  /* Edit button */
+  .btn-edit {
+    background: none;
+    border: 1px solid transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 0.82rem;
+    padding: 3px 7px;
+    border-radius: 3px;
+    font-family: 'DM Mono', monospace;
+    transition: all 0.12s;
+    margin-right: 2px;
+  }
+  .btn-edit:hover { border-color: var(--accent2); color: var(--accent2); }
+
+  /* Modal overlay */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.72);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    width: min(820px, 95vw);
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+  }
+  .modal-header {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    gap: 10px;
+  }
+  .modal-header h3 {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .modal-header .modal-cat {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    padding: 2px 10px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .modal-close {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 1.1rem;
+    line-height: 1;
+    padding: 2px 6px;
+    border-radius: 3px;
+    transition: color 0.12s;
+  }
+  .modal-close:hover { color: var(--danger); }
+
+  .modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .modal-body::-webkit-scrollbar { width: 4px; }
+  .modal-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .modal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+    gap: 10px;
+  }
+
+  .modal-footer {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    padding: 12px 20px;
+    border-top: 1px solid var(--border);
+  }
+  .btn-save {
+    background: var(--accent);
+    color: #0e0e0f;
+    border: none;
+    border-radius: 4px;
+    padding: 7px 22px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.14s;
+  }
+  .btn-save:hover { opacity: 0.85; }
+  .btn-cancel {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 7px 18px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.12s, color 0.12s;
+  }
+  .btn-cancel:hover { border-color: var(--text); color: var(--text); }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>GearVault</h1>
+    <div class="subtitle">Camera Equipment Database</div>
+  </div>
+  <div class="counter-pills">
+    <span class="pill cam"  id="cnt-cam">0 Cameras</span>
+    <span class="pill lens" id="cnt-lens">0 Lenses</span>
+    <span class="pill filt" id="cnt-filt">0 Filters</span>
+    <span class="pill flas" id="cnt-flas">0 Flashes</span>
+    <span class="pill batt" id="cnt-batt">0 Batteries</span>
+    <span class="pill stor" id="cnt-stor">0 Cards</span>
+    <span class="pill hard" id="cnt-hard">0 Hardware</span>
+    <span class="pill accs" id="cnt-accs">0 Accessories</span>
+    <span class="pill misc" id="cnt-misc">0 Misc</span>
+  </div>
+</header>
+
+<main>
+  <!-- INPUT SECTION -->
+  <div class="input-section">
+    <h2>Add New Item</h2>
+
+    <div class="cat-tabs">
+      <button class="cat-tab active" data-cat="camera" onclick="switchCat('camera')">📷 Camera</button>
+      <button class="cat-tab" data-cat="lens"   onclick="switchCat('lens')">🔭 Lens</button>
+      <button class="cat-tab" data-cat="filter" onclick="switchCat('filter')">🔵 Filter</button>
+      <button class="cat-tab" data-cat="flash"   onclick="switchCat('flash')">⚡ Flash</button>
+      <button class="cat-tab" data-cat="battery" onclick="switchCat('battery')">🔋 Battery</button>
+      <button class="cat-tab" data-cat="storage"   onclick="switchCat('storage')">💾 Storage</button>
+      <button class="cat-tab" data-cat="hardware"  onclick="switchCat('hardware')">🗜 Hardware</button>
+      <button class="cat-tab" data-cat="accessory" onclick="switchCat('accessory')">🎒 Accessories</button>
+      <button class="cat-tab" data-cat="misc"      onclick="switchCat('misc')">📦 Misc</button>
+    </div>
+
+    <!-- CAMERA FORM -->
+    <div id="form-camera" class="form-grid">
+      <div class="field"><label>Brand</label><input id="c-brand" placeholder="e.g. Sony, Nikon, Canon"></div>
+      <div class="field"><label>Model</label><input id="c-model" placeholder="e.g. A7R V, D850"></div>
+      <div class="field"><label>Type</label>
+        <select id="c-type">
+          <option value="">— Select —</option>
+          <option>Mirrorless</option>
+          <option>DSLR</option>
+          <option>Rangefinder</option>
+          <option>Medium Format</option>
+          <option>Film</option>
+          <option>Point & Shoot</option>
+        </select>
+      </div>
+      <div class="field"><label>Sensor</label>
+        <select id="c-sensor">
+          <option value="">— Select —</option>
+          <option>Full Frame</option>
+          <option>APS-C</option>
+          <option>Micro Four Thirds</option>
+          <option>Medium Format</option>
+          <option>1 inch</option>
+        </select>
+      </div>
+      <div class="field"><label>Megapixels</label><input id="c-mp" type="number" placeholder="e.g. 61"></div>
+      <div class="field"><label>Mount</label><input id="c-mount" placeholder="e.g. E-Mount, F-Mount"></div>
+      <div class="field"><label>Serial #</label><input id="c-serial" placeholder="Optional"></div>
+      <div class="field"><label>Condition</label>
+        <select id="c-cond">
+          <option value="">— Select —</option>
+          <option>Mint</option>
+          <option>Excellent</option>
+          <option>Very Good</option>
+          <option>Good</option>
+          <option>Fair</option>
+        </select>
+      </div>
+      <div class="field"><label>Purchase Date</label><input id="c-date" type="date"></div>
+      <div class="field"><label>Purchase Price ($)</label><input id="c-price" type="number" placeholder="e.g. 3299"></div>
+      <div class="field"><label>Notes</label><input id="c-notes" placeholder="Optional notes"></div>
+      <div class="field"><button class="btn-add" onclick="addItem()">+ Add Camera</button></div>
+    </div>
+
+    <!-- LENS FORM -->
+    <div id="form-lens" class="form-grid" style="display:none">
+      <div class="field"><label>Brand</label><input id="l-brand" placeholder="e.g. Sigma, Tamron"></div>
+      <div class="field"><label>Model</label><input id="l-model" placeholder="e.g. 35mm Art"></div>
+      <div class="field"><label>Lens Type</label>
+        <select id="l-type">
+          <option value="">— Select —</option>
+          <option>Prime</option>
+          <option>Zoom</option>
+          <option>Macro</option>
+          <option>Tilt-Shift</option>
+          <option>Fisheye</option>
+          <option>Telephoto</option>
+          <option>Wide Angle</option>
+        </select>
+      </div>
+      <div class="field"><label>Focal Length</label><input id="l-focal" placeholder="e.g. 50mm or 24-70mm"></div>
+      <div class="field"><label>Max Aperture</label><input id="l-aperture" placeholder="e.g. f/1.4, f/2.8"></div>
+      <div class="field"><label>Filter Size (mm)</label><input id="l-filter" type="number" placeholder="e.g. 77"></div>
+      <div class="field"><label>Mount</label><input id="l-mount" placeholder="e.g. Canon EF, Nikon Z"></div>
+      <div class="field"><label>IS / OIS?</label>
+        <select id="l-is">
+          <option value="">— Select —</option>
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+      </div>
+      <div class="field"><label>Autofocus?</label>
+        <select id="l-af">
+          <option value="">— Select —</option>
+          <option>Yes</option>
+          <option>Manual Only</option>
+        </select>
+      </div>
+      <div class="field"><label>Condition</label>
+        <select id="l-cond">
+          <option value="">— Select —</option>
+          <option>Mint</option>
+          <option>Excellent</option>
+          <option>Very Good</option>
+          <option>Good</option>
+          <option>Fair</option>
+        </select>
+      </div>
+      <div class="field"><label>Purchase Date</label><input id="l-date" type="date"></div>
+      <div class="field"><label>Purchase Price ($)</label><input id="l-price" type="number" placeholder="e.g. 1299"></div>
+      <div class="field"><label>Notes</label><input id="l-notes" placeholder="Optional notes"></div>
+      <div class="field"><button class="btn-add" onclick="addItem()">+ Add Lens</button></div>
+    </div>
+
+    <!-- FILTER FORM -->
+    <div id="form-filter" class="form-grid" style="display:none">
+      <div class="field"><label>Brand</label><input id="f-brand" placeholder="e.g. B+W, Hoya, Kenko"></div>
+      <div class="field"><label>Filter Type</label>
+        <select id="f-type">
+          <option value="">— Select —</option>
+          <option>UV / Clear</option>
+          <option>CPL (Circular Polarizer)</option>
+          <option>ND (Neutral Density)</option>
+          <option>Variable ND</option>
+          <option>Graduated ND</option>
+          <option>IR (Infrared)</option>
+          <option>Star / Diffusion</option>
+          <option>Color / Special Effect</option>
+          <option>Square / Rectangular</option>
+        </select>
+      </div>
+      <div class="field"><label>Filter Size (mm)</label><input id="f-size" type="number" placeholder="e.g. 77"></div>
+      <div class="field"><label>ND Stops / Strength</label><input id="f-nd" placeholder="e.g. 3-stop, ND1000"></div>
+      <div class="field"><label>Thread Type</label>
+        <select id="f-thread">
+          <option value="">— Select —</option>
+          <option>Screw-in</option>
+          <option>Drop-in</option>
+          <option>Square / Rectangular</option>
+        </select>
+      </div>
+      <div class="field"><label>Coating</label><input id="f-coat" placeholder="e.g. MRC Nano, SCHOTT glass"></div>
+      <div class="field"><label>Condition</label>
+        <select id="f-cond">
+          <option value="">— Select —</option>
+          <option>Mint</option>
+          <option>Excellent</option>
+          <option>Very Good</option>
+          <option>Good</option>
+          <option>Fair</option>
+        </select>
+      </div>
+      <div class="field"><label>Purchase Date</label><input id="f-date" type="date"></div>
+      <div class="field"><label>Purchase Price ($)</label><input id="f-price" type="number" placeholder="e.g. 80"></div>
+      <div class="field"><label>Notes</label><input id="f-notes" placeholder="Optional notes"></div>
+      <div class="field"><button class="btn-add" onclick="addItem()">+ Add Filter</button></div>
+    </div>
+
+    <!-- FLASH FORM -->
+    <div id="form-flash" class="form-grid" style="display:none">
+      <div class="field"><label>Brand</label><input id="fl-brand" placeholder="e.g. Godox, Profoto"></div>
+      <div class="field"><label>Model</label><input id="fl-model" placeholder="e.g. V1, B10"></div>
+      <div class="field"><label>Flash Type</label>
+        <select id="fl-type">
+          <option value="">— Select —</option>
+          <option>Speedlight / Hotshoe</option>
+          <option>Studio Strobe</option>
+          <option>Monolight</option>
+          <option>Ring Flash</option>
+          <option>LED Panel</option>
+          <option>Continuous Light</option>
+        </select>
+      </div>
+      <div class="field"><label>Guide Number</label><input id="fl-gn" placeholder="e.g. 60 (ISO 100, m)"></div>
+      <div class="field"><label>Power (Ws)</label><input id="fl-power" type="number" placeholder="e.g. 400"></div>
+      <div class="field"><label>TTL Compatible?</label>
+        <select id="fl-ttl">
+          <option value="">— Select —</option>
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+      </div>
+      <div class="field"><label>HSS?</label>
+        <select id="fl-hss">
+          <option value="">— Select —</option>
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+      </div>
+      <div class="field"><label>Power Source</label>
+        <select id="fl-pwr">
+          <option value="">— Select —</option>
+          <option>AA Batteries</option>
+          <option>Lithium Battery</option>
+          <option>AC Power</option>
+          <option>Battery Pack</option>
+        </select>
+      </div>
+      <div class="field"><label>Wireless System</label><input id="fl-wireless" placeholder="e.g. Godox X, PocketWizard"></div>
+      <div class="field"><label>Condition</label>
+        <select id="fl-cond">
+          <option value="">— Select —</option>
+          <option>Mint</option>
+          <option>Excellent</option>
+          <option>Very Good</option>
+          <option>Good</option>
+          <option>Fair</option>
+        </select>
+      </div>
+      <div class="field"><label>Purchase Date</label><input id="fl-date" type="date"></div>
+      <div class="field"><label>Purchase Price ($)</label><input id="fl-price" type="number" placeholder="e.g. 650"></div>
+      <div class="field"><label>Notes</label><input id="fl-notes" placeholder="Optional notes"></div>
+      <div class="field"><button class="btn-add" onclick="addItem()">+ Add Flash</button></div>
+    </div>
+
+
+    <!-- BATTERY FORM -->
+    <div id="form-battery" class="form-grid" style="display:none">
+      <div class="field"><label>Brand</label><input id="bt-brand" placeholder="e.g. Sony, Canon, Wasabi"></div>
+      <div class="field"><label>Model / Part #</label><input id="bt-model" placeholder="e.g. NP-FZ100, EN-EL15c"></div>
+      <div class="field"><label>Battery Type</label>
+        <select id="bt-type">
+          <option value="">— Select —</option>
+          <option>Lithium-Ion (Li-Ion)</option>
+          <option>Nickel-Metal Hydride (NiMH)</option>
+          <option>AA Alkaline</option>
+          <option>AA Lithium</option>
+          <option>CR2 / CR123</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field"><label>Compatible Camera(s)</label><input id="bt-compat" placeholder="e.g. Sony A7 IV, A7R V"></div>
+      <div class="field"><label>Capacity (mAh)</label><input id="bt-mah" type="number" placeholder="e.g. 2280"></div>
+      <div class="field"><label>Voltage (V)</label><input id="bt-volt" type="number" step="0.1" placeholder="e.g. 7.2"></div>
+      <div class="field"><label>OEM or Third-Party</label>
+        <select id="bt-oem">
+          <option value="">— Select —</option>
+          <option>OEM (Original)</option>
+          <option>Third-Party</option>
+        </select>
+      </div>
+      <div class="field"><label>Quantity</label><input id="bt-qty" type="number" placeholder="e.g. 2" min="1"></div>
+      <div class="field"><label>Condition</label>
+        <select id="bt-cond">
+          <option value="">— Select —</option>
+          <option>New</option>
+          <option>Excellent</option>
+          <option>Good</option>
+          <option>Fair (reduced capacity)</option>
+        </select>
+      </div>
+      <div class="field"><label>Purchase Date</label><input id="bt-date" type="date"></div>
+      <div class="field"><label>Purchase Price ($)</label><input id="bt-price" type="number" placeholder="e.g. 35"></div>
+      <div class="field"><label>Notes</label><input id="bt-notes" placeholder="e.g. grip battery, spare"></div>
+      <div class="field"><button class="btn-add" onclick="addItem()">+ Add Battery</button></div>
+    </div>
+
+    <!-- STORAGE FORM -->
+    <div id="form-storage" class="form-grid" style="display:none">
+      <div class="field"><label>Brand</label><input id="st-brand" placeholder="e.g. SanDisk, Lexar, Sony"></div>
+      <div class="field"><label>Model / Series</label><input id="st-model" placeholder="e.g. Extreme Pro, Professional"></div>
+      <div class="field"><label>Card Type</label>
+        <select id="st-type">
+          <option value="">— Select —</option>
+          <option>SD (SDHC / SDXC)</option>
+          <option>CFexpress Type A</option>
+          <option>CFexpress Type B</option>
+          <option>CompactFlash (CF)</option>
+          <option>XQD</option>
+          <option>microSD</option>
+          <option>CFast 2.0</option>
+          <option>SSD (portable)</option>
+        </select>
+      </div>
+      <div class="field"><label>Capacity (GB)</label><input id="st-cap" type="number" placeholder="e.g. 128, 256"></div>
+      <div class="field"><label>Read Speed (MB/s)</label><input id="st-read" type="number" placeholder="e.g. 300"></div>
+      <div class="field"><label>Write Speed (MB/s)</label><input id="st-write" type="number" placeholder="e.g. 260"></div>
+      <div class="field"><label>Speed Class / Rating</label><input id="st-class" placeholder="e.g. V90, UHS-II, U3"></div>
+      <div class="field"><label>Compatible Camera(s)</label><input id="st-compat" placeholder="e.g. Sony A1, Nikon Z9"></div>
+      <div class="field"><label>Condition</label>
+        <select id="st-cond">
+          <option value="">— Select —</option>
+          <option>New</option>
+          <option>Excellent</option>
+          <option>Good</option>
+          <option>Fair</option>
+        </select>
+      </div>
+      <div class="field"><label>Purchase Date</label><input id="st-date" type="date"></div>
+      <div class="field"><label>Purchase Price ($)</label><input id="st-price" type="number" placeholder="e.g. 89"></div>
+      <div class="field"><label>Notes</label><input id="st-notes" placeholder="e.g. dedicated to video, backup card"></div>
+      <div class="field"><button class="btn-add" onclick="addItem()">+ Add Storage Card</button></div>
+    </div>
+
+    <!-- HARDWARE FORM -->
+    <div id="form-hardware" class="form-grid" style="display:none">
+      <div class="field"><label>Brand</label><input id="hw-brand" placeholder="e.g. Manfrotto, Gitzo, Peak Design"></div>
+      <div class="field"><label>Model</label><input id="hw-model" placeholder="e.g. BeFree GT Carbon"></div>
+      <div class="field"><label>Item Type</label>
+        <select id="hw-type">
+          <option value="">— Select —</option>
+          <option>Tripod</option>
+          <option>Monopod</option>
+          <option>Ball Head</option>
+          <option>Pan/Tilt Head</option>
+          <option>Gimbal / Stabilizer</option>
+          <option>Slider</option>
+          <option>Light Stand</option>
+          <option>Boom Arm</option>
+          <option>Clamp / Magic Arm</option>
+          <option>Quick-Release Plate</option>
+          <option>L-Bracket</option>
+          <option>Camera Cage</option>
+          <option>Rail / Follow Focus</option>
+          <option>Other Support</option>
+        </select>
+      </div>
+      <div class="field"><label>Material</label>
+        <select id="hw-material">
+          <option value="">— Select —</option>
+          <option>Carbon Fiber</option>
+          <option>Aluminum</option>
+          <option>Magnesium Alloy</option>
+          <option>Plastic / Composite</option>
+          <option>Steel</option>
+        </select>
+      </div>
+      <div class="field"><label>Max Load (kg)</label><input id="hw-load" type="number" step="0.1" placeholder="e.g. 8"></div>
+      <div class="field"><label>Max Height (cm)</label><input id="hw-height" type="number" placeholder="e.g. 165"></div>
+      <div class="field"><label>Min Height (cm)</label><input id="hw-minheight" type="number" placeholder="e.g. 15"></div>
+      <div class="field"><label>Folded Length (cm)</label><input id="hw-folded" type="number" placeholder="e.g. 50"></div>
+      <div class="field"><label>Weight (kg)</label><input id="hw-weight" type="number" step="0.01" placeholder="e.g. 1.5"></div>
+      <div class="field"><label>Head Included?</label>
+        <select id="hw-head">
+          <option value="">— Select —</option>
+          <option>Yes</option>
+          <option>No (head sold separately)</option>
+        </select>
+      </div>
+      <div class="field"><label>Condition</label>
+        <select id="hw-cond">
+          <option value="">— Select —</option>
+          <option>Mint</option>
+          <option>Excellent</option>
+          <option>Very Good</option>
+          <option>Good</option>
+          <option>Fair</option>
+        </select>
+      </div>
+      <div class="field"><label>Purchase Date</label><input id="hw-date" type="date"></div>
+      <div class="field"><label>Purchase Price ($)</label><input id="hw-price" type="number" placeholder="e.g. 299"></div>
+      <div class="field"><label>Notes</label><input id="hw-notes" placeholder="e.g. travel tripod, studio use"></div>
+      <div class="field"><button class="btn-add" onclick="addItem()">+ Add Hardware</button></div>
+    </div>
+
+    <!-- ACCESSORIES FORM -->
+    <div id="form-accessory" class="form-grid" style="display:none">
+      <div class="field"><label>Brand</label><input id="ac-brand" placeholder="e.g. Godox, Think Tank, Peak Design"></div>
+      <div class="field"><label>Item Name</label><input id="ac-model" placeholder="e.g. Softbox 60x60, Lens Cap 77mm"></div>
+      <div class="field"><label>Item Type</label>
+        <select id="ac-type">
+          <option value="">— Select —</option>
+          <option>Flash Modifier (Softbox)</option>
+          <option>Flash Modifier (Umbrella)</option>
+          <option>Flash Modifier (Reflector)</option>
+          <option>Flash Modifier (Beauty Dish)</option>
+          <option>Flash Modifier (Snoot / Grid)</option>
+          <option>Lens Cap</option>
+          <option>Lens Hood</option>
+          <option>Camera Strap</option>
+          <option>Camera Bag</option>
+          <option>Backpack</option>
+          <option>Rolling Case</option>
+          <option>Hard Case</option>
+          <option>Soft Pouch</option>
+          <option>Rain Cover</option>
+          <option>Remote / Cable Release</option>
+          <option>Hot Shoe Adapter</option>
+          <option>Battery Grip</option>
+          <option>Screen Protector</option>
+          <option>Cleaning Kit</option>
+          <option>Memory Card Reader</option>
+          <option>Other Accessory</option>
+        </select>
+      </div>
+      <div class="field"><label>Compatible With</label><input id="ac-compat" placeholder="e.g. Sony A7 series, 77mm lenses"></div>
+      <div class="field"><label>Size / Dimensions</label><input id="ac-size" placeholder="e.g. 60x60cm, Large, 77mm"></div>
+      <div class="field"><label>Color</label><input id="ac-color" placeholder="e.g. Black, Silver"></div>
+      <div class="field"><label>Quantity</label><input id="ac-qty" type="number" placeholder="e.g. 1" min="1"></div>
+      <div class="field"><label>Condition</label>
+        <select id="ac-cond">
+          <option value="">— Select —</option>
+          <option>New</option>
+          <option>Excellent</option>
+          <option>Very Good</option>
+          <option>Good</option>
+          <option>Fair</option>
+        </select>
+      </div>
+      <div class="field"><label>Purchase Date</label><input id="ac-date" type="date"></div>
+      <div class="field"><label>Purchase Price ($)</label><input id="ac-price" type="number" placeholder="e.g. 49"></div>
+      <div class="field"><label>Notes</label><input id="ac-notes" placeholder="Optional notes"></div>
+      <div class="field"><button class="btn-add" onclick="addItem()">+ Add Accessory</button></div>
+    </div>
+
+    <!-- MISCELLANEOUS FORM -->
+    <div id="form-misc" class="form-grid" style="display:none">
+      <div class="field"><label>Brand</label><input id="mc-brand" placeholder="e.g. Any brand"></div>
+      <div class="field"><label>Item Name</label><input id="mc-model" placeholder="e.g. Intervalometer, Hotshoe Level"></div>
+      <div class="field"><label>Category / Tag</label><input id="mc-type" placeholder="e.g. Timing, Safety, DIY, Software"></div>
+      <div class="field"><label>Description</label><input id="mc-desc" placeholder="Brief description of the item"></div>
+      <div class="field"><label>Compatible With</label><input id="mc-compat" placeholder="e.g. Any camera, Canon only"></div>
+      <div class="field"><label>Quantity</label><input id="mc-qty" type="number" placeholder="e.g. 1" min="1"></div>
+      <div class="field"><label>Serial / ID</label><input id="mc-serial" placeholder="Optional serial number"></div>
+      <div class="field"><label>Condition</label>
+        <select id="mc-cond">
+          <option value="">— Select —</option>
+          <option>New</option>
+          <option>Excellent</option>
+          <option>Very Good</option>
+          <option>Good</option>
+          <option>Fair</option>
+        </select>
+      </div>
+      <div class="field"><label>Purchase Date</label><input id="mc-date" type="date"></div>
+      <div class="field"><label>Purchase Price ($)</label><input id="mc-price" type="number" placeholder="e.g. 25"></div>
+      <div class="field"><label>Notes</label><input id="mc-notes" placeholder="Any additional details"></div>
+      <div class="field"><button class="btn-add" onclick="addItem()">+ Add Misc Item</button></div>
+    </div>
+    <div class="flash-msg" id="flash-msg">✓ Item added to database</div>
+  </div>
+
+  <!-- DATABASE SECTION -->
+  <div class="db-section">
+    <div class="db-toolbar">
+      <h2>Inventory</h2>
+      <div class="filter-btns">
+        <button class="filter-btn active" data-f="all"    onclick="setFilter('all')">All</button>
+        <button class="filter-btn" data-f="camera" onclick="setFilter('camera')">Cameras</button>
+        <button class="filter-btn" data-f="lens"   onclick="setFilter('lens')">Lenses</button>
+        <button class="filter-btn" data-f="filter" onclick="setFilter('filter')">Filters</button>
+        <button class="filter-btn" data-f="flash"   onclick="setFilter('flash')">Flashes</button>
+        <button class="filter-btn" data-f="battery" onclick="setFilter('battery')">Batteries</button>
+        <button class="filter-btn" data-f="storage"   onclick="setFilter('storage')">Cards</button>
+        <button class="filter-btn" data-f="hardware"  onclick="setFilter('hardware')">Hardware</button>
+        <button class="filter-btn" data-f="accessory" onclick="setFilter('accessory')">Accessories</button>
+        <button class="filter-btn" data-f="misc"      onclick="setFilter('misc')">Misc</button>
+      </div>
+      <select class="sort-select" id="sort-sel" onchange="renderTable()">
+        <option value="date-desc">Newest First</option>
+        <option value="date-asc">Oldest First</option>
+        <option value="brand">Brand A–Z</option>
+        <option value="price-desc">Price High–Low</option>
+        <option value="price-asc">Price Low–High</option>
+      </select>
+      <input class="search-box" id="search-box" placeholder="Search gear…" oninput="renderTable()">
+      <span class="item-count" id="item-count">0 items</span>
+      <div class="io-btns">
+        <button class="btn-io export" onclick="exportJSON()" title="Export all gear to a .json file">&#11015; Export</button>
+        <button class="btn-io import" onclick="document.getElementById('import-file').click()" title="Import gear from a .json file">&#11014; Import</button>
+        <input type="file" id="import-file" accept=".json" onchange="importJSON(event)">
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Brand</th>
+            <th>Model / Name</th>
+            <th>Type</th>
+            <th>Key Spec</th>
+            <th>Qty</th>
+            <th>Detail</th>
+            <th>Condition</th>
+            <th>Purchased</th>
+            <th>Price</th>
+            <th>Notes</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="gear-tbody"></tbody>
+      </table>
+      <div class="empty-state" id="empty-state">
+        <div class="icon">📷</div>
+        <p>No gear yet — add your first item above</p>
+      </div>
+    </div>
+  </div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="edit-modal" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Edit Item</h3>
+      <span class="modal-cat" id="modal-cat-label"></span>
+      <button class="modal-close" onclick="closeEdit()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-grid" id="modal-fields"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeEdit()">Cancel</button>
+      <button class="btn-save" onclick="saveEdit()">Save Changes</button>
+    </div>
+  </div>
+</div>
+</main>
+
+<script>
+// ── State ──────────────────────────────────────────────
+let gear = JSON.parse(localStorage.getItem('gearvault') || '[]');
+let activeCat = 'camera';
+let activeFilter = 'all';
+
+// ── Category switch ────────────────────────────────────
+function switchCat(cat) {
+  activeCat = cat;
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.toggle('active', t.dataset.cat === cat));
+  ['camera','lens','filter','flash','battery','storage','hardware','accessory','misc'].forEach(c => {
+    document.getElementById('form-'+c).style.display = (c === cat) ? 'grid' : 'none';
+  });
+}
+
+// ── Add item ───────────────────────────────────────────
+function addItem() {
+  let item = { id: Date.now(), category: activeCat, added: new Date().toISOString() };
+
+  if (activeCat === 'camera') {
+    item.brand     = v('c-brand');
+    item.model     = v('c-model');
+    item.type      = v('c-type');
+    item.sensor    = v('c-sensor');
+    item.mp        = v('c-mp');
+    item.mount     = v('c-mount');
+    item.serial    = v('c-serial');
+    item.condition = v('c-cond');
+    item.date      = v('c-date');
+    item.price     = v('c-price');
+    item.notes     = v('c-notes');
+    if (!item.brand && !item.model) return shake('c-brand');
+  } else if (activeCat === 'lens') {
+    item.brand     = v('l-brand');
+    item.model     = v('l-model');
+    item.type      = v('l-type');
+    item.focal     = v('l-focal');
+    item.aperture  = v('l-aperture');
+    item.filterSize= v('l-filter');
+    item.mount     = v('l-mount');
+    item.is        = v('l-is');
+    item.af        = v('l-af');
+    item.condition = v('l-cond');
+    item.date      = v('l-date');
+    item.price     = v('l-price');
+    item.notes     = v('l-notes');
+    if (!item.brand && !item.model) return shake('l-brand');
+  } else if (activeCat === 'filter') {
+    item.brand     = v('f-brand');
+    item.type      = v('f-type');
+    item.size      = v('f-size');
+    item.nd        = v('f-nd');
+    item.thread    = v('f-thread');
+    item.coating   = v('f-coat');
+    item.condition = v('f-cond');
+    item.date      = v('f-date');
+    item.price     = v('f-price');
+    item.notes     = v('f-notes');
+    item.model     = item.type || '';
+    if (!item.brand && !item.type) return shake('f-brand');
+  } else if (activeCat === 'flash') {
+    item.brand     = v('fl-brand');
+    item.model     = v('fl-model');
+    item.type      = v('fl-type');
+    item.gn        = v('fl-gn');
+    item.power     = v('fl-power');
+    item.ttl       = v('fl-ttl');
+    item.hss       = v('fl-hss');
+    item.pwrSrc    = v('fl-pwr');
+    item.wireless  = v('fl-wireless');
+    item.condition = v('fl-cond');
+    item.date      = v('fl-date');
+    item.price     = v('fl-price');
+    item.notes     = v('fl-notes');
+    if (!item.brand && !item.model) return shake('fl-brand');
+  } else if (activeCat === 'battery') {
+    item.brand   = v('bt-brand');
+    item.model   = v('bt-model');
+    item.type    = v('bt-type');
+    item.compat  = v('bt-compat');
+    item.mah     = v('bt-mah');
+    item.volt    = v('bt-volt');
+    item.oem     = v('bt-oem');
+    item.qty     = v('bt-qty');
+    item.condition = v('bt-cond');
+    item.date    = v('bt-date');
+    item.price   = v('bt-price');
+    item.notes   = v('bt-notes');
+    if (!item.brand && !item.model) return shake('bt-brand');
+  } else if (activeCat === 'storage') {
+    item.brand   = v('st-brand');
+    item.model   = v('st-model');
+    item.type    = v('st-type');
+    item.capacity= v('st-cap');
+    item.read    = v('st-read');
+    item.write   = v('st-write');
+    item.sclass  = v('st-class');
+    item.compat  = v('st-compat');
+    item.condition = v('st-cond');
+    item.date    = v('st-date');
+    item.price   = v('st-price');
+    item.notes   = v('st-notes');
+    if (!item.brand && !item.type) return shake('st-brand');
+  } else if (activeCat === 'hardware') {
+    item.brand      = v('hw-brand');
+    item.model      = v('hw-model');
+    item.type       = v('hw-type');
+    item.material   = v('hw-material');
+    item.load       = v('hw-load');
+    item.height     = v('hw-height');
+    item.minheight  = v('hw-minheight');
+    item.folded     = v('hw-folded');
+    item.weight     = v('hw-weight');
+    item.head       = v('hw-head');
+    item.condition  = v('hw-cond');
+    item.date       = v('hw-date');
+    item.price      = v('hw-price');
+    item.notes      = v('hw-notes');
+    if (!item.brand && !item.model) return shake('hw-brand');
+  } else if (activeCat === 'accessory') {
+    item.brand      = v('ac-brand');
+    item.model      = v('ac-model');
+    item.type       = v('ac-type');
+    item.compat     = v('ac-compat');
+    item.size       = v('ac-size');
+    item.color      = v('ac-color');
+    item.qty        = v('ac-qty');
+    item.condition  = v('ac-cond');
+    item.date       = v('ac-date');
+    item.price      = v('ac-price');
+    item.notes      = v('ac-notes');
+    if (!item.brand && !item.model) return shake('ac-brand');
+  } else if (activeCat === 'misc') {
+    item.brand      = v('mc-brand');
+    item.model      = v('mc-model');
+    item.type       = v('mc-type');
+    item.desc       = v('mc-desc');
+    item.compat     = v('mc-compat');
+    item.qty        = v('mc-qty');
+    item.serial     = v('mc-serial');
+    item.condition  = v('mc-cond');
+    item.date       = v('mc-date');
+    item.price      = v('mc-price');
+    item.notes      = v('mc-notes');
+    if (!item.brand && !item.model) return shake('mc-brand');
+  }
+
+  gear.push(item);
+  save();
+  clearForm(activeCat);
+  showFlash();
+  renderTable();
+  updateCounters();
+}
+
+function v(id) { return document.getElementById(id)?.value?.trim() || ''; }
+
+function shake(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.borderColor = 'var(--danger)';
+  setTimeout(() => el.style.borderColor = '', 800);
+}
+
+function clearForm(cat) {
+  const form = document.getElementById('form-' + cat);
+  form.querySelectorAll('input, select').forEach(el => el.value = '');
+}
+
+function showFlash() {
+  const el = document.getElementById('flash-msg');
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 2000);
+}
+
+// ── Filter & Sort ──────────────────────────────────────
+function setFilter(f) {
+  activeFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.f === f));
+  renderTable();
+}
+
+// ── Render table ───────────────────────────────────────
+function renderTable() {
+  const tbody = document.getElementById('gear-tbody');
+  const empty = document.getElementById('empty-state');
+  const search = document.getElementById('search-box').value.toLowerCase();
+  const sort   = document.getElementById('sort-sel').value;
+
+  let list = gear.filter(item => {
+    if (activeFilter !== 'all' && item.category !== activeFilter) return false;
+    if (search) {
+      const blob = JSON.stringify(item).toLowerCase();
+      if (!blob.includes(search)) return false;
+    }
+    return true;
+  });
+
+  // Sort
+  list.sort((a, b) => {
+    if (sort === 'brand')      return (a.brand||'').localeCompare(b.brand||'');
+    if (sort === 'date-asc')   return new Date(a.added) - new Date(b.added);
+    if (sort === 'date-desc')  return new Date(b.added) - new Date(a.added);
+    if (sort === 'price-desc') return (parseFloat(b.price)||0) - (parseFloat(a.price)||0);
+    if (sort === 'price-asc')  return (parseFloat(a.price)||0) - (parseFloat(b.price)||0);
+    return 0;
+  });
+
+  document.getElementById('item-count').textContent = list.length + ' item' + (list.length !== 1 ? 's' : '');
+  empty.style.display = list.length ? 'none' : 'block';
+  tbody.innerHTML = list.map(row).join('');
+}
+
+function row(item) {
+  const cat = item.category;
+  let keySpec = '', detail = '';
+
+  if (cat === 'camera') {
+    keySpec = item.sensor || '—';
+    detail  = (item.mp ? item.mp + 'MP' : '') + (item.mount ? (item.mp ? ' · ' : '') + item.mount : '');
+  } else if (cat === 'lens') {
+    keySpec = item.focal || '—';
+    detail  = [item.aperture, item.filterSize ? item.filterSize + 'mm filter' : '', item.mount].filter(Boolean).join(' · ');
+  } else if (cat === 'filter') {
+    keySpec = item.size ? item.size + 'mm' : '—';
+    detail  = [item.nd, item.thread, item.coating].filter(Boolean).join(' · ');
+  } else if (cat === 'flash') {
+    keySpec = item.power ? item.power + 'Ws' : (item.gn ? 'GN ' + item.gn : '—');
+    detail  = [item.ttl === 'Yes' ? 'TTL' : '', item.hss === 'Yes' ? 'HSS' : '', item.pwrSrc].filter(Boolean).join(' · ');
+  } else if (cat === 'battery') {
+    keySpec = item.mah ? item.mah + ' mAh' : '—';
+    detail  = [item.volt ? item.volt + 'V' : '', item.oem, item.compat].filter(Boolean).join(' · ');
+  } else if (cat === 'storage') {
+    keySpec = item.capacity ? item.capacity + ' GB' : '—';
+    detail  = [item.type, item.read ? item.read + ' MB/s read' : '', item.sclass].filter(Boolean).join(' · ');
+  }
+  if (cat === 'hardware') {
+    keySpec = item.type || '—';
+    detail  = [item.material, item.load ? 'Max ' + item.load + 'kg' : '', item.height ? item.height + 'cm' : ''].filter(Boolean).join(' · ');
+  } else if (cat === 'accessory') {
+    keySpec = item.type || '—';
+    detail  = [item.size, item.color, item.compat].filter(Boolean).join(' · ');
+  } else if (cat === 'misc') {
+    keySpec = item.type || '—';
+    detail  = [item.desc, item.compat].filter(Boolean).join(' · ');
+  }
+  const qtyCell = (['battery','accessory','misc'].includes(cat) && item.qty) ? esc(item.qty) : '—';
+
+  const condDot = { 'Mint': 'c-mint', 'Excellent': 'c-exc', 'Very Good': 'c-vgood', 'Good': 'c-good', 'Fair': 'c-fair' }[item.condition] || '';
+  const dateStr = item.date ? item.date : (item.added ? new Date(item.added).toLocaleDateString() : '—');
+  const priceStr = item.price ? '$' + parseFloat(item.price).toLocaleString() : '—';
+  const modelDisplay = item.model || item.type || '—';
+
+  return `<tr>
+    <td><span class="cat-badge ${cat}">${cat}</span></td>
+    <td>${esc(item.brand||'—')}</td>
+    <td>${esc(modelDisplay)}</td>
+    <td>${esc(item.type||'—')}</td>
+    <td>${esc(keySpec)}</td>
+    <td style="font-family:'DM Mono',monospace;font-size:0.72rem;color:var(--muted);text-align:center">${qtyCell}</td>
+    <td style="color:var(--muted);font-size:0.72rem">${esc(detail||'—')}</td>
+    <td>${item.condition ? `<span class="condition-dot ${condDot}"></span>${esc(item.condition)}` : '—'}</td>
+    <td style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--muted)">${esc(dateStr)}</td>
+    <td style="font-family:'DM Mono',monospace;font-size:0.72rem">${esc(priceStr)}</td>
+    <td style="color:var(--muted);font-size:0.72rem;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(item.notes||'')}">${esc(item.notes||'—')}</td>
+    <td style="white-space:nowrap">
+      <button class="btn-edit" onclick="openEdit(${item.id})">✎</button>
+      <button class="btn-del" onclick="deleteItem(${item.id})">✕</button>
+    </td>
+  </tr>`;
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function deleteItem(id) {
+  gear = gear.filter(g => g.id !== id);
+  save();
+  renderTable();
+  updateCounters();
+}
+
+function save() {
+  localStorage.setItem('gearvault', JSON.stringify(gear));
+}
+
+function updateCounters() {
+  const cnt = cat => gear.filter(g => g.category === cat).length;
+  document.getElementById('cnt-cam').textContent  = cnt('camera') + ' Camera' + (cnt('camera') !== 1 ? 's' : '');
+  document.getElementById('cnt-lens').textContent = cnt('lens') + ' Lens' + (cnt('lens') !== 1 ? 'es' : '');
+  document.getElementById('cnt-filt').textContent = cnt('filter') + ' Filter' + (cnt('filter') !== 1 ? 's' : '');
+  document.getElementById('cnt-flas').textContent = cnt('flash')   + ' Flash'   + (cnt('flash')   !== 1 ? 'es' : '');
+  document.getElementById('cnt-batt').textContent = cnt('battery') + ' Batter' + (cnt('battery') !== 1 ? 'ies' : 'y');
+  document.getElementById('cnt-stor').textContent = cnt('storage')   + ' Card'      + (cnt('storage')   !== 1 ? 's'  : '');
+  document.getElementById('cnt-hard').textContent = cnt('hardware')  + ' Hardware';
+  document.getElementById('cnt-accs').textContent = cnt('accessory') + ' Accessor' + (cnt('accessory') !== 1 ? 'ies' : 'y');
+  document.getElementById('cnt-misc').textContent = cnt('misc')      + ' Misc';
+}
+
+// ── Export ─────────────────────────────────────────────
+function exportJSON() {
+  if (gear.length === 0) { showToast('No gear to export yet.'); return; }
+  const blob = new Blob([JSON.stringify(gear, null, 2)], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  const date = new Date().toISOString().slice(0, 10);
+  a.href     = url;
+  a.download = 'gearvault-' + date + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Exported ' + gear.length + ' item' + (gear.length !== 1 ? 's' : '') + ' — gearvault-' + date + '.json');
+}
+
+// ── Import ─────────────────────────────────────────────
+function importJSON(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!Array.isArray(data)) throw new Error('Invalid format');
+      const existingIds = new Set(gear.map(g => g.id));
+      const newItems = data.filter(g => g.id && g.category && !existingIds.has(g.id));
+      const dupes    = data.length - newItems.length;
+      gear = gear.concat(newItems);
+      save();
+      renderTable();
+      updateCounters();
+      let msg = 'Imported ' + newItems.length + ' new item' + (newItems.length !== 1 ? 's' : '');
+      if (dupes > 0) msg += ' (' + dupes + ' duplicate' + (dupes !== 1 ? 's' : '') + ' skipped)';
+      showToast(msg);
+    } catch(err) {
+      showToast('Import failed — invalid GearVault file.');
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+// ── Toast ──────────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('io-toast');
+  el.textContent = msg;
+  el.style.display = 'block';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.style.display = 'none'; }, 3500);
+}
+
+
+// ── Edit Modal ─────────────────────────────────────────
+let editingId = null;
+
+const FIELD_DEFS = {
+  camera: [
+    {key:'brand',     label:'Brand',           type:'text'},
+    {key:'model',     label:'Model',            type:'text'},
+    {key:'type',      label:'Type',             type:'select', opts:['Mirrorless','DSLR','Rangefinder','Medium Format','Film','Point & Shoot']},
+    {key:'sensor',    label:'Sensor',           type:'select', opts:['Full Frame','APS-C','Micro Four Thirds','Medium Format','1 inch']},
+    {key:'mp',        label:'Megapixels',       type:'number'},
+    {key:'mount',     label:'Mount',            type:'text'},
+    {key:'serial',    label:'Serial #',         type:'text'},
+    {key:'condition', label:'Condition',        type:'select', opts:['Mint','Excellent','Very Good','Good','Fair']},
+    {key:'date',      label:'Purchase Date',    type:'date'},
+    {key:'price',     label:'Purchase Price ($)',type:'number'},
+    {key:'notes',     label:'Notes',            type:'text'},
+  ],
+  lens: [
+    {key:'brand',      label:'Brand',            type:'text'},
+    {key:'model',      label:'Model',            type:'text'},
+    {key:'type',       label:'Lens Type',        type:'select', opts:['Prime','Zoom','Macro','Tilt-Shift','Fisheye','Telephoto','Wide Angle']},
+    {key:'focal',      label:'Focal Length',     type:'text'},
+    {key:'aperture',   label:'Max Aperture',     type:'text'},
+    {key:'filterSize', label:'Filter Size (mm)', type:'number'},
+    {key:'mount',      label:'Mount',            type:'text'},
+    {key:'is',         label:'IS / OIS?',        type:'select', opts:['Yes','No']},
+    {key:'af',         label:'Autofocus?',       type:'select', opts:['Yes','Manual Only']},
+    {key:'condition',  label:'Condition',        type:'select', opts:['Mint','Excellent','Very Good','Good','Fair']},
+    {key:'date',       label:'Purchase Date',    type:'date'},
+    {key:'price',      label:'Purchase Price ($)',type:'number'},
+    {key:'notes',      label:'Notes',            type:'text'},
+  ],
+  filter: [
+    {key:'brand',    label:'Brand',            type:'text'},
+    {key:'type',     label:'Filter Type',      type:'select', opts:['UV / Clear','CPL (Circular Polarizer)','ND (Neutral Density)','Variable ND','Graduated ND','IR (Infrared)','Star / Diffusion','Color / Special Effect','Square / Rectangular']},
+    {key:'size',     label:'Filter Size (mm)', type:'number'},
+    {key:'nd',       label:'ND Stops / Strength', type:'text'},
+    {key:'thread',   label:'Thread Type',      type:'select', opts:['Screw-in','Drop-in','Square / Rectangular']},
+    {key:'coating',  label:'Coating',          type:'text'},
+    {key:'condition',label:'Condition',        type:'select', opts:['Mint','Excellent','Very Good','Good','Fair']},
+    {key:'date',     label:'Purchase Date',    type:'date'},
+    {key:'price',    label:'Purchase Price ($)',type:'number'},
+    {key:'notes',    label:'Notes',            type:'text'},
+  ],
+  flash: [
+    {key:'brand',    label:'Brand',            type:'text'},
+    {key:'model',    label:'Model',            type:'text'},
+    {key:'type',     label:'Flash Type',       type:'select', opts:['Speedlight / Hotshoe','Studio Strobe','Monolight','Ring Flash','LED Panel','Continuous Light']},
+    {key:'gn',       label:'Guide Number',     type:'text'},
+    {key:'power',    label:'Power (Ws)',        type:'number'},
+    {key:'ttl',      label:'TTL Compatible?',  type:'select', opts:['Yes','No']},
+    {key:'hss',      label:'HSS?',             type:'select', opts:['Yes','No']},
+    {key:'pwrSrc',   label:'Power Source',     type:'select', opts:['AA Batteries','Lithium Battery','AC Power','Battery Pack']},
+    {key:'wireless', label:'Wireless System',  type:'text'},
+    {key:'condition',label:'Condition',        type:'select', opts:['Mint','Excellent','Very Good','Good','Fair']},
+    {key:'date',     label:'Purchase Date',    type:'date'},
+    {key:'price',    label:'Purchase Price ($)',type:'number'},
+    {key:'notes',    label:'Notes',            type:'text'},
+  ],
+  battery: [
+    {key:'brand',   label:'Brand',             type:'text'},
+    {key:'model',   label:'Model / Part #',    type:'text'},
+    {key:'type',    label:'Battery Type',      type:'select', opts:['Lithium-Ion (Li-Ion)','Nickel-Metal Hydride (NiMH)','AA Alkaline','AA Lithium','CR2 / CR123','Other']},
+    {key:'compat',  label:'Compatible Camera(s)', type:'text'},
+    {key:'mah',     label:'Capacity (mAh)',    type:'number'},
+    {key:'volt',    label:'Voltage (V)',        type:'number'},
+    {key:'oem',     label:'OEM or Third-Party',type:'select', opts:['OEM (Original)','Third-Party']},
+    {key:'qty',     label:'Quantity',           type:'number'},
+    {key:'condition',label:'Condition',        type:'select', opts:['New','Excellent','Good','Fair (reduced capacity)']},
+    {key:'date',    label:'Purchase Date',     type:'date'},
+    {key:'price',   label:'Purchase Price ($)',type:'number'},
+    {key:'notes',   label:'Notes',             type:'text'},
+  ],
+  hardware: [
+    {key:'brand',     label:'Brand',             type:'text'},
+    {key:'model',     label:'Model',             type:'text'},
+    {key:'type',      label:'Item Type',         type:'select', opts:['Tripod','Monopod','Ball Head','Pan/Tilt Head','Gimbal / Stabilizer','Slider','Light Stand','Boom Arm','Clamp / Magic Arm','Quick-Release Plate','L-Bracket','Camera Cage','Rail / Follow Focus','Other Support']},
+    {key:'material',  label:'Material',          type:'select', opts:['Carbon Fiber','Aluminum','Magnesium Alloy','Plastic / Composite','Steel']},
+    {key:'load',      label:'Max Load (kg)',      type:'number'},
+    {key:'height',    label:'Max Height (cm)',    type:'number'},
+    {key:'minheight', label:'Min Height (cm)',    type:'number'},
+    {key:'folded',    label:'Folded Length (cm)', type:'number'},
+    {key:'weight',    label:'Weight (kg)',        type:'number'},
+    {key:'head',      label:'Head Included?',    type:'select', opts:['Yes','No (head sold separately)']},
+    {key:'condition', label:'Condition',         type:'select', opts:['Mint','Excellent','Very Good','Good','Fair']},
+    {key:'date',      label:'Purchase Date',     type:'date'},
+    {key:'price',     label:'Purchase Price ($)', type:'number'},
+    {key:'notes',     label:'Notes',             type:'text'},
+  ],
+  accessory: [
+    {key:'brand',   label:'Brand',            type:'text'},
+    {key:'model',   label:'Item Name',        type:'text'},
+    {key:'type',    label:'Item Type',        type:'select', opts:['Flash Modifier (Softbox)','Flash Modifier (Umbrella)','Flash Modifier (Reflector)','Flash Modifier (Beauty Dish)','Flash Modifier (Snoot / Grid)','Lens Cap','Lens Hood','Camera Strap','Camera Bag','Backpack','Rolling Case','Hard Case','Soft Pouch','Rain Cover','Remote / Cable Release','Hot Shoe Adapter','Battery Grip','Screen Protector','Cleaning Kit','Memory Card Reader','Other Accessory']},
+    {key:'compat',  label:'Compatible With',  type:'text'},
+    {key:'size',    label:'Size / Dimensions',type:'text'},
+    {key:'color',   label:'Color',            type:'text'},
+    {key:'qty',     label:'Quantity',         type:'number'},
+    {key:'condition',label:'Condition',       type:'select', opts:['New','Excellent','Very Good','Good','Fair']},
+    {key:'date',    label:'Purchase Date',    type:'date'},
+    {key:'price',   label:'Purchase Price ($)',type:'number'},
+    {key:'notes',   label:'Notes',            type:'text'},
+  ],
+  misc: [
+    {key:'brand',   label:'Brand',            type:'text'},
+    {key:'model',   label:'Item Name',        type:'text'},
+    {key:'type',    label:'Category / Tag',   type:'text'},
+    {key:'desc',    label:'Description',      type:'text'},
+    {key:'compat',  label:'Compatible With',  type:'text'},
+    {key:'qty',     label:'Quantity',         type:'number'},
+    {key:'serial',  label:'Serial / ID',      type:'text'},
+    {key:'condition',label:'Condition',       type:'select', opts:['New','Excellent','Very Good','Good','Fair']},
+    {key:'date',    label:'Purchase Date',    type:'date'},
+    {key:'price',   label:'Purchase Price ($)',type:'number'},
+    {key:'notes',   label:'Notes',            type:'text'},
+  ],
+  storage: [
+    {key:'brand',    label:'Brand',             type:'text'},
+    {key:'model',    label:'Model / Series',    type:'text'},
+    {key:'type',     label:'Card Type',         type:'select', opts:['SD (SDHC / SDXC)','CFexpress Type A','CFexpress Type B','CompactFlash (CF)','XQD','microSD','CFast 2.0','SSD (portable)']},
+    {key:'capacity', label:'Capacity (GB)',      type:'number'},
+    {key:'read',     label:'Read Speed (MB/s)', type:'number'},
+    {key:'write',    label:'Write Speed (MB/s)',type:'number'},
+    {key:'sclass',   label:'Speed Class / Rating', type:'text'},
+    {key:'compat',   label:'Compatible Camera(s)', type:'text'},
+    {key:'condition',label:'Condition',        type:'select', opts:['New','Excellent','Good','Fair']},
+    {key:'date',     label:'Purchase Date',    type:'date'},
+    {key:'price',    label:'Purchase Price ($)',type:'number'},
+    {key:'notes',    label:'Notes',            type:'text'},
+  ],
+};
+
+function openEdit(id) {
+  const item = gear.find(g => g.id === id);
+  if (!item) return;
+  editingId = id;
+
+  document.getElementById('modal-cat-label').textContent = item.category;
+  document.getElementById('modal-cat-label').className = 'modal-cat cat-badge ' + item.category;
+
+  const fields = FIELD_DEFS[item.category] || [];
+  const grid = document.getElementById('modal-fields');
+  grid.innerHTML = fields.map(f => {
+    const val = item[f.key] || '';
+    if (f.type === 'select') {
+      const opts = f.opts.map(o => `<option${o === val ? ' selected' : ''}>${o}</option>`).join('');
+      return `<div class="field"><label>${f.label}</label><select id="mf-${f.key}"><option value="">— Select —</option>${opts}</select></div>`;
+    }
+    return `<div class="field"><label>${f.label}</label><input id="mf-${f.key}" type="${f.type}" value="${esc(val)}"></div>`;
+  }).join('');
+
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+function closeEdit() {
+  editingId = null;
+  document.getElementById('edit-modal').classList.remove('open');
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('edit-modal')) closeEdit();
+}
+
+function saveEdit() {
+  const item = gear.find(g => g.id === editingId);
+  if (!item) return;
+  const fields = FIELD_DEFS[item.category] || [];
+  fields.forEach(f => {
+    const el = document.getElementById('mf-' + f.key);
+    if (el) item[f.key] = el.value.trim();
+  });
+  save();
+  renderTable();
+  updateCounters();
+  closeEdit();
+  showToast('\u2713 Changes saved');
+}
+
+// ── Init ───────────────────────────────────────────────
+renderTable();
+updateCounters();
+</script>
+
+<div class="io-toast" id="io-toast"></div>
+</body>
+</html>
