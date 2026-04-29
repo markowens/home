@@ -22,9 +22,6 @@
     --flash: #e87ac9;
     --battery: #e8a03a;
     --storage: #b07ae8;
-    --hardware: #7ae8d8;
-    --accessory: #e87a7a;
-    --misc: #a0a0b0;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -80,10 +77,7 @@
   .pill.filt { border-color: var(--filter); color: var(--filter); }
   .pill.flas { border-color: var(--flash);    color: var(--flash); }
   .pill.batt { border-color: var(--battery); color: var(--battery); }
-  .pill.stor { border-color: var(--storage);   color: var(--storage); }
-  .pill.hard { border-color: var(--hardware);  color: var(--hardware); }
-  .pill.accs { border-color: var(--accessory); color: var(--accessory); }
-  .pill.misc { border-color: var(--misc);      color: var(--misc); }
+  .pill.stor { border-color: var(--storage); color: var(--storage); }
 
   /* MAIN LAYOUT */
   main {
@@ -131,12 +125,7 @@
   .cat-tab.active[data-cat="camera"] { border-color: var(--cam); color: var(--cam); background: rgba(232,201,122,0.08); }
   .cat-tab.active[data-cat="lens"]   { border-color: var(--lens); color: var(--lens); background: rgba(122,184,232,0.08); }
   .cat-tab.active[data-cat="filter"] { border-color: var(--filter); color: var(--filter); background: rgba(163,232,122,0.08); }
-  .cat-tab.active[data-cat="flash"]     { border-color: var(--flash);     color: var(--flash);     background: rgba(232,122,201,0.08); }
-  .cat-tab.active[data-cat="battery"]   { border-color: var(--battery);   color: var(--battery);   background: rgba(232,160,58,0.08); }
-  .cat-tab.active[data-cat="storage"]   { border-color: var(--storage);   color: var(--storage);   background: rgba(176,122,232,0.08); }
-  .cat-tab.active[data-cat="hardware"]  { border-color: var(--hardware);  color: var(--hardware);  background: rgba(122,232,216,0.08); }
-  .cat-tab.active[data-cat="accessory"] { border-color: var(--accessory); color: var(--accessory); background: rgba(232,122,122,0.08); }
-  .cat-tab.active[data-cat="misc"]      { border-color: var(--misc);      color: var(--misc);      background: rgba(160,160,176,0.08); }
+  .cat-tab.active[data-cat="flash"]  { border-color: var(--flash); color: var(--flash); background: rgba(232,122,201,0.08); }
 
   /* Form grid */
   .form-grid {
@@ -329,10 +318,7 @@
   .cat-badge.filter { border-color: var(--filter); color: var(--filter); }
   .cat-badge.flash   { border-color: var(--flash);   color: var(--flash); }
   .cat-badge.battery { border-color: var(--battery); color: var(--battery); }
-  .cat-badge.storage   { border-color: var(--storage);   color: var(--storage); }
-  .cat-badge.hardware  { border-color: var(--hardware);  color: var(--hardware); }
-  .cat-badge.accessory { border-color: var(--accessory); color: var(--accessory); }
-  .cat-badge.misc      { border-color: var(--misc);      color: var(--misc); }
+  .cat-badge.storage { border-color: var(--storage); color: var(--storage); }
 
   .condition-dot {
     display: inline-block;
@@ -561,9 +547,6 @@
     <span class="pill flas" id="cnt-flas">0 Flashes</span>
     <span class="pill batt" id="cnt-batt">0 Batteries</span>
     <span class="pill stor" id="cnt-stor">0 Cards</span>
-    <span class="pill hard" id="cnt-hard">0 Hardware</span>
-    <span class="pill accs" id="cnt-accs">0 Accessories</span>
-    <span class="pill misc" id="cnt-misc">0 Misc</span>
   </div>
 </header>
 
@@ -578,10 +561,7 @@
       <button class="cat-tab" data-cat="filter" onclick="switchCat('filter')">🔵 Filter</button>
       <button class="cat-tab" data-cat="flash"   onclick="switchCat('flash')">⚡ Flash</button>
       <button class="cat-tab" data-cat="battery" onclick="switchCat('battery')">🔋 Battery</button>
-      <button class="cat-tab" data-cat="storage"   onclick="switchCat('storage')">💾 Storage</button>
-      <button class="cat-tab" data-cat="hardware"  onclick="switchCat('hardware')">🗜 Hardware</button>
-      <button class="cat-tab" data-cat="accessory" onclick="switchCat('accessory')">🎒 Accessories</button>
-      <button class="cat-tab" data-cat="misc"      onclick="switchCat('misc')">📦 Misc</button>
+      <button class="cat-tab" data-cat="storage" onclick="switchCat('storage')">💾 Storage</button>
     </div>
 
     <!-- CAMERA FORM -->
@@ -857,142 +837,6 @@
       <div class="field"><label>Notes</label><input id="st-notes" placeholder="e.g. dedicated to video, backup card"></div>
       <div class="field"><button class="btn-add" onclick="addItem()">+ Add Storage Card</button></div>
     </div>
-
-    <!-- HARDWARE FORM -->
-    <div id="form-hardware" class="form-grid" style="display:none">
-      <div class="field"><label>Brand</label><input id="hw-brand" placeholder="e.g. Manfrotto, Gitzo, Peak Design"></div>
-      <div class="field"><label>Model</label><input id="hw-model" placeholder="e.g. BeFree GT Carbon"></div>
-      <div class="field"><label>Item Type</label>
-        <select id="hw-type">
-          <option value="">— Select —</option>
-          <option>Tripod</option>
-          <option>Monopod</option>
-          <option>Ball Head</option>
-          <option>Pan/Tilt Head</option>
-          <option>Gimbal / Stabilizer</option>
-          <option>Slider</option>
-          <option>Light Stand</option>
-          <option>Boom Arm</option>
-          <option>Clamp / Magic Arm</option>
-          <option>Quick-Release Plate</option>
-          <option>L-Bracket</option>
-          <option>Camera Cage</option>
-          <option>Rail / Follow Focus</option>
-          <option>Other Support</option>
-        </select>
-      </div>
-      <div class="field"><label>Material</label>
-        <select id="hw-material">
-          <option value="">— Select —</option>
-          <option>Carbon Fiber</option>
-          <option>Aluminum</option>
-          <option>Magnesium Alloy</option>
-          <option>Plastic / Composite</option>
-          <option>Steel</option>
-        </select>
-      </div>
-      <div class="field"><label>Max Load (kg)</label><input id="hw-load" type="number" step="0.1" placeholder="e.g. 8"></div>
-      <div class="field"><label>Max Height (cm)</label><input id="hw-height" type="number" placeholder="e.g. 165"></div>
-      <div class="field"><label>Min Height (cm)</label><input id="hw-minheight" type="number" placeholder="e.g. 15"></div>
-      <div class="field"><label>Folded Length (cm)</label><input id="hw-folded" type="number" placeholder="e.g. 50"></div>
-      <div class="field"><label>Weight (kg)</label><input id="hw-weight" type="number" step="0.01" placeholder="e.g. 1.5"></div>
-      <div class="field"><label>Head Included?</label>
-        <select id="hw-head">
-          <option value="">— Select —</option>
-          <option>Yes</option>
-          <option>No (head sold separately)</option>
-        </select>
-      </div>
-      <div class="field"><label>Condition</label>
-        <select id="hw-cond">
-          <option value="">— Select —</option>
-          <option>Mint</option>
-          <option>Excellent</option>
-          <option>Very Good</option>
-          <option>Good</option>
-          <option>Fair</option>
-        </select>
-      </div>
-      <div class="field"><label>Purchase Date</label><input id="hw-date" type="date"></div>
-      <div class="field"><label>Purchase Price ($)</label><input id="hw-price" type="number" placeholder="e.g. 299"></div>
-      <div class="field"><label>Notes</label><input id="hw-notes" placeholder="e.g. travel tripod, studio use"></div>
-      <div class="field"><button class="btn-add" onclick="addItem()">+ Add Hardware</button></div>
-    </div>
-
-    <!-- ACCESSORIES FORM -->
-    <div id="form-accessory" class="form-grid" style="display:none">
-      <div class="field"><label>Brand</label><input id="ac-brand" placeholder="e.g. Godox, Think Tank, Peak Design"></div>
-      <div class="field"><label>Item Name</label><input id="ac-model" placeholder="e.g. Softbox 60x60, Lens Cap 77mm"></div>
-      <div class="field"><label>Item Type</label>
-        <select id="ac-type">
-          <option value="">— Select —</option>
-          <option>Flash Modifier (Softbox)</option>
-          <option>Flash Modifier (Umbrella)</option>
-          <option>Flash Modifier (Reflector)</option>
-          <option>Flash Modifier (Beauty Dish)</option>
-          <option>Flash Modifier (Snoot / Grid)</option>
-          <option>Lens Cap</option>
-          <option>Lens Hood</option>
-          <option>Camera Strap</option>
-          <option>Camera Bag</option>
-          <option>Backpack</option>
-          <option>Rolling Case</option>
-          <option>Hard Case</option>
-          <option>Soft Pouch</option>
-          <option>Rain Cover</option>
-          <option>Remote / Cable Release</option>
-          <option>Hot Shoe Adapter</option>
-          <option>Battery Grip</option>
-          <option>Screen Protector</option>
-          <option>Cleaning Kit</option>
-          <option>Memory Card Reader</option>
-          <option>Other Accessory</option>
-        </select>
-      </div>
-      <div class="field"><label>Compatible With</label><input id="ac-compat" placeholder="e.g. Sony A7 series, 77mm lenses"></div>
-      <div class="field"><label>Size / Dimensions</label><input id="ac-size" placeholder="e.g. 60x60cm, Large, 77mm"></div>
-      <div class="field"><label>Color</label><input id="ac-color" placeholder="e.g. Black, Silver"></div>
-      <div class="field"><label>Quantity</label><input id="ac-qty" type="number" placeholder="e.g. 1" min="1"></div>
-      <div class="field"><label>Condition</label>
-        <select id="ac-cond">
-          <option value="">— Select —</option>
-          <option>New</option>
-          <option>Excellent</option>
-          <option>Very Good</option>
-          <option>Good</option>
-          <option>Fair</option>
-        </select>
-      </div>
-      <div class="field"><label>Purchase Date</label><input id="ac-date" type="date"></div>
-      <div class="field"><label>Purchase Price ($)</label><input id="ac-price" type="number" placeholder="e.g. 49"></div>
-      <div class="field"><label>Notes</label><input id="ac-notes" placeholder="Optional notes"></div>
-      <div class="field"><button class="btn-add" onclick="addItem()">+ Add Accessory</button></div>
-    </div>
-
-    <!-- MISCELLANEOUS FORM -->
-    <div id="form-misc" class="form-grid" style="display:none">
-      <div class="field"><label>Brand</label><input id="mc-brand" placeholder="e.g. Any brand"></div>
-      <div class="field"><label>Item Name</label><input id="mc-model" placeholder="e.g. Intervalometer, Hotshoe Level"></div>
-      <div class="field"><label>Category / Tag</label><input id="mc-type" placeholder="e.g. Timing, Safety, DIY, Software"></div>
-      <div class="field"><label>Description</label><input id="mc-desc" placeholder="Brief description of the item"></div>
-      <div class="field"><label>Compatible With</label><input id="mc-compat" placeholder="e.g. Any camera, Canon only"></div>
-      <div class="field"><label>Quantity</label><input id="mc-qty" type="number" placeholder="e.g. 1" min="1"></div>
-      <div class="field"><label>Serial / ID</label><input id="mc-serial" placeholder="Optional serial number"></div>
-      <div class="field"><label>Condition</label>
-        <select id="mc-cond">
-          <option value="">— Select —</option>
-          <option>New</option>
-          <option>Excellent</option>
-          <option>Very Good</option>
-          <option>Good</option>
-          <option>Fair</option>
-        </select>
-      </div>
-      <div class="field"><label>Purchase Date</label><input id="mc-date" type="date"></div>
-      <div class="field"><label>Purchase Price ($)</label><input id="mc-price" type="number" placeholder="e.g. 25"></div>
-      <div class="field"><label>Notes</label><input id="mc-notes" placeholder="Any additional details"></div>
-      <div class="field"><button class="btn-add" onclick="addItem()">+ Add Misc Item</button></div>
-    </div>
     <div class="flash-msg" id="flash-msg">✓ Item added to database</div>
   </div>
 
@@ -1007,10 +851,7 @@
         <button class="filter-btn" data-f="filter" onclick="setFilter('filter')">Filters</button>
         <button class="filter-btn" data-f="flash"   onclick="setFilter('flash')">Flashes</button>
         <button class="filter-btn" data-f="battery" onclick="setFilter('battery')">Batteries</button>
-        <button class="filter-btn" data-f="storage"   onclick="setFilter('storage')">Cards</button>
-        <button class="filter-btn" data-f="hardware"  onclick="setFilter('hardware')">Hardware</button>
-        <button class="filter-btn" data-f="accessory" onclick="setFilter('accessory')">Accessories</button>
-        <button class="filter-btn" data-f="misc"      onclick="setFilter('misc')">Misc</button>
+        <button class="filter-btn" data-f="storage" onclick="setFilter('storage')">Cards</button>
       </div>
       <select class="sort-select" id="sort-sel" onchange="renderTable()">
         <option value="date-desc">Newest First</option>
@@ -1084,7 +925,7 @@ let activeFilter = 'all';
 function switchCat(cat) {
   activeCat = cat;
   document.querySelectorAll('.cat-tab').forEach(t => t.classList.toggle('active', t.dataset.cat === cat));
-  ['camera','lens','filter','flash','battery','storage','hardware','accessory','misc'].forEach(c => {
+  ['camera','lens','filter','flash','battery','storage'].forEach(c => {
     document.getElementById('form-'+c).style.display = (c === cat) ? 'grid' : 'none';
   });
 }
@@ -1177,48 +1018,6 @@ function addItem() {
     item.price   = v('st-price');
     item.notes   = v('st-notes');
     if (!item.brand && !item.type) return shake('st-brand');
-  } else if (activeCat === 'hardware') {
-    item.brand      = v('hw-brand');
-    item.model      = v('hw-model');
-    item.type       = v('hw-type');
-    item.material   = v('hw-material');
-    item.load       = v('hw-load');
-    item.height     = v('hw-height');
-    item.minheight  = v('hw-minheight');
-    item.folded     = v('hw-folded');
-    item.weight     = v('hw-weight');
-    item.head       = v('hw-head');
-    item.condition  = v('hw-cond');
-    item.date       = v('hw-date');
-    item.price      = v('hw-price');
-    item.notes      = v('hw-notes');
-    if (!item.brand && !item.model) return shake('hw-brand');
-  } else if (activeCat === 'accessory') {
-    item.brand      = v('ac-brand');
-    item.model      = v('ac-model');
-    item.type       = v('ac-type');
-    item.compat     = v('ac-compat');
-    item.size       = v('ac-size');
-    item.color      = v('ac-color');
-    item.qty        = v('ac-qty');
-    item.condition  = v('ac-cond');
-    item.date       = v('ac-date');
-    item.price      = v('ac-price');
-    item.notes      = v('ac-notes');
-    if (!item.brand && !item.model) return shake('ac-brand');
-  } else if (activeCat === 'misc') {
-    item.brand      = v('mc-brand');
-    item.model      = v('mc-model');
-    item.type       = v('mc-type');
-    item.desc       = v('mc-desc');
-    item.compat     = v('mc-compat');
-    item.qty        = v('mc-qty');
-    item.serial     = v('mc-serial');
-    item.condition  = v('mc-cond');
-    item.date       = v('mc-date');
-    item.price      = v('mc-price');
-    item.notes      = v('mc-notes');
-    if (!item.brand && !item.model) return shake('mc-brand');
   }
 
   gear.push(item);
@@ -1310,17 +1109,7 @@ function row(item) {
     keySpec = item.capacity ? item.capacity + ' GB' : '—';
     detail  = [item.type, item.read ? item.read + ' MB/s read' : '', item.sclass].filter(Boolean).join(' · ');
   }
-  if (cat === 'hardware') {
-    keySpec = item.type || '—';
-    detail  = [item.material, item.load ? 'Max ' + item.load + 'kg' : '', item.height ? item.height + 'cm' : ''].filter(Boolean).join(' · ');
-  } else if (cat === 'accessory') {
-    keySpec = item.type || '—';
-    detail  = [item.size, item.color, item.compat].filter(Boolean).join(' · ');
-  } else if (cat === 'misc') {
-    keySpec = item.type || '—';
-    detail  = [item.desc, item.compat].filter(Boolean).join(' · ');
-  }
-  const qtyCell = (['battery','accessory','misc'].includes(cat) && item.qty) ? esc(item.qty) : '—';
+  const qtyCell = (cat === 'battery' && item.qty) ? esc(item.qty) : '—';
 
   const condDot = { 'Mint': 'c-mint', 'Excellent': 'c-exc', 'Very Good': 'c-vgood', 'Good': 'c-good', 'Fair': 'c-fair' }[item.condition] || '';
   const dateStr = item.date ? item.date : (item.added ? new Date(item.added).toLocaleDateString() : '—');
@@ -1368,10 +1157,7 @@ function updateCounters() {
   document.getElementById('cnt-filt').textContent = cnt('filter') + ' Filter' + (cnt('filter') !== 1 ? 's' : '');
   document.getElementById('cnt-flas').textContent = cnt('flash')   + ' Flash'   + (cnt('flash')   !== 1 ? 'es' : '');
   document.getElementById('cnt-batt').textContent = cnt('battery') + ' Batter' + (cnt('battery') !== 1 ? 'ies' : 'y');
-  document.getElementById('cnt-stor').textContent = cnt('storage')   + ' Card'      + (cnt('storage')   !== 1 ? 's'  : '');
-  document.getElementById('cnt-hard').textContent = cnt('hardware')  + ' Hardware';
-  document.getElementById('cnt-accs').textContent = cnt('accessory') + ' Accessor' + (cnt('accessory') !== 1 ? 'ies' : 'y');
-  document.getElementById('cnt-misc').textContent = cnt('misc')      + ' Misc';
+  document.getElementById('cnt-stor').textContent = cnt('storage') + ' Card'   + (cnt('storage') !== 1 ? 's' : '');
 }
 
 // ── Export ─────────────────────────────────────────────
@@ -1498,48 +1284,6 @@ const FIELD_DEFS = {
     {key:'date',    label:'Purchase Date',     type:'date'},
     {key:'price',   label:'Purchase Price ($)',type:'number'},
     {key:'notes',   label:'Notes',             type:'text'},
-  ],
-  hardware: [
-    {key:'brand',     label:'Brand',             type:'text'},
-    {key:'model',     label:'Model',             type:'text'},
-    {key:'type',      label:'Item Type',         type:'select', opts:['Tripod','Monopod','Ball Head','Pan/Tilt Head','Gimbal / Stabilizer','Slider','Light Stand','Boom Arm','Clamp / Magic Arm','Quick-Release Plate','L-Bracket','Camera Cage','Rail / Follow Focus','Other Support']},
-    {key:'material',  label:'Material',          type:'select', opts:['Carbon Fiber','Aluminum','Magnesium Alloy','Plastic / Composite','Steel']},
-    {key:'load',      label:'Max Load (kg)',      type:'number'},
-    {key:'height',    label:'Max Height (cm)',    type:'number'},
-    {key:'minheight', label:'Min Height (cm)',    type:'number'},
-    {key:'folded',    label:'Folded Length (cm)', type:'number'},
-    {key:'weight',    label:'Weight (kg)',        type:'number'},
-    {key:'head',      label:'Head Included?',    type:'select', opts:['Yes','No (head sold separately)']},
-    {key:'condition', label:'Condition',         type:'select', opts:['Mint','Excellent','Very Good','Good','Fair']},
-    {key:'date',      label:'Purchase Date',     type:'date'},
-    {key:'price',     label:'Purchase Price ($)', type:'number'},
-    {key:'notes',     label:'Notes',             type:'text'},
-  ],
-  accessory: [
-    {key:'brand',   label:'Brand',            type:'text'},
-    {key:'model',   label:'Item Name',        type:'text'},
-    {key:'type',    label:'Item Type',        type:'select', opts:['Flash Modifier (Softbox)','Flash Modifier (Umbrella)','Flash Modifier (Reflector)','Flash Modifier (Beauty Dish)','Flash Modifier (Snoot / Grid)','Lens Cap','Lens Hood','Camera Strap','Camera Bag','Backpack','Rolling Case','Hard Case','Soft Pouch','Rain Cover','Remote / Cable Release','Hot Shoe Adapter','Battery Grip','Screen Protector','Cleaning Kit','Memory Card Reader','Other Accessory']},
-    {key:'compat',  label:'Compatible With',  type:'text'},
-    {key:'size',    label:'Size / Dimensions',type:'text'},
-    {key:'color',   label:'Color',            type:'text'},
-    {key:'qty',     label:'Quantity',         type:'number'},
-    {key:'condition',label:'Condition',       type:'select', opts:['New','Excellent','Very Good','Good','Fair']},
-    {key:'date',    label:'Purchase Date',    type:'date'},
-    {key:'price',   label:'Purchase Price ($)',type:'number'},
-    {key:'notes',   label:'Notes',            type:'text'},
-  ],
-  misc: [
-    {key:'brand',   label:'Brand',            type:'text'},
-    {key:'model',   label:'Item Name',        type:'text'},
-    {key:'type',    label:'Category / Tag',   type:'text'},
-    {key:'desc',    label:'Description',      type:'text'},
-    {key:'compat',  label:'Compatible With',  type:'text'},
-    {key:'qty',     label:'Quantity',         type:'number'},
-    {key:'serial',  label:'Serial / ID',      type:'text'},
-    {key:'condition',label:'Condition',       type:'select', opts:['New','Excellent','Very Good','Good','Fair']},
-    {key:'date',    label:'Purchase Date',    type:'date'},
-    {key:'price',   label:'Purchase Price ($)',type:'number'},
-    {key:'notes',   label:'Notes',            type:'text'},
   ],
   storage: [
     {key:'brand',    label:'Brand',             type:'text'},
