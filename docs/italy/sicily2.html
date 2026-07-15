@@ -1,736 +1,867 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Rome & Sicily Adventure - October 2026</title>
+    <title>Rome & Sicily Adventure - October 2026</title>
 
-<style>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
 
-body{
-    margin:0;
-    font-family:Arial, Helvetica, sans-serif;
-    background:#f4f4f4;
-    color:#333;
-    line-height:1.6;
-}
+        header {
+            background: #12385c;
+            color: white;
+            padding: 50px 20px;
+            text-align: center;
+        }
 
-header{
-    background:#12385c;
-    color:white;
-    padding:50px 20px;
-    text-align:center;
-}
+        header h1 {
+            margin: 0;
+            font-size: 42px;
+        }
 
-header h1{
-    margin:0;
-    font-size:42px;
-}
+        header h2 {
+            margin-top: 10px;
+            font-weight: normal;
+        }
 
-header h2{
-    margin-top:10px;
-    font-weight:normal;
-}
+        nav {
+            position: sticky;
+            top: 0;
+            background: #1d5d86;
+            padding: 12px;
+            text-align: center;
+            z-index: 100;
+        }
 
-nav{
-    position:sticky;
-    top:0;
-    background:#1d5d86;
-    padding:12px;
-    text-align:center;
-    z-index:100;
-}
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 8px;
+            font-size: 14px;
+        }
 
-nav a{
-    color:white;
-    text-decoration:none;
-    margin:0 8px;
-    font-size:14px;
-}
+        nav a:hover {
+            text-decoration: underline;
+        }
 
-nav a:hover{
-    text-decoration:underline;
-}
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 25px;
+        }
 
-.container{
-    max-width:1100px;
-    margin:auto;
-    padding:25px;
-}
+        .card {
+            background: white;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
+        }
 
-.card{
-    background:white;
-    padding:25px;
-    margin-bottom:25px;
-    border-radius:8px;
-    box-shadow:0 2px 8px rgba(0,0,0,.15);
-}
+        .day {
+            border-left: 8px solid #1d5d86;
+        }
 
-.day{
-    border-left:8px solid #1d5d86;
-}
+        .day h2 {
+            margin-top: 0;
+            color: #12385c;
+        }
 
-.day h2{
-    margin-top:0;
-    color:#12385c;
-}
+        .hotel {
+            background: #eef6fb;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
 
-.hotel{
-    background:#eef6fb;
-    padding:15px;
-    border-radius:6px;
-    margin-top:15px;
-}
+        .hotel a {
+            color: #004b87;
+        }
 
-.hotel a{
-    color:#004b87;
-}
+        .meals {
+            display: inline-block;
+            background: #d7f3da;
+            padding: 6px 12px;
+            border-radius: 20px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
 
-.meals{
-    display:inline-block;
-    background:#d7f3da;
-    padding:6px 12px;
-    border-radius:20px;
-    margin-top:10px;
-    font-weight:bold;
-}
+        footer {
+            background: #12385c;
+            color: white;
+            text-align: center;
+            padding: 25px;
+            margin-top: 40px;
+        }
 
-footer{
-    background:#12385c;
-    color:white;
-    text-align:center;
-    padding:25px;
-    margin-top:40px;
-}
+        ul {
+            margin-top: 8px;
+        }
 
-ul{
-    margin-top:8px;
-}
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 240px;
+            height: 100%;
+            overflow: auto;
+            background: #0e3656;
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, .25);
+        }
 
-</style>
+        .sidebar h2 {
+
+            color: white;
+
+            margin-top: 0;
+
+        }
+
+        .sidebar a {
+
+            display: block;
+
+            color: white;
+
+            text-decoration: none;
+
+            padding: 10px;
+
+            border-radius: 5px;
+
+            margin-bottom: 4px;
+
+        }
+
+        .sidebar a:hover {
+
+            background: #2d78ad;
+
+        }
+
+        .sidebar hr {
+
+            border: none;
+
+            border-top: 1px solid rgba(255, 255, 255, .2);
+
+            margin: 18px 0;
+
+        }
+
+        .container {
+
+            margin-left: 270px;
+
+            max-width: 1000px;
+
+        }
+
+        @media(max-width:900px) {
+
+            .sidebar {
+
+                position: relative;
+
+                width: 100%;
+
+                height: auto;
+
+            }
+
+            .container {
+                margin-left: auto;
+            }
+        }
+
+        .map-button {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 5px 9px;
+            background: #5eb0b6;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .map-button:hover {
+            background: #5eb0b6;
+        }
+    </style>
 
 </head>
 
 <body>
 
-<header>
+    <header>
 
-<h1>Rome & Sicily Adventure</h1>
+        <h1>Rome & Sicily Adventure</h1>
 
-<h2>October 1 – October 16, 2026</h2>
+        <h2>October 1 – October 16, 2026</h2>
 
-<p>
-Tour the historic cities of Rome and Sicily including Palermo,
-Agrigento, Taormina, Syracuse, Ragusa, Mt. Etna, Monreale,
-Pompeii, Sorrento and the Amalfi Coast.
-</p>
+        <p>
+            Tour the historic cities of Rome and Sicily including Palermo,
+            Agrigento, Taormina, Syracuse, Ragusa, Mt. Etna, Monreale,
+            Pompeii, Sorrento and the Amalfi Coast.
+        </p>
 
-</header>
+    </header>
 
-<nav>
+    <nav>
 
-<a href="#overview">Overview</a>
+        <div class="sidebar">
 
-<a href="#day1">Day 1</a>
+            <h2>Rome & Sicily</h2>
 
-<a href="#day2">Day 2</a>
+            <a href="#overview">Overview</a>
 
-<a href="#day3">Day 3</a>
+            <hr>
 
-<a href="#day4">Day 4</a>
+            <a href="#day1">Day 1</a>
+            <a href="#day2">Day 2</a>
+            <a href="#day3">Day 3</a>
+            <a href="#day4">Day 4</a>
+            <a href="#day5">Day 5</a>
+            <a href="#day6">Day 6</a>
+            <a href="#day7">Day 7</a>
+            <a href="#day8">Day 8</a>
+            <a href="#day9">Day 9</a>
+            <a href="#day10">Day 10</a>
+            <a href="#day11">Day 11</a>
 
-<a href="#day5">Day 5</a>
+            <hr>
 
-<a href="#day6">Day 6</a>
+            <a href="#rome">Rome on Your Own</a>
 
-<a href="#day7">Day 7</a>
+        </div>
 
-<a href="#day8">Day 8</a>
+    </nav>
 
-<a href="#day9">Day 9</a>
+    <div class="container">
 
-<a href="#day10">Day 10</a>
+        <section class="card" id="overview">
 
-<a href="#day11">Day 11</a>
+            <h2>Trip Overview</h2>
 
-<a href="#rome">Rome</a>
+            <p>
 
-</nav>
+                Tour the old city of Palermo with its incredible mix of architectural
+                styles, discover Agrigento’s Valley of the Temples, ascend the slopes
+                of Mt. Etna, visit the Norman Cathedral in Monreale with its glittering
+                Byzantine mosaics, explore the Greek Theater in Taormina, and admire
+                the Roman Villa del Casale.
 
-<div class="container">
+            </p>
 
-<section class="card" id="overview">
+            <p>
 
-<h2>Trip Overview</h2>
+                Enjoy two days in Sorrento, drive the spectacular Amalfi Coast,
+                tour Pompeii, spend time in Rome, and optionally visit Florence.
 
-<p>
+            </p>
 
-Tour the old city of Palermo with its incredible mix of architectural
-styles, discover Agrigento’s Valley of the Temples, ascend the slopes
-of Mt. Etna, visit the Norman Cathedral in Monreale with its glittering
-Byzantine mosaics, explore the Greek Theater in Taormina, and admire
-the Roman Villa del Casale.
+        </section>
 
-</p>
+        <section class="card day" id="day1">
 
-<p>
+            <h2>Day 1 — Thursday, October 1, 2026</h2>
 
-Enjoy two days in Sorrento, drive the spectacular Amalfi Coast,
-tour Pompeii, spend time in Rome, and optionally visit Florence.
+            <h3>Flights</h3>
 
-</p>
+            <ul>
 
-</section>
+                <li>Depart Raleigh-Durham (RDU)</li>
 
-<section class="card day" id="day1">
+                <li>Connect in Philadelphia</li>
 
-<h2>Day 1 — Thursday, October 1, 2026</h2>
+                <li>4:55 PM – Depart Philadelphia for Rome on American Airlines Flight 718</li>
 
-<h3>Flights</h3>
+            </ul>
 
-<ul>
+        </section>
 
-<li>Depart Raleigh-Durham (RDU)</li>
+        <section class="card day" id="day2">
 
-<li>Connect in Philadelphia</li>
+            <h2>Day 2 — Friday, October 2</h2>
 
-<li>4:55 PM – Depart Philadelphia for Rome on American Airlines Flight 718</li>
+            <h3>Activities</h3>
 
-</ul>
+            <ul>
 
-</section>
+                <li>7:05 AM – Arrive Rome</li>
 
-<section class="card day" id="day2">
+                <li>Panoramic city tour of Rome</li>
 
-<h2>Day 2 — Friday, October 2</h2>
+                <li>Check in to hotel</li>
 
-<h3>Activities</h3>
+            </ul>
 
-<ul>
+            <div class="hotel">
 
-<li>7:05 AM – Arrive Rome</li>
+                <h3>Hotel Ariston</h3>
 
-<li>Panoramic city tour of Rome</li>
+                <p>
 
-<li>Check in to hotel</li>
+                    Rome, Italy<br>
 
-</ul>
+                    Phone: +39 06 446 5399<br>
 
-<div class="hotel">
+                    <a href="https://www.hotelariston.it" target="_blank">
 
-<h3>Hotel Ariston</h3>
+                        www.hotelariston.it
 
-<p>
+                    </a>
 
-Rome, Italy<br>
+                </p>
 
-Phone: +39 06 446 5399<br>
+                <a class="map-button" target="_blank" href="https://maps.google.com/?q=Hotel+Ariston+Rome">
+                    📍 Open in Google Maps
+                </a>
 
-<a href="https://www.hotelariston.it" target="_blank">
+            </div>
 
-www.hotelariston.it
+            <div class="meals">
 
-</a>
+                Breakfast (plane) • Dinner
 
-</p>
+            </div>
 
-</div>
+        </section>
 
-<div class="meals">
+        <section class="card day" id="day3">
 
-Breakfast (plane) • Dinner
+            <h2>Day 3 — Saturday, October 3</h2>
 
-</div>
+            <h3>Activities</h3>
 
-</section>
+            <ul>
 
-<section class="card day" id="day3">
+                <li>Free day in Rome</li>
 
-<h2>Day 3 — Saturday, October 3</h2>
+                <li>Optional day trip to Florence</li>
 
-<h3>Activities</h3>
+            </ul>
 
-<ul>
+            <div class="hotel">
 
-<li>Free day in Rome</li>
+                <h3>Hotel Ariston</h3>
 
-<li>Optional day trip to Florence</li>
+                <p>
 
-</ul>
+                    Rome, Italy<br>
 
-<div class="hotel">
+                    Phone: +39 06 446 5399<br>
 
-<h3>Hotel Ariston</h3>
+                    <a href="https://www.hotelariston.it" target="_blank">
 
-<p>
+                        www.hotelariston.it
 
-Rome, Italy<br>
+                    </a>
 
-Phone: +39 06 446 5399<br>
+                </p>
+                <a class="map-button" target="_blank" href="https://maps.google.com/?q=Hotel+Ariston+Rome">
+                    📍 Open in Google Maps
+                </a>
+            </div>
 
-<a href="https://www.hotelariston.it" target="_blank">
+            <div class="meals">
 
-www.hotelariston.it
+                Breakfast • Dinner
 
-</a>
+            </div>
 
-</p>
+        </section>
+        <section class="card day" id="day4">
 
-</div>
+            <h2>Day 4 — Sunday, October 4, 2026</h2>
 
-<div class="meals">
+            <h3>Activities</h3>
 
-Breakfast • Dinner
+            <ul>
+                <li>Depart Rome for Catania, Sicily.</li>
+                <li>Arrive in Catania.</li>
+                <li>Visit the lava-crusted slopes of <strong>Mt. Etna</strong>, Europe's most active volcano. <a class="map-button"
+target="_blank"
+href="https://maps.google.com/?q=Mount+Etna+Sicily">
+📍 Mt. Etna Map
+</a></li>
+                
+                <li>Ascend to the Silvestri Craters.</li>
+                <li>Learn about the volcano's geology and its impact on Sicily.</li>
+                <li>Check into the hotel in the late afternoon.</li>
+            </ul>
 
-</div>
+            <div class="hotel">
 
-</section>
-<section class="card day" id="day4">
+                <h3>Plaza Hotel Catania</h3>
 
-<h2>Day 4 — Sunday, October 4, 2026</h2>
+                <p>
+                    Catania, Sicily<br>
+                    Phone: +39 095 873 7040<br>
 
-<h3>Activities</h3>
+                    <a href="https://www.plazahotelcatania.it" target="_blank">
+                        www.plazahotelcatania.it
+                    </a>
 
-<ul>
-<li>Depart Rome for Catania, Sicily.</li>
-<li>Arrive in Catania.</li>
-<li>Visit the lava-crusted slopes of <strong>Mt. Etna</strong>, Europe's most active volcano.</li>
-<li>Ascend to the Silvestri Craters.</li>
-<li>Learn about the volcano's geology and its impact on Sicily.</li>
-<li>Check into the hotel in the late afternoon.</li>
-</ul>
+                </p>
+                <a class="map-button" target="_blank" href="https://maps.google.com/?q=Plaza+Hotel+Catania">
+                    📍 Open in Google Maps
+                </a>
+            </div>
 
-<div class="hotel">
+            <div class="meals">
+                Breakfast • Dinner
+            </div>
 
-<h3>Plaza Hotel Catania</h3>
+        </section>
 
-<p>
-Catania, Sicily<br>
-Phone: +39 095 873 7040<br>
 
-<a href="https://www.plazahotelcatania.it" target="_blank">
-www.plazahotelcatania.it
-</a>
+        <section class="card day" id="day5">
 
-</p>
+            <h2>Day 5 — Monday, October 5</h2>
 
-</div>
+            <h3>Activities</h3>
 
-<div class="meals">
-Breakfast • Dinner
-</div>
+            <ul>
 
-</section>
+                <li>Travel to the beautiful hill town of <strong>Taormina</strong>.</li>
 
+                <li>Walking tour through the historic center.</li>
 
-<section class="card day" id="day5">
+                <li>Visit the famous Greek Theater overlooking the sea and Mt. Etna.</li>
 
-<h2>Day 5 — Monday, October 5</h2>
+                <li>Free time to explore shops, cafés, and scenic overlooks.</li>
 
-<h3>Activities</h3>
+            </ul>
 
-<ul>
+            <div class="hotel">
 
-<li>Travel to the beautiful hill town of <strong>Taormina</strong>.</li>
+                <h3>Plaza Hotel Catania</h3>
 
-<li>Walking tour through the historic center.</li>
+                <p>
 
-<li>Visit the famous Greek Theater overlooking the sea and Mt. Etna.</li>
+                    Catania, Sicily<br>
 
-<li>Free time to explore shops, cafés, and scenic overlooks.</li>
+                    Phone: +39 095 873 7040<br>
 
-</ul>
+                    <a href="https://www.plazahotelcatania.it" target="_blank">
 
-<div class="hotel">
+                        www.plazahotelcatania.it
 
-<h3>Plaza Hotel Catania</h3>
+                    </a>
 
-<p>
+                </p>
+                <a class="map-button" target="_blank" href="https://maps.google.com/?q=Hotel+Ariston+Rome">
+                    📍 Open in Google Maps
+                </a>
 
-Catania, Sicily<br>
+            </div>
 
-Phone: +39 095 873 7040<br>
+            <div class="meals">
+                Breakfast
+            </div>
 
-<a href="https://www.plazahotelcatania.it" target="_blank">
+        </section>
 
-www.plazahotelcatania.it
 
-</a>
+        <section class="card day" id="day6">
+            <h2>Day 6 — Tuesday, October 6</h2>
+            <h3>Activities</h3>
+            <ul>
+                <li>Depart for Syracuse.</li>
+                <li>Visit Neapolis Archaeological Park.</li>
+                <li>Explore the Greek Theater.</li>
+                <li>See the Roman Amphitheater.</li>
+                <li>Visit the famous Ear of Dionysus cave.</li>
+                <li>Walk through Ortygia, a UNESCO World Heritage Site.</li>
+                <li>Continue to Ragusa/Ebla.</li>
+            </ul>
 
-</p>
+            <div class="hotel">
+                <h3>De Stefano Palace Hotel</h3>
+                <p>
+                    Ragusa, Sicily<br>
+                    Phone: +39 0932 682872<br>
+                    <a href="https://www.destefanopalacehotel.com" target="_blank">
+                        www.destefanopalacehotel.com
+                    </a>
+                </p>
+                <a class="map-button" target="_blank" href="https://maps.google.com/?q=De+Stefano+Palace+Ragusa">
+                    📍 Open in Google Maps
+                </a>
+            </div>
 
-</div>
+            <div class="meals">
+                Breakfast • Dinner
+            </div>
+        </section>
 
-<div class="meals">
-Breakfast
-</div>
+        <section class="card day" id="day7">
+            <h2>Day 7 — Wednesday, October 7</h2>
+            <h3>Activities</h3>
+            <ul>
+                <li>Depart Ragusa for Agrigento.</li>
+                <li>Stop at Piazza Armerina.</li>
+                <li>Tour the magnificent Roman Villa del Casale.</li>
+                <li>View some of the world's finest preserved Roman mosaics.</li>
+                <li>Continue to Agrigento.</li>
+            </ul>
 
-</section>
+            <div class="hotel">
+                <h3>Hotel Kaos</h3>
+                <p>
+                    Agrigento, Sicily<br>
+                    Phone: +39 0922 836581<br>
+                    <a href="https://www.hotelkaos.it" target="_blank">
+                        www.hotelkaos.it
+                    </a>
+                </p>
+                <a class="map-button" target="_blank" href="https://maps.google.com/?q=Hotel+Kaos+Agrigento">
+                    📍 Open in Google Maps
+                </a>
+            </div>
 
+            <div class="meals">
+                Breakfast • Dinner
+            </div>
 
-<section class="card day" id="day6">
+        </section>
 
-<h2>Day 6 — Tuesday, October 6</h2>
+        <section class="card day" id="day8">
 
-<h3>Activities</h3>
+            <h2>Day 8 — Thursday, October 8, 2026</h2>
 
-<ul>
+            <h3>Activities</h3>
 
-<li>Depart for Syracuse.</li>
+            <ul>
+                <li>Morning tour of Agrigento.</li>
+                <li>Visit the spectacular <strong>Valley of the Temples</strong>.</li>
+                <li>See some of the finest-preserved Greek temples outside mainland Greece.</li>
+                <li>Travel to Palermo in the afternoon.</li>
+            </ul>
 
-<li>Visit Neapolis Archaeological Park.</li>
+            <div class="hotel">
 
-<li>Explore the Greek Theater.</li>
+                <h3>Hotel President</h3>
 
-<li>See the Roman Amphitheater.</li>
+                <p>
+                    Palermo, Sicily<br>
+                    Phone: +39 091 580733<br>
 
-<li>Visit the famous Ear of Dionysus cave.</li>
+                    <a href="https://www.presidenthotelpalermo.it" target="_blank">
+                        www.presidenthotelpalermo.it
+                    </a>
 
-<li>Walk through Ortygia, a UNESCO World Heritage Site.</li>
+                </p>
+                <a class="map-button" target="_blank" href="https://maps.google.com/?q=Hotel+President+Palermo">
+                    📍 Open in Google Maps
+                </a>
+            </div>
 
-<li>Continue to Ragusa/Ebla.</li>
+            <div class="meals">
+                Breakfast • Dinner
+            </div>
 
-</ul>
+        </section>
 
-<div class="hotel">
 
-<h3>De Stefano Palace Hotel</h3>
+        <section class="card day" id="day9">
 
-<p>
+            <h2>Day 9 — Friday, October 9</h2>
 
-Ragusa, Sicily<br>
+            <h3>Activities</h3>
 
-Phone: +39 0932 682872<br>
+            <ul>
 
-<a href="https://www.destefanopalacehotel.com" target="_blank">
+                <li>Travel to the hill town of <strong>Monreale</strong>.</li>
 
-www.destefanopalacehotel.com
+                <li>Tour the magnificent Norman Cathedral.</li>
 
-</a>
+                <li>Admire the glittering 12th-century Byzantine mosaics.</li>
 
-</p>
+                <li>Return to Palermo.</li>
 
-</div>
+                <li>Guided tour of Palermo's Old City.</li>
 
-<div class="meals">
-Breakfast • Dinner
-</div>
+                <li>Free afternoon to explore markets, cafés, and historic streets.</li>
 
-</section>
+            </ul>
 
+            <div class="hotel">
 
-<section class="card day" id="day7">
+                <h3>Hotel President</h3>
 
-<h2>Day 7 — Wednesday, October 7</h2>
+                <p>
 
-<h3>Activities</h3>
+                    Palermo, Sicily<br>
 
-<ul>
+                    Phone: +39 091 580733<br>
 
-<li>Depart Ragusa for Agrigento.</li>
+                    <a href="https://www.presidenthotelpalermo.it" target="_blank">
 
-<li>Stop at Piazza Armerina.</li>
+                        www.presidenthotelpalermo.it
 
-<li>Tour the magnificent Roman Villa del Casale.</li>
+                    </a>
 
-<li>View some of the world's finest preserved Roman mosaics.</li>
+                </p>
+                <a class="map-button" target="_blank" href="https://maps.google.com/?q=Hotel+President+Palermo">
+                    📍 Open in Google Maps
+                </a>
+            </div>
 
-<li>Continue to Agrigento.</li>
+            <div class="meals">
+                Breakfast
+            </div>
 
-</ul>
+        </section>
 
-<div class="hotel">
 
-<h3>Hotel Kaos</h3>
+        <section class="card day" id="day10">
 
-<p>
+            <h2>Day 10 — Saturday, October 10</h2>
 
-Agrigento, Sicily<br>
+            <h3>Activities</h3>
 
-Phone: +39 0922 836581<br>
+            <ul>
 
-<a href="https://www.hotelkaos.it" target="_blank">
+                <li>Morning departure from Palermo.</li>
 
-www.hotelkaos.it
+                <li>Fly to Naples.</li>
 
-</a>
+                <li>Guided visit to the ancient city of <strong>Pompeii</strong>. <a class="map-button"
+target="_blank"
+href="https://maps.google.com/?q=Pompeii+Archaeological+Park">
+📍 Pompeii
+</a></li>
 
-</p>
+                <li>Continue to beautiful Sorrento.</li>
 
-</div>
+            </ul>
 
-<div class="meals">
-Breakfast • Dinner
-</div>
+            <div class="hotel">
 
-</section>
+                <h3>Grand Hotel Vesuvio</h3>
 
-<section class="card day" id="day8">
+                <p>
 
-<h2>Day 8 — Thursday, October 8, 2026</h2>
+                    Sorrento, Italy<br>
 
-<h3>Activities</h3>
+                    Phone: +39 081 8782645<br>
 
-<ul>
-<li>Morning tour of Agrigento.</li>
-<li>Visit the spectacular <strong>Valley of the Temples</strong>.</li>
-<li>See some of the finest-preserved Greek temples outside mainland Greece.</li>
-<li>Travel to Palermo in the afternoon.</li>
-</ul>
+                    <a href="https://www.vesuviosorrento.com" target="_blank">
 
-<div class="hotel">
+                        www.vesuviosorrento.com
 
-<h3>Hotel President</h3>
+                    </a>
 
-<p>
-Palermo, Sicily<br>
-Phone: +39 091 580733<br>
+                </p>
+                <a class="map-button" target="_blank" href="https://maps.google.com/?q=Grand+Hotel+Vesuvio+Sorrento">
+                    📍 Open in Google Maps
+                </a>
+            </div>
 
-<a href="https://www.presidenthotelpalermo.it" target="_blank">
-www.presidenthotelpalermo.it
-</a>
+            <div class="meals">
+                Breakfast • Lunch • Dinner
+            </div>
 
-</p>
+        </section>
 
-</div>
 
-<div class="meals">
-Breakfast • Dinner
-</div>
+        <section class="card day" id="day11">
 
-</section>
+            <h2>Day 11 — Sunday, October 11</h2>
 
+            <h3>Activities</h3>
 
-<section class="card day" id="day9">
+            <ul>
 
-<h2>Day 9 — Friday, October 9</h2>
+                <li>Morning excursion along the spectacular Amalfi Coast.</li>
 
-<h3>Activities</h3>
+                <li>Enjoy breathtaking coastal scenery.</li>
 
-<ul>
+                <li>Return to Sorrento.</li>
 
-<li>Travel to the hill town of <strong>Monreale</strong>.</li>
+                <li>Free afternoon to explore the town.</li>
 
-<li>Tour the magnificent Norman Cathedral.</li>
+            </ul>
 
-<li>Admire the glittering 12th-century Byzantine mosaics.</li>
+            <div class="hotel">
 
-<li>Return to Palermo.</li>
+                <h3>Grand Hotel Vesuvio</h3>
 
-<li>Guided tour of Palermo's Old City.</li>
+                <p>
 
-<li>Free afternoon to explore markets, cafés, and historic streets.</li>
+                    Sorrento, Italy<br>
 
-</ul>
+                    Phone: +39 081 8782645<br>
 
-<div class="hotel">
+                    <a href="https://www.vesuviosorrento.com" target="_blank">
 
-<h3>Hotel President</h3>
+                        www.vesuviosorrento.com
 
-<p>
+                    </a>
 
-Palermo, Sicily<br>
+                </p>
+                <a class="map-button" target="_blank" href="https://maps.google.com/?q=Grand+Hotel+Vesuvio+Sorrento">
+                    📍 Open in Google Maps
+                </a>
+            </div>
 
-Phone: +39 091 580733<br>
+            <div class="meals">
+                Breakfast • Dinner
+            </div>
 
-<a href="https://www.presidenthotelpalermo.it" target="_blank">
+        </section>
 
-www.presidenthotelpalermo.it
 
-</a>
+        <section class="card" id="rome">
 
-</p>
+            <h2>Rome on Your Own</h2>
 
-</div>
+            <p>
+                After the guided tour, you'll spend several days exploring Rome independently while staying on Via
+                Giulia.
+            </p>
 
-<div class="meals">
-Breakfast
-</div>
+            <div class="hotel">
 
-</section>
+                <h3>Apartment</h3>
 
+                <p>
 
-<section class="card day" id="day10">
+                    Via Giulia 105<br>
+                    00186 Rome, Italy<br>
 
-<h2>Day 10 — Saturday, October 10</h2>
+                    Nearest transit: Chiesa Nuova
 
-<h3>Activities</h3>
+                </p>
+                <a class="map-button" target="_blank" href="https://maps.app.goo.gl/MK7iaHxB141jS42c8">
+                    📍 Open in Google Maps
+                </a>
+            </div>
 
-<ul>
+            <h3>Suggested Walking Itinerary</h3>
 
-<li>Morning departure from Palermo.</li>
+            <h4>Day 1</h4>
 
-<li>Fly to Naples.</li>
+            <ul>
+                <li>Roma Termini</li>
+                <li>Colosseum <a class="map-button"
+target="_blank"
+href="https://maps.google.com/?q=Colosseum+Rome">
+📍 Colosseum
+</a></li>
+                <li>Roman Forum</li>
+                <li>Palatine Hill</li>
+                <li>Capitoline Hill</li>
+                <li>Campidoglio</li>
+            </ul>
 
-<li>Guided visit to the ancient city of <strong>Pompeii</strong>.</li>
+            <h4>Day 2</h4>
 
-<li>Continue to beautiful Sorrento.</li>
+            <ul>
+                <li>Vatican Museums</li>
+                <li>Sistine Chapel</li>
+                <li>St. Peter's Square</li>
+                <li>St. Peter's Basilica</li>
+            </ul>
 
-</ul>
+            <h4>Day 3</h4>
 
-<div class="hotel">
+            <ul>
+                <li>Piazza Navona</li>
+                <li>Pantheon</li>
+                <li>Campo de' Fiori</li>
+                <li>Trevi Fountain</li>
+                <li>Spanish Steps</li>
+            </ul>
 
-<h3>Grand Hotel Vesuvio</h3>
+            <h4>Day 4</h4>
 
-<p>
+            <ul>
+                <li>Santa Maria in Trastevere</li>
+                <li>Ponte Fabricio</li>
+                <li>Portico d'Ottavia</li>
+                <li>Great Synagogue of Rome</li>
+            </ul>
 
-Sorrento, Italy<br>
+            <h4>Day 5</h4>
 
-Phone: +39 081 8782645<br>
+            <ul>
+                <li>Quirinal Palace</li>
+                <li>San Carlo alle Quattro Fontane</li>
+                <li>Palazzo Colonna</li>
+                <li>Via del Corso</li>
+            </ul>
 
-<a href="https://www.vesuviosorrento.com" target="_blank">
+        </section>
 
-www.vesuviosorrento.com
+    </div>
 
-</a>
+    <footer>
 
-</p>
+        <h3>Rome &amp; Sicily Adventure</h3>
 
-</div>
+        <p>
+            October 1–16, 2026
+        </p>
 
-<div class="meals">
-Breakfast • Lunch • Dinner
-</div>
+        <p>
+            Have a wonderful trip and enjoy one of the world's most fascinating destinations!
+        </p>
 
-</section>
+    </footer>
 
+<script>
 
-<section class="card day" id="day11">
+const links=document.querySelectorAll(".sidebar a");
 
-<h2>Day 11 — Sunday, October 11</h2>
+const sections=document.querySelectorAll("section");
 
-<h3>Activities</h3>
+window.addEventListener("scroll",()=>{
 
-<ul>
+let current="";
 
-<li>Morning excursion along the spectacular Amalfi Coast.</li>
+sections.forEach(section=>{
 
-<li>Enjoy breathtaking coastal scenery.</li>
+const top=section.offsetTop-120;
 
-<li>Return to Sorrento.</li>
+if(scrollY>=top){
 
-<li>Free afternoon to explore the town.</li>
+current=section.getAttribute("id");
 
-</ul>
+}
 
-<div class="hotel">
+});
 
-<h3>Grand Hotel Vesuvio</h3>
+links.forEach(link=>{
 
-<p>
+link.style.background="";
 
-Sorrento, Italy<br>
+if(link.getAttribute("href")==="#"+current){
 
-Phone: +39 081 8782645<br>
+link.style.background="#4ea5dd";
 
-<a href="https://www.vesuviosorrento.com" target="_blank">
+}
 
-www.vesuviosorrento.com
+});
 
-</a>
+});
 
-</p>
-
-</div>
-
-<div class="meals">
-Breakfast • Dinner
-</div>
-
-</section>
-
-
-<section class="card" id="rome">
-
-<h2>Rome on Your Own</h2>
-
-<p>
-After the guided tour, you'll spend several days exploring Rome independently while staying on Via Giulia.
-</p>
-
-<div class="hotel">
-
-<h3>Apartment</h3>
-
-<p>
-
-Via Giulia 105<br>
-00186 Rome, Italy<br>
-
-Nearest transit: Chiesa Nuova
-
-</p>
-
-</div>
-
-<h3>Suggested Walking Itinerary</h3>
-
-<h4>Day 1</h4>
-
-<ul>
-<li>Roma Termini</li>
-<li>Colosseum</li>
-<li>Roman Forum</li>
-<li>Palatine Hill</li>
-<li>Capitoline Hill</li>
-<li>Campidoglio</li>
-</ul>
-
-<h4>Day 2</h4>
-
-<ul>
-<li>Vatican Museums</li>
-<li>Sistine Chapel</li>
-<li>St. Peter's Square</li>
-<li>St. Peter's Basilica</li>
-</ul>
-
-<h4>Day 3</h4>
-
-<ul>
-<li>Piazza Navona</li>
-<li>Pantheon</li>
-<li>Campo de' Fiori</li>
-<li>Trevi Fountain</li>
-<li>Spanish Steps</li>
-</ul>
-
-<h4>Day 4</h4>
-
-<ul>
-<li>Santa Maria in Trastevere</li>
-<li>Ponte Fabricio</li>
-<li>Portico d'Ottavia</li>
-<li>Great Synagogue of Rome</li>
-</ul>
-
-<h4>Day 5</h4>
-
-<ul>
-<li>Quirinal Palace</li>
-<li>San Carlo alle Quattro Fontane</li>
-<li>Palazzo Colonna</li>
-<li>Via del Corso</li>
-</ul>
-
-</section>
-
-</div>
-
-<footer>
-
-<h3>Rome &amp; Sicily Adventure</h3>
-
-<p>
-October 1–16, 2026
-</p>
-
-<p>
-Have a wonderful trip and enjoy one of the world's most fascinating destinations!
-</p>
-
-</footer>
+</script>
 
 </body>
+
 </html>
