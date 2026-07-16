@@ -9,9 +9,285 @@
 
     <style>
 
+*{
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    margin:0;
+    font-family:Arial, Helvetica, sans-serif;
+    background:#f4f4f4;
+    color:#333;
+    line-height:1.6;
+}
+
+/* ---------- HEADER ---------- */
+
+header{
+    background:#12385c;
+    color:white;
+    padding:60px 30px;
+    text-align:center;
+}
+
+header h1{
+
+    margin:0;
+
+    font-size:46px;
+
+}
+
+header h2{
+
+    margin-top:12px;
+
+    font-weight:normal;
+
+    color:#d9e8f2;
+
+}
+
+header p{
+
+    max-width:850px;
+
+    margin:25px auto 0 auto;
+
+    font-size:18px;
+
+}
+
+/* ---------- GRID LAYOUT ---------- */
+
+.page-layout{
+    display:grid;
+    grid-template-columns:260px minmax(0,1fr);
+    gap:30px
+    width:100%;
+    padding:30px;
+}
+
+/* ---------- SIDEBAR ---------- */
+
+.sidebar{
+    position:sticky;
+    top:20px;
+    align-self:start;
+    background:#0e3656;
+    color:white;
+    border-radius:10px;
+    padding:20px;
+    box-shadow:0 4px 12px rgba(0,0,0,.25);
+}
+
+.sidebar h2{
+
+    margin-top:0;
+
+    font-size:24px;
+
+    text-align:center;
+
+}
+
+.sidebar hr{
+
+    border:none;
+
+    border-top:1px solid rgba(255,255,255,.25);
+
+    margin:18px 0;
+
+}
+
+.sidebar a{
+
+    display:block;
+
+    color:white;
+
+    text-decoration:none;
+
+    padding:10px 12px;
+
+    border-radius:6px;
+
+    transition:.25s;
+
+}
+
+.sidebar a:hover{
+
+    background:#2d78ad;
+
+}
+
+/* ---------- MAIN CONTENT ---------- */
+
+.container{
+
+    width:100%;
+
+}
+
+/* ---------- CARDS ---------- */
+
+.card{
+
+    background:white;
+
+    padding:28px;
+
+    margin-bottom:28px;
+
+    border-radius:10px;
+
+    box-shadow:0 3px 10px rgba(0,0,0,.12);
+
+}
+
+.day{
+
+    border-left:8px solid #1d5d86;
+
+}
+
+.day h2{
+
+    margin-top:0;
+
+    color:#12385c;
+
+}
+
+/* ---------- HOTEL ---------- */
+
+.hotel{
+
+    background:#eef6fb;
+
+    padding:18px;
+
+    margin-top:18px;
+
+    border-radius:8px;
+
+}
+
+.hotel h3{
+
+    margin-top:0;
+
+}
+
+.hotel a{
+
+    color:#004b87;
+
+}
+
+/* ---------- MEALS ---------- */
+
+.meals{
+
+    display:inline-block;
+
+    margin-top:18px;
+
+    padding:8px 14px;
+
+    background:#d7f3da;
+
+    border-radius:20px;
+
+    font-weight:bold;
+
+}
+
+/* ---------- MAP BUTTON ---------- */
+
+.map-button{
+
+    display:inline-block;
+
+    margin-top:18px;
+
+    background:#2e7d32;
+
+    color:white;
+
+    text-decoration:none;
+
+    padding:10px 18px;
+
+    border-radius:6px;
+
+    transition:.25s;
+
+}
+
+.map-button:hover{
+
+    background:#1b5e20;
+
+}
+
+/* ---------- FOOTER ---------- */
+
+footer{
+
+    margin-top:40px;
+
+    background:#12385c;
+
+    color:white;
+
+    text-align:center;
+
+    padding:35px;
+
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width:900px){
+
+.page-layout{
+
+    grid-template-columns:1fr;
+
+}
+
+.sidebar{
+
+    position:relative;
+
+    top:0;
+
+}
+
+header h1{
+
+    font-size:34px;
+
+}
+
+header{
+
+    padding:40px 20px;
+
+}
+
+}
 
 
-        body {
+
+ /*        body {
             margin: 0;
             font-family: Arial, Helvetica, sans-serif;
             background: #f4f4f4;
@@ -112,16 +388,18 @@
         }
 
         .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
+            position: fixed; 
+             left: 0;
+            top: 0; 
             width: 240px;
             height: 100%;
             overflow: auto;
             background: #0e3656;
             padding: 20px;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, .25);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, .25); 
+ 
         }
+        
 
         .sidebar h2 {
 
@@ -201,7 +479,7 @@
 
         .map-button:hover {
             background: #5eb0b6;
-        }
+        } */
     </style>
 
 </head>
@@ -222,9 +500,11 @@
 
     </header>
 
+<div class="page-layout">
+
     <nav>
 
-        <div class="sidebar">
+        <aside class="sidebar">
 
             <h2>Rome & Sicily</h2>
 
@@ -248,11 +528,11 @@
 
             <a href="#rome">Rome on Your Own</a>
 
-        </div>
+        </aside>
 
     </nav>
 
-    <div class="container">
+    <main class="container">
 
         <section class="card" id="overview">
 
@@ -811,7 +1091,9 @@ href="https://maps.google.com/?q=Colosseum+Rome">
 
         </section>
 
-    </div>
+    </main>
+
+    </div> 
 
     <footer>
 
