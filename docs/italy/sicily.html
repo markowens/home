@@ -221,7 +221,6 @@
     <div class="page-layout">
 
         <nav>
-
             <aside class="sidebar">
                 <h2>Rome & Sicily</h2>
                 <a href="#overview">Overview</a>
@@ -242,8 +241,9 @@
                 <a href="#day14">Day 14</a>
                 <a href="#day15">Day 15</a>
                 <a href="#day16">Day 16</a>
+                <hr />
+                <a href="#links">Links</a> 
             </aside>
-
         </nav>
 
         <main class="container">
@@ -351,6 +351,7 @@
                 </div>
 
             </section>
+
             <section class="card day" id="day4">
 
                 <h2>Day 4 — Sunday, October 4, 2026</h2>
@@ -393,7 +394,6 @@
                 </div>
 
             </section>
-
 
             <section class="card day" id="day5">
 
@@ -441,7 +441,6 @@
                 </div>
 
             </section>
-
 
             <section class="card day" id="day6">
                 <h2>Day 6 — Tuesday, October 6</h2>
@@ -543,7 +542,6 @@
 
             </section>
 
-
             <section class="card day" id="day9">
 
                 <h2>Day 9 — Friday, October 9</h2>
@@ -593,7 +591,6 @@
                 </div>
 
             </section>
-
 
             <section class="card day" id="day10">
 
@@ -645,7 +642,6 @@
 
             </section>
 
-
             <section class="card day" id="day11">
                 <h2>Day 11 — Sunday, October 11</h2>
                 <h3>Activities</h3>
@@ -674,7 +670,6 @@
                     Breakfast • Dinner
                 </div>
             </section>
-
 
             <section class="card day" id="day12">
                 <h2>Day 12 — Monday, October 12</h2>
@@ -720,7 +715,6 @@
                 </div>
             </section>
 
-
             <section class="card day" id="day14">
                 <h2>Day 14 — Wednesday, October 14</h2>
                 <h3>Activities</h3>
@@ -739,7 +733,6 @@
                     </a>
                 </div>
             </section>
-
 
             <section class="card day" id="day15">
                 <h2>Day 15 — Thursday, October 15</h2>
@@ -760,7 +753,6 @@
                 </div>
             </section>
 
-
             <section class="card day" id="day16">
                 <h2>Day 16 — Friday, October 16</h2>
                 <h3>Activities</h3>
@@ -770,12 +762,28 @@
 
             </section>
 
+            <section class="card day" id="links">
+                <h2>Links</h2>
+                <ul>
+                    <li><a href="https://www.italyheaven.co.uk/campania/sorrento/" target="_blank">Sorrento</a></li>
+                    <li><a href="https://www.italyheaven.co.uk/lazio/rome/" target="_blank">Rome</a></li>
+                    <li><a href="https://www.italyheaven.co.uk/sicily/palermo/" target="_blank">Palermo</a></li>
+                    <li><a href="https://www.italyheaven.co.uk/sicily/taormina.html" target="_blank">Taormina</a></li>
+                    <li><a href="https://www.italyheaven.co.uk/sicily/agrigento.html" target="_blank">Agrigento</a></li>
+                    <li><a href="https://www.italyheaven.co.uk/sicily/palermo.html" target="_blank">Palermo</a></li>
+                    <li><a href="https://www.italyheaven.co.uk/sicily/monreale.html" target="_blank">Monreale</a></li>
+                    <li><a href="https://www.italyheaven.co.uk/sicily/syracuse.html" target="_blank">Syracuse</a></li>
+                    <li><a href="https://www.italyheaven.co.uk/sicily/ragusa.html" target="_blank">Ragusa</a></li>
+                    <li><a href="https://www.italyheaven.co.uk/campania/naples/" target="_blank">Naples</a></li>
+                    <li><a href="https://www.italyheaven.co.uk/campania/amalficoast/" target="_blank">Amalfi Coast</a></li>
+                </ul>
+            </section>
+
         </main>
 
     </div>
 
     <footer>
-
         <h3>Rome &amp; Sicily Adventure</h3>
         <p>
             October 1–16, 2026
@@ -783,41 +791,23 @@
     </footer>
 
     <script>
-
         const links = document.querySelectorAll(".sidebar a");
-
         const sections = document.querySelectorAll("section");
-
         window.addEventListener("scroll", () => {
-
             let current = "";
-
             sections.forEach(section => {
-
                 const top = section.offsetTop - 120;
-
                 if (scrollY >= top) {
-
                     current = section.getAttribute("id");
-
                 }
-
             });
-
             links.forEach(link => {
-
                 link.style.background = "";
-
                 if (link.getAttribute("href") === "#" + current) {
-
                     link.style.background = "#4ea5dd";
-
                 }
-
             });
-
         });
-
     </script>
 
 </body>
