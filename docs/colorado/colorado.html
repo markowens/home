@@ -1,511 +1,472 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Southwest Road Trip — Aug 12–22</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E9E1C9;
+    --paper-2:#E1D8BC;
+    --ink:#2B2A22;
+    --ink-soft:#5B5747;
+    --rust:#B24A30;
+    --rust-dark:#8F3A26;
+    --juniper:#54684A;
+    --denim:#3C5A73;
+    --gold:#C1872E;
+    --line:#c9bf9e;
+    --card:#F2ECD8;
+  }
 
-    <title>Colorado - August 2026</title>
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+  body{
+    margin:0;
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(43,42,34,0.06) 1px, transparent 0);
+    background-size:22px 22px;
+    color:var(--ink);
+    font-family:'Source Serif 4', serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
 
-        html {
-            scroll-behavior: smooth;
-        }
+  a{color:var(--rust-dark); text-decoration-thickness:1px; text-underline-offset:3px;}
+  a:hover{color:var(--ink);}
 
-        body {
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f4f4f4;
-            color: #333;
-            line-height: 1.6;
-        }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+  }
 
-        /* ---------- HEADER ---------- */
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    padding:5.5rem 1.5rem 4rem;
+    text-align:center;
+    overflow:hidden;
+    border-bottom:1px solid var(--line);
+  }
+  .hero .skyline{
+    position:absolute;
+    left:0; right:0; bottom:0;
+    width:100%;
+    height:140px;
+    opacity:0.5;
+  }
+  .hero-inner{position:relative; z-index:2; max-width:760px; margin:0 auto;}
+  .hero h1{
+    font-family:'Fraunces', serif;
+    font-optical-sizing:auto;
+    font-weight:600;
+    font-size:clamp(2.4rem, 6vw, 4.2rem);
+    line-height:1.02;
+    margin:0.9rem 0 0.6rem;
+    letter-spacing:-0.01em;
+  }
+  .hero h1 em{
+    font-style:italic;
+    font-weight:400;
+    color:var(--rust-dark);
+  }
+  .hero p.sub{
+    font-size:1.08rem;
+    color:var(--ink-soft);
+    max-width:520px;
+    margin:0 auto;
+  }
+  .stat-row{
+    display:flex;
+    justify-content:center;
+    gap:2.4rem;
+    margin-top:2.6rem;
+    flex-wrap:wrap;
+  }
+  .stat{text-align:center;}
+  .stat .num{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:1.9rem;
+    color:var(--rust-dark);
+    display:block;
+  }
+  .stat .lbl{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+  }
 
-        header {
-            background: #12385c;
-            color: white;
-            padding: 60px 30px;
-            text-align: center;
-        }
+  /* ---------- TIMELINE ---------- */
+  .trip{
+    max-width:820px;
+    margin:0 auto;
+    padding:4rem 1.5rem 6rem;
+    position:relative;
+  }
+  .trail{
+    position:absolute;
+    left:2.35rem;
+    top:0.5rem;
+    bottom:2.5rem;
+    width:2px;
+    background-image:linear-gradient(var(--rust) 55%, rgba(0,0,0,0) 0%);
+    background-size:2px 12px;
+    background-repeat:repeat-y;
+  }
+  @media (max-width:640px){
+    .trail{left:1.35rem;}
+  }
 
-        header h1 {
-            margin: 0;
-            font-size: 46px;
-        }
+  .day{
+    position:relative;
+    padding-left:5rem;
+    margin-bottom:3.2rem;
+  }
+  @media (max-width:640px){
+    .day{padding-left:3.2rem;}
+  }
 
-        header h2 {
-            margin-top: 12px;
-            font-weight: normal;
-            color: #d9e8f2;
-        }
+  .waypoint{
+    position:absolute;
+    left:0;
+    top:0.15rem;
+    width:4.7rem;
+    height:4.7rem;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:var(--paper);
+  }
+  @media (max-width:640px){
+    .waypoint{width:2.7rem; height:2.7rem;}
+  }
+  .waypoint .pin{
+    width:2.7rem;height:2.7rem;
+    border-radius:50%;
+    background:var(--card);
+    border:2px solid var(--rust);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:600;
+    font-size:1rem;
+    color:var(--rust-dark);
+    box-shadow:0 2px 0 rgba(43,42,34,0.08);
+  }
+  @media (max-width:640px){
+    .waypoint .pin{width:1.9rem;height:1.9rem;font-size:0.72rem;}
+  }
 
-        header p {
-            max-width: 850px;
-            margin: 25px auto 0 auto;
-            font-size: 18px;
-        }
+  .date-tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--denim);
+    margin-bottom:0.35rem;
+    display:block;
+  }
 
-        /* ---------- GRID LAYOUT ---------- */
+  .day h2{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:1.55rem;
+    margin:0 0 0.9rem;
+    line-height:1.2;
+  }
 
-        .page-layout {
-            display: grid;
-            grid-template-columns: 260px minmax(0, 1fr);
-            gap: 30px;
-            width: 100%;
-            padding: 30px;
-        }
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:2px;
+    padding:1.4rem 1.6rem;
+    box-shadow:0 1px 0 rgba(43,42,34,0.04);
+  }
 
-        /* ---------- SIDEBAR ---------- */
+  .card ul{
+    margin:0;
+    padding-left:1.15rem;
+  }
+  .card ul ul{
+    margin-top:0.35rem;
+    margin-bottom:0.5rem;
+  }
+  .card li{margin-bottom:0.55rem;}
+  .card li:last-child{margin-bottom:0;}
+  .card p.blurb{
+    margin:0.15rem 0 0;
+    color:var(--ink-soft);
+    font-size:0.95rem;
+  }
 
-        .sidebar {
-            position: sticky;
-            top: 20px;
-            align-self: start;
-            background: #0e3656;
-            color: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, .25);
-        }
+  .stay{
+    margin-top:1.1rem;
+    padding-top:0.9rem;
+    border-top:1px dashed var(--line);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.82rem;
+    color:var(--ink-soft);
+    display:flex;
+    align-items:baseline;
+    gap:0.5rem;
+    flex-wrap:wrap;
+  }
+  .stay .label{color:var(--juniper); font-weight:600;}
+  .badge{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.65rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    background:var(--juniper);
+    color:var(--paper);
+    padding:0.15rem 0.5rem;
+    border-radius:2px;
+  }
 
-        .sidebar h2 {
-            margin-top: 0;
-            font-size: 24px;
-            text-align: center;
-        }
+  .train-schedule{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0.6rem 1.5rem;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.85rem;
+    margin:0.6rem 0 1.1rem;
+    padding:0.9rem 1rem;
+    background:rgba(60,90,115,0.08);
+    border-left:3px solid var(--denim);
+  }
+  .train-schedule div span{
+    display:block;
+    color:var(--ink-soft);
+    font-size:0.68rem;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+  }
 
-        .sidebar hr {
-            border: none;
-            border-top: 1px solid rgba(255, 255, 255, .25);
-            margin: 18px 0;
-        }
+  .flight-schedule{
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    gap:0.5rem 1rem;
+    align-items:center;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.82rem;
+    margin:0.6rem 0 1.1rem;
+    padding:0.9rem 1rem;
+    background:rgba(178,74,48,0.08);
+    border-left:3px solid var(--rust);
+  }
+  .flight-schedule .leg{
+    color:var(--rust-dark);
+    font-weight:600;
+  }
+  .flight-schedule .route{color:var(--ink-soft);}
+  .flight-schedule .time{color:var(--ink); text-align:right;}
 
-        .sidebar a {
-            display: block;
-            color: white;
-            text-decoration: none;
-            padding: 5px 6px;
-            border-radius: 6px;
-            transition: .25s;
-        }
+  .connector{
+    position:relative;
+    padding-left:5rem;
+    margin:-1.4rem 0 2.4rem;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem;
+    color:var(--ink-soft);
+    letter-spacing:0.02em;
+  }
+  @media (max-width:640px){ .connector{padding-left:3.2rem;} }
 
-        .sidebar a:hover {
-            background: #2d78ad;
-        }
+  .drive{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem;
+    color:var(--denim);
+    background:rgba(60,90,115,0.09);
+    display:inline-block;
+    padding:0.15rem 0.55rem;
+    border-radius:2px;
+    margin-bottom:0.85rem;
+  }
 
-        /* ---------- MAIN CONTENT ---------- */
-
-        .container {
-            width: 100%;
-        }
-
-        /* ---------- CARDS ---------- */
-
-        .card {
-            background: white;
-            padding: 28px;
-            margin-bottom: 28px;
-            border-radius: 10px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, .12);
-        }
-
-        .day {
-            border-left: 8px solid #1d5d86;
-        }
-
-        .day h2 {
-            margin-top: 0;
-            color: #12385c;
-        }
-
-        /* ---------- HOTEL ---------- */
-
-        .hotel {
-            background: #eef6fb;
-            padding: 18px;
-            margin-top: 18px;
-            border-radius: 8px;
-        }
-
-        .hotel h3 {
-            margin-top: 0;
-        }
-
-        .hotel a {
-            color: #004b87;
-        }
-
-        /* ---------- MEALS ---------- */
-
-        .meals {
-            display: inline-block;
-            margin-top: 18px;
-            padding: 8px 14px;
-            background: #d7f3da;
-            border-radius: 20px;
-            font-weight: bold;
-        }
-
-        /* ---------- MAP BUTTON ---------- */
-
-        .map-button {
-            display: inline-block;
-            margin-top: 5px;
-            background: #6781b3;
-            color: white;
-            text-decoration: none;
-            padding: 5px 9px;
-            border-radius: 6px;
-            transition: .25s;
-        }
-
-        .map-button:hover {
-            background: #6781b3;
-        }
-
-        /* ---------- FOOTER ---------- */
-
-        footer {
-            margin-top: 40px;
-            background: #12385c;
-            color: white;
-            text-align: center;
-            padding: 35px;
-        }
-
-        /* ---------- RESPONSIVE ---------- */
-
-        @media (max-width:900px) {
-            .page-layout {
-                grid-template-columns: 1fr;
-            }
-
-            .sidebar {
-                position: relative;
-                top: 0;
-            }
-
-            header h1 {
-                font-size: 34px;
-            }
-
-            header {
-                padding: 40px 20px;
-            }
-        }
-    </style>
-
+  footer{
+    text-align:center;
+    padding:3rem 1.5rem 4rem;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.05em;
+    color:var(--ink-soft);
+    border-top:1px solid var(--line);
+  }
+</style>
 </head>
-
 <body>
 
-    <header>
-        <h1>Colorado - August 2026</h1>
-
-        <h2>August 12 - August 22, 2026</h2>
-
-        <p>
-            Visit Diane and Jeff in Colorado followed by some other time on our own.
-        </p>
-    </header>
-
-    <div class="page-layout">
-
-        <nav>
-            <aside class="sidebar">
-                <h2>Colorado</h2>
-                <a href="#overview">Overview</a>
-                <hr>
-                <a href="#day1">Day 1 - Wednesday</a>
-                <a href="#day2">Day 2 - Thursday</a>
-                <a href="#day3">Day 3 - Friday</a>
-                <a href="#day4">Day 4 - Saturday</a>
-                <a href="#day5">Day 5 - Sunday</a>
-                <a href="#day6">Day 6 - Monday</a>
-                <a href="#day7">Day 7 - Tuesday</a>
-                <a href="#day8">Day 8 - Wednesday</a>
-                <a href="#day9">Day 9 - Thursday</a>
-                <a href="#day10">Day 10 - Friday</a>
-                <a href="#day11">Day 11 - Saturday</a>
-                <hr />
-                <a href="#links">Links</a> 
-            </aside>
-        </nav>
-
-        <main class="container">
-
-            <section class="card" id="overview">
-                <h2>Trip Overview</h2>
-                <p>
-                    Visit with Jeff and Diane to celebrate her 60th birthday. Afterward, spend some time 
-                    exploring Colorado.
-                </p>
-            </section>
-
-            <section class="card day" id="day1">
-                <h2>Day 1 — Wednesday, August 12, 2026</h2>
-                <h3>Flights</h3>
-                <ul>
-                    <li>Depart Raleigh-Durham (RDU) - 5:30 PM (WN3349)</li>
-                    <ul>
-                        <li>Arrive Denver 7:10 PM</li>
-                        <li>Depart Denver: 8:40 PM (WN132)</li>
-                    </ul>
-                    <li>Arrive Albuquerque (ABQ) - 10:00 PM</li>
-                    <li>Total Time: 6h 30m</li>
-                </ul>
-
-                <div class="hotel">
-                    <h3>Lake City, AirBnB</h3>
-                </div>
-
-                <div class="meals">
-                    TBD
-                </div>
-            </section>
-
-            <section class="card day" id="day2">
-                <h2>Day 2 — Thursday, August 13, 2026</h2>
-                <h3>Activities</h3>
-                <ul>
-                    <li>TBD</li>
-                </ul>
-
-                <div class="hotel">
-                    <h3>Lake City, AirBnB</h3>
-                </div>
-
-                <div class="meals">
-                    TBD
-                </div>
-            </section>
-
-            <section class="card day" id="day3">
-                <h2>Day 3 — Friday, August 14, 2026</h2>
-                <h3>Activities</h3>
-                <ul>
-                    <li>
-                        TBD
-                    </li>
-                </ul>
-
-                <div class="hotel">
-                    <h3>Lake City, AirBnB</h3>
-`               </div>
-
-                <div class="meals">
-                    TBD
-                </div>
-
-            </section>
-
-            <section class="card day" id="day4">
-                <h2>Day 4 — Saturday, August 15, 2026</h2>
-                <h3>Activities</h3>
-                <ul>
-                    <li>TBD</li>
-                </ul>
-
-                <div class="hotel">
-                    <h3>Lake City, AirBnB</h3>
-                </div>
-
-                <div class="meals">
-                    TBD
-                </div>
-            </section>
-
-            <section class="card day" id="day5">
-                <h2>Day 5 — Sunday, August 16, 2026</h2>
-                <h3>Activities</h3>
-                <ul>
-                    <li>TBD</li>
-                </ul>
-
-                <div class="hotel">
-                    <h3>Lake City, AirBnB</h3>
-                </div>
-
-                <div class="meals">
-                    TBD
-                </div>
-
-            </section>
-
-            <section class="card day" id="day6">
-                <h2>Day 6 — Monday, August 17, 2026</h2>
-                <h3>Activities</h3>
-                <ul>
-                    <li>TBD</li>
-                </ul>
-
-                <div class="hotel">
-                    <h3>Condo in Durango</h3>
-                    <p>
-                        Durango, Colorado
-                </div>
-
-                <div class="meals">
-                    TBD
-                </div>
-            </section>
-
-            <section class="card day" id="day7">
-                <h2>Day 7 — Tuesday, August 18, 2026</h2>
-                <h3>Activities</h3>
-                <ul>
-                    <li>Durango - Silverton Steam Train</li>
-                    <p>
-                        9:00 AM - 4:00 PM
-                        479 Main Avenue
-                        <br/>
-                        Durango, CO
-                    </p>
-                </ul>
-
-                <div class="hotel">
-                    <h3>Condo in Durango</h3>
-                    <p>
-                        Durango, Colorado
-                </div>
-
-                <div class="meals">
-                    Breakfast • Dinner
-                </div>
-
-            </section>
-
-            <section class="card day" id="day8">
-                <h2>Day 8 — Wednesday, August 19, 2026</h2>
-                <h3>Activities</h3>
-                <ul>
-                    <li>TBD</li>
-                </ul>
-                <div class="hotel">
-                    <h3>Unknown</h3>
-                </div>
-
-                <div class="meals">
-                    TBD
-                </div>
-
-            </section>
-
-            <section class="card day" id="day9">
-                <h2>Day 9 — Thursday, August 20</h2>
-                <h3>Activities</h3>
-                <ul>
-                    <li>TBD</li>
-                </ul>
-                <div class="hotel">
-                    <h3>Unknown</h3>
-                </div>
-
-                <div class="meals">
-                    TBD
-                </div>
-            </section>
-
-            <section class="card day" id="day10">
-                <h2>Day 10 — Friday, August 21, 2026</h2>
-                <h3>Activities</h3>
-                <ul>
-                    <li>TBD</li>
-                </ul>
-                <div class="hotel">
-                    <h3>Unknown</h3>
-                </div>
-                <div class="meals">
-                    TBD
-                </div>
-            </section>
-
-            <section class="card day" id="day10">
-                <h2>Day 10 — Friday, August 21, 2026</h2>
-                <h3>Activities</h3>
-                <ul>
-                    <li>TBD</li>
-                </ul>
-
-                <div class="hotel">
-                    <h3>Unknown</h3>
-                </div>
-
-                <div class="meals">
-                    TBD
-                </div>
-
-            </section>
-
-            <section class="card day" id="day11">
-                <h2>Day 11 — Saturday, August 23, 2026</h2>
-                <ul>
-                    <li>Depart Albuquerque (ABQ) - 8:05 AM (WN977)</li>
-                    <ul>
-                        <li>Arrive Austin (AUS) - 10:55 AM</li>
-                        <li>Depart Austin (AUS): 11:50 AM (WN4340)</li>
-                    </ul>
-                    <li>Arrive Raleigh-Durham (RDU) - 3:40 AM</li>
-                    <li>Total Time: 5h 35m</li>
-                </ul>
-
-            </section>
-
-            <section class="card day" id="links">
-
-                <h2>Other Points of Interest</h2>
-                <ul>
-                    <li></li>                  
-                </ul>
-
-                <h2>Visitor Guides</h2>
-                <ul>
-                    <li></li>
-                </ul>
-
-                <h2>Other Links</h2>
-                <ul>
-                    <li></li>
-                </ul>
-
-            </section>
-
-        </main>
-
+<header class="hero">
+  <svg class="skyline" viewBox="0 0 1200 140" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <polyline points="0,140 0,90 60,60 130,95 210,40 270,80 340,55 410,100 480,35 560,85 640,50 720,95 800,45 880,90 960,60 1040,100 1120,55 1200,90 1200,140"
+      fill="none" stroke="#54684A" stroke-width="2" opacity="0.55"/>
+    <polyline points="0,140 0,110 90,85 170,115 260,70 330,105 420,80 500,120 590,65 670,110 760,75 850,115 940,80 1020,120 1100,90 1200,115 1200,140"
+      fill="none" stroke="#B24A30" stroke-width="2" opacity="0.4"/>
+  </svg>
+  <div class="hero-inner">
+    <span class="eyebrow">Colorado · Utah · Arizona · New Mexico</span>
+    <h1>San Juans to the <em>Painted Desert</em></h1>
+    <p class="sub">A ten-day loop through mining towns, million-dollar switchbacks, red-rock monuments, and petrified forests — August 12–22.</p>
+    <div class="stat-row">
+      <div class="stat"><span class="num">11</span><span class="lbl">Days</span></div>
+      <div class="stat"><span class="num">4</span><span class="lbl">States</span></div>
+      <div class="stat"><span class="num">1</span><span class="lbl">Steam Train</span></div>
+      <div class="stat"><span class="num">3</span><span class="lbl">Nat'l Park Sites</span></div>
     </div>
+  </div>
+</header>
 
-    <footer>
-        <h3>Rome &amp; Colorado Trip</h3>
-        <p>
-            August 12–22, 2026
-        </p>
-    </footer>
+<main class="trip">
+  <div class="trail" aria-hidden="true"></div>
 
-    <script>
-        const links = document.querySelectorAll(".sidebar a");
-        const sections = document.querySelectorAll("section");
-        window.addEventListener("scroll", () => {
-            let current = "";
-            sections.forEach(section => {
-                const top = section.offsetTop - 120;
-                if (scrollY >= top) {
-                    current = section.getAttribute("id");
-                }
-            });
-            links.forEach(link => {
-                link.style.background = "";
-                if (link.getAttribute("href") === "#" + current) {
-                    link.style.background = "#4ea5dd";
-                }
-            });
-        });
-    </script>
+  <!-- DAY 1 -->
+  <div class="day">
+    <div class="waypoint"><div class="pin">1</div></div>
+    <span class="date-tag">Wed, Aug 12</span>
+    <h2>Fly to Albuquerque</h2>
+    <div class="card">
+      <div class="flight-schedule">
+        <span class="leg">WN3349</span><span class="route">RDU → DEN</span><span class="time">5:30 PM → 7:10 PM</span>
+        <span class="leg">WN132</span><span class="route">DEN → ABQ</span><span class="time">8:40 PM → 10:00 PM</span>
+      </div>
+      <p class="blurb">Fly into ABQ via Denver and settle in before heading north into the mountains.</p>
+      <div class="stay"><span class="label">Staying:</span> <a href="https://www.hyatt.com/hyatt-place/en-US/abqza-hyatt-place-albuquerque-airport" target="_blank" rel="noopener">Hyatt Place Albuquerque Airport</a> <span class="badge">Booked</span></div>
+    </div>
+  </div>
+
+  <!-- DAY 2 -->
+  <div class="day">
+    <div class="waypoint"><div class="pin">2</div></div>
+    <span class="date-tag">Wed, Aug 13</span>
+    <h2>Arrive Lake City</h2>
+    <div class="card">
+      <p class="blurb"><a href="https://lakecity.com/" target="_blank" rel="noopener">Lake City</a> is a remote former mining town tucked into the San Juan Mountains along the Silver Thread Byway — home base before continuing on toward Ouray.</p>
+      <div class="stay"><span class="label">Staying:</span> Lake City <span class="badge">Booked</span></div>
+    </div>
+  </div>
+
+  <div class="connector">— days based in Lake City &amp; the San Juans —</div>
+
+  <!-- DAY 3 -->
+  <div class="day">
+    <div class="waypoint"><div class="pin">3</div></div>
+    <span class="date-tag">Mon, Aug 17</span>
+    <h2>Ouray → Silverton via the Million Dollar Highway</h2>
+    <div class="card">
+      <ul>
+        <li>Explore <a href="https://www.visitouray.com/" target="_blank" rel="noopener">Ouray</a>
+          <ul>
+            <li><a href="https://www.visitouray.com/box-canyon-falls" target="_blank" rel="noopener">Box Canyon Falls &amp; High Bridge Trail</a></li>
+            <li>Downtown Ouray</li>
+          </ul>
+        </li>
+        <li><a href="https://www.durango.org/blog/post/guide-million-dollar-highway/" target="_blank" rel="noopener">Lookout Point / "Switzerland of America" Sign</a></li>
+        <li><a href="https://www.uncovercolorado.com/waterfalls/bear-creek-falls-ouray/" target="_blank" rel="noopener">Bear Creek Falls</a></li>
+        <li><a href="https://www.legendsofamerica.com/red-mountain-mining-district/" target="_blank" rel="noopener">Idarado Mine Legacy Site</a></li>
+        <li><a href="https://www.uncovercolorado.com/activities/red-mountain-pass/" target="_blank" rel="noopener">Red Mountain Pass</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/Molas_Pass" target="_blank" rel="noopener">Molas Pass Viewpoint</a></li>
+        <li><a href="https://wereintherockies.com/million-dollar-highway/" target="_blank" rel="noopener">Pinkerton Hot Springs</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- DAY 4 -->
+  <div class="day">
+    <div class="waypoint"><div class="pin">4</div></div>
+    <span class="date-tag">Tue, Aug 18</span>
+    <h2><a href="https://durangotrain.com/" target="_blank" rel="noopener">Durango &amp; Silverton Narrow Gauge Railroad</a></h2>
+    <div class="card">
+      <div class="train-schedule">
+        <div><span>Durango — Depart</span>9:00 AM</div>
+        <div><span>Silverton — Arrive</span>12:30 PM</div>
+        <div><span>Silverton — Depart</span>2:45 PM</div>
+        <div><span>Durango — Arrive</span>6:15 PM</div>
+      </div>
+      <p class="blurb">A vintage coal-fired steam train up the Animas River Gorge and back, with time to explore Silverton over the layover.</p>
+      <div class="stay"><span class="label">Staying:</span> Airbnb — <a href="https://www.google.com/maps/search/?api=1&query=6+Ferringway+Circle%2C+Durango%2C+CO+81301" target="_blank" rel="noopener">6 Ferringway Circle, Durango, CO 81301</a> <span class="badge">Booked</span></div>
+    </div>
+  </div>
+
+  <!-- DAY 5 -->
+  <div class="day">
+    <div class="waypoint"><div class="pin">5</div></div>
+    <span class="date-tag">Wed, Aug 19</span>
+    <h2>Drive to Monument Valley</h2>
+    <div class="card">
+      <span class="drive">≈ 3.5 hr drive</span>
+      <ul>
+        <li><a href="https://navajonationparks.org/navajo-tribal-parks/four-corners-monument/" target="_blank" rel="noopener">Four Corners Monument</a></li>
+        <li>Arrive at <a href="https://www.visitutah.com/places-to-go/parks-outdoors/monument-valley-tribal-park" target="_blank" rel="noopener">Monument Valley</a></li>
+        <li>Jeep tour? <span style="color:var(--ink-soft); font-size:0.9rem;">(guided backcountry access with a Navajo guide)</span></li>
+      </ul>
+      <div class="stay"><span class="label">Staying:</span> <a href="https://gouldings.com/" target="_blank" rel="noopener">Goulding's Lodge</a> <span class="badge">Booked</span></div>
+    </div>
+  </div>
+
+  <!-- DAY 6 -->
+  <div class="day">
+    <div class="waypoint"><div class="pin">6</div></div>
+    <span class="date-tag">Thu, Aug 20</span>
+    <h2>Drive to Petrified Forest National Park</h2>
+    <div class="card">
+      <span class="drive">≈ 3 hr drive</span>
+      <ul>
+        <li>Explore half of <a href="https://www.nps.gov/pefo/index.htm" target="_blank" rel="noopener">Petrified Forest National Park</a></li>
+      </ul>
+      <div class="stay"><span class="label">Staying:</span> <a href="https://www.wyndhamhotels.com/days-inn/holbrook-arizona/days-inn-holbrook/overview?CID=LC:iqv0j1dklijly45:5804&iata=00093796" target="_blank" rel="noopener">Days Inn, Holbrook</a> <span class="badge">Booked</span></div>
+    </div>
+  </div>
+
+  <!-- DAY 7 -->
+  <div class="day">
+    <div class="waypoint"><div class="pin">7</div></div>
+    <span class="date-tag">Fri, Aug 21</span>
+    <h2>Petrified Forest → Albuquerque</h2>
+    <div class="card">
+      <ul>
+        <li>Explore the other half of <a href="https://www.nps.gov/pefo/index.htm" target="_blank" rel="noopener">Petrified Forest National Park</a></li>
+        <li>Drive from Holbrook to Albuquerque
+          <ul>
+            <li><a href="https://www.nps.gov/elmo/" target="_blank" rel="noopener">El Morro National Monument</a></li>
+            <li><a href="https://www.icecaves.com/" target="_blank" rel="noopener">Ice Cave and Bandera Volcano</a></li>
+          </ul>
+        </li>
+        <li><a href="https://www.sandiapeak.com/" target="_blank" rel="noopener">Sandia Peak Tramway</a></li>
+        <li><a href="https://www.rgnc.org/" target="_blank" rel="noopener">Rio Grande Nature Center</a></li>
+      </ul>
+      <div class="stay"><span class="label">Staying:</span> <a href="https://www.hyatt.com/hyatt-place/en-US/abqza-hyatt-place-albuquerque-airport" target="_blank" rel="noopener">Hyatt Place Albuquerque Airport</a> <span class="badge">Booked</span></div>
+    </div>
+  </div>
+
+  <!-- DAY 8 -->
+  <div class="day" style="margin-bottom:0;">
+    <div class="waypoint"><div class="pin">8</div></div>
+    <span class="date-tag">Sat, Aug 22</span>
+    <h2>Fly Albuquerque → RDU</h2>
+    <div class="card">
+      <div class="flight-schedule">
+        <span class="leg">WN977</span><span class="route">ABQ → AUS</span><span class="time">8:05 AM → 10:55 AM</span>
+        <span class="leg">WN4340</span><span class="route">AUS → RDU</span><span class="time">11:50 AM → 3:40 PM</span>
+      </div>
+      <p class="blurb">Homeward bound, via Austin.</p>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Southwest Road Trip &nbsp;·&nbsp; Aug 12 – 22 &nbsp;·&nbsp; Links point to official park, tribal park, or venue pages where available
+</footer>
 
 </body>
-
 </html>
