@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Status of Purchased Events</title>
+<style>
+  :root {
+    --bg: #f6f5f2;
+    --panel: #ffffff;
+    --ink: #23262b;
+    --muted: #6b7280;
+    --border: #e3e1db;
+    --accent: #2f6f5e;
+    --accent-soft: #e7f1ee;
+    --paid: #2f6f5e;
+    --unpaid: #b3541e;
+    --unpaid-soft: #fbeee3;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 40px 20px;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 720px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0 0 4px;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin: 0 0 24px;
+  }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead th {
+    text-align: left;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    background: #fafaf8;
+  }
+
+  th.col-cost, td.col-cost { text-align: right; }
+  th.col-paid, td.col-paid { text-align: center; width: 90px; }
+  th.col-del, td.col-del { width: 44px; text-align: center; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+
+  td {
+    padding: 8px 16px;
+  }
+
+  td input[type="text"],
+  td input[type="number"] {
+    width: 100%;
+    border: 1px solid transparent;
+    background: transparent;
+    font-size: 0.95rem;
+    color: var(--ink);
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-family: inherit;
+  }
+
+  td input[type="text"]:hover,
+  td input[type="number"]:hover {
+    background: #f4f3f0;
+  }
+
+  td input[type="text"]:focus,
+  td input[type="number"]:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: #fff;
+  }
+
+  td.col-cost input { text-align: right; }
+
+  .paid-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    border: 1px solid transparent;
+    user-select: none;
+  }
+
+  .paid-toggle.is-paid {
+    background: var(--accent-soft);
+    color: var(--paid);
+  }
+
+  .paid-toggle.is-unpaid {
+    background: var(--unpaid-soft);
+    color: var(--unpaid);
+  }
+
+  .del-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+  }
+
+  .del-btn:hover {
+    background: var(--unpaid-soft);
+    color: var(--unpaid);
+  }
+
+  tfoot td {
+    padding: 12px 16px;
+    font-weight: 700;
+    border-top: 1px solid var(--border);
+    background: #fafaf8;
+  }
+
+  tfoot .label {
+    color: var(--muted);
+    font-weight: 500;
+    font-size: 0.85rem;
+  }
+
+  .toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    gap: 12px;
+  }
+
+  .add-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .add-btn:hover {
+    opacity: 0.92;
+  }
+
+  .summary {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .summary strong {
+    color: var(--ink);
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Status of Purchased Events</h1>
+    <p class="subtitle">Track what's been bought, what it cost, and whether it's paid.</p>
+
+    <div class="panel">
+      <table>
+        <thead>
+          <tr>
+            <th class="col-item">Item</th>
+            <th class="col-cost">Cost</th>
+            <th class="col-paid">Paid</th>
+            <th class="col-del"></th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <!-- rows inserted here -->
+        </tbody>
+        <tfoot>
+          <tr>
+            <td class="label">Total</td>
+            <td class="col-cost" id="totalCost">$0.00</td>
+            <td class="col-paid" id="totalPaidBadge"></td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="toolbar">
+      <button class="add-btn" id="addRowBtn">+ Add Item</button>
+      <div class="summary" id="summaryText"></div>
+    </div>
+  </div>
+
+<script>
+  const tbody = document.getElementById('tbody');
+  const totalCostEl = document.getElementById('totalCost');
+  const summaryText = document.getElementById('summaryText');
+  const addRowBtn = document.getElementById('addRowBtn');
+
+  const initialData = [
+    { item: 'Venue Deposit', cost: 250, paid: true },
+    { item: 'Catering', cost: 480, paid: false },
+    { item: 'Decorations', cost: 95, paid: true },
+  ];
+
+  function formatMoney(n) {
+    const num = isNaN(n) ? 0 : n;
+    return '$' + num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function createRow(data = { item: '', cost: '', paid: false }) {
+    const tr = document.createElement('tr');
+
+    const tdItem = document.createElement('td');
+    const itemInput = document.createElement('input');
+    itemInput.type = 'text';
+    itemInput.placeholder = 'Item name';
+    itemInput.value = data.item;
+    itemInput.addEventListener('input', updateTotals);
+    tdItem.appendChild(itemInput);
+
+    const tdCost = document.createElement('td');
+    tdCost.className = 'col-cost';
+    const costInput = document.createElement('input');
+    costInput.type = 'number';
+    costInput.step = '0.01';
+    costInput.placeholder = '0.00';
+    costInput.value = data.cost;
+    costInput.addEventListener('input', updateTotals);
+    tdCost.appendChild(costInput);
+
+    const tdPaid = document.createElement('td');
+    tdPaid.className = 'col-paid';
+    const paidBtn = document.createElement('button');
+    paidBtn.type = 'button';
+    paidBtn.className = 'paid-toggle';
+    let isPaid = !!data.paid;
+    function renderPaid() {
+      paidBtn.textContent = isPaid ? 'Paid' : 'Unpaid';
+      paidBtn.classList.toggle('is-paid', isPaid);
+      paidBtn.classList.toggle('is-unpaid', !isPaid);
+    }
+    renderPaid();
+    paidBtn.addEventListener('click', () => {
+      isPaid = !isPaid;
+      renderPaid();
+      updateTotals();
+    });
+    paidBtn.dataset.paid = isPaid;
+    tdPaid.appendChild(paidBtn);
+
+    const tdDel = document.createElement('td');
+    tdDel.className = 'col-del';
+    const delBtn = document.createElement('button');
+    delBtn.type = 'button';
+    delBtn.className = 'del-btn';
+    delBtn.textContent = '✕';
+    delBtn.title = 'Remove item';
+    delBtn.addEventListener('click', () => {
+      tr.remove();
+      updateTotals();
+    });
+    tdDel.appendChild(delBtn);
+
+    tr.appendChild(tdItem);
+    tr.appendChild(tdCost);
+    tr.appendChild(tdPaid);
+    tr.appendChild(tdDel);
+
+    // expose a getter for paid state
+    tr._isPaid = () => paidBtn.classList.contains('is-paid');
+    tr._cost = () => parseFloat(costInput.value) || 0;
+
+    return tr;
+  }
+
+  function updateTotals() {
+    let total = 0;
+    let paidTotal = 0;
+    let count = 0;
+    Array.from(tbody.children).forEach(tr => {
+      const cost = tr._cost();
+      total += cost;
+      count += 1;
+      if (tr._isPaid()) paidTotal += cost;
+    });
+    totalCostEl.textContent = formatMoney(total);
+    const remaining = total - paidTotal;
+    summaryText.innerHTML = `<strong>${count}</strong> item${count === 1 ? '' : 's'} &middot; ${formatMoney(paidTotal)} paid &middot; ${formatMoney(remaining)} remaining`;
+  }
+
+  addRowBtn.addEventListener('click', () => {
+    const row = createRow();
+    tbody.appendChild(row);
+    updateTotals();
+    row.querySelector('input[type="text"]').focus();
+  });
+
+  initialData.forEach(d => tbody.appendChild(createRow(d)));
+  updateTotals();
+</script>
+</body>
+</html>
