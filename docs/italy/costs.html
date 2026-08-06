@@ -11,9 +11,8 @@
     --ink: #23262b;
     --muted: #6b7280;
     --border: #e3e1db;
-    --accent: #2f6f5e;
-    --accent-soft: #e7f1ee;
     --paid: #2f6f5e;
+    --paid-soft: #e7f1ee;
     --unpaid: #b3541e;
     --unpaid-soft: #fbeee3;
   }
@@ -67,13 +66,13 @@
     text-transform: uppercase;
     letter-spacing: 0.04em;
     color: var(--muted);
-    padding: 12px 14px;
+    padding: 12px 16px;
     border-bottom: 1px solid var(--border);
     background: #fafaf8;
   }
 
   th.col-cost, td.col-cost { text-align: right; }
-  th.col-paid, td.col-paid { text-align: center; width: 110px; }
+  th.col-paid, td.col-paid { text-align: center; width: 130px; }
 
   tbody tr {
     border-bottom: 1px solid var(--border);
@@ -82,61 +81,30 @@
   tbody tr:last-child { border-bottom: none; }
 
   td {
-    padding: 8px 14px;
-  }
-
-  td input[type="text"],
-  td input[type="number"] {
-    width: 100%;
-    border: 1px solid transparent;
-    background: transparent;
+    padding: 12px 16px;
     font-size: 0.95rem;
-    color: var(--ink);
-    padding: 6px 8px;
-    border-radius: 6px;
-    font-family: inherit;
   }
 
-  td input[type="text"]:hover,
-  td input[type="number"]:hover {
-    background: #f4f3f0;
-  }
-
-  td input[type="text"]:focus,
-  td input[type="number"]:focus {
-    outline: none;
-    border-color: var(--accent);
-    background: #fff;
-  }
-
-  td.col-cost input { text-align: right; }
-
-  .paid-toggle {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    cursor: pointer;
-    padding: 5px 10px;
+  .badge {
+    display: inline-block;
+    padding: 4px 12px;
     border-radius: 999px;
     font-size: 0.82rem;
     font-weight: 600;
-    border: 1px solid transparent;
-    user-select: none;
   }
 
-  .paid-toggle.is-paid {
-    background: var(--accent-soft);
+  .badge.paid {
+    background: var(--paid-soft);
     color: var(--paid);
   }
 
-  .paid-toggle.is-unpaid {
+  .badge.unpaid {
     background: var(--unpaid-soft);
     color: var(--unpaid);
   }
 
   tfoot td {
-    padding: 12px 14px;
+    padding: 12px 16px;
     font-weight: 700;
     border-top: 1px solid var(--border);
     background: #fafaf8;
@@ -147,28 +115,6 @@
     font-weight: 500;
     font-size: 0.85rem;
   }
-
-  .summary {
-    margin-top: 16px;
-    font-size: 0.85rem;
-    color: var(--muted);
-  }
-
-  .summary strong {
-    color: var(--ink);
-  }
-
-  .save-note {
-    margin-top: 10px;
-    font-size: 0.78rem;
-    color: var(--muted);
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-
-  .save-note.visible {
-    opacity: 1;
-  }
 </style>
 </head>
 <body>
@@ -176,6 +122,13 @@
     <h1>Status of Purchased Events</h1>
     <p class="subtitle">Track what's been bought, what it cost, and who's paid.</p>
 
+    <!--
+      To update this table, edit the rows below directly.
+      - For a paid cell, use: <td class="col-paid"><span class="badge paid">Paid</span></td>
+      - For an unpaid cell, use: <td class="col-paid"><span class="badge unpaid">Unpaid</span></td>
+      - Add or remove <tr>...</tr> blocks to add or remove items.
+      - Remember to update the Total row in <tfoot> if costs change.
+    -->
     <div class="panel">
       <table>
         <thead>
@@ -186,166 +139,35 @@
             <th class="col-paid">Thornton Paid</th>
           </tr>
         </thead>
-        <tbody id="tbody">
-          <!-- rows inserted here -->
+        <tbody>
+          <tr>
+            <td>Colosseum Tour</td>
+            <td class="col-cost">$600.00</td>
+            <td class="col-paid"><span class="badge paid">Paid</span></td>
+            <td class="col-paid"><span class="badge unpaid">Unpaid</span></td>
+          </tr>
+          <tr>
+            <td>Train Ticket - Naples to Rome</td>
+            <td class="col-cost">$200.00</td>
+            <td class="col-paid"><span class="badge paid">Paid</span></td>
+            <td class="col-paid"><span class="badge unpaid">Unpaid</span></td>
+          </tr>
+          <tr>
+            <td>Vatican Tour</td>
+            <td class="col-cost">$600.00</td>
+            <td class="col-paid"><span class="badge paid">Paid</span></td>
+            <td class="col-paid"><span class="badge unpaid">Unpaid</span></td>
+          </tr>
         </tbody>
         <tfoot>
           <tr>
             <td class="label">Total</td>
-            <td class="col-cost" id="totalCost">$0.00</td>
+            <td class="col-cost">$1400.00</td>
             <td colspan="2"></td>
           </tr>
         </tfoot>
       </table>
     </div>
-
-    <div class="summary" id="summaryText"></div>
-    <div class="save-note" id="saveNote">Saved to this browser</div>
   </div>
-
-<script>
-  const tbody = document.getElementById('tbody');
-  const totalCostEl = document.getElementById('totalCost');
-  const summaryText = document.getElementById('summaryText');
-  const saveNote = document.getElementById('saveNote');
-
-  const STORAGE_KEY = 'purchasedEventsStatus';
-
-  // Edit this list directly to add, remove, or change items.
-  // Any changes made in the browser are saved automatically and will
-  // override this list on future visits (from the same browser) until
-  // local storage is cleared.
-  const defaultData = [
-    { item: 'Venue Deposit', cost: 250, owensPaid: true, thorntonPaid: false },
-    { item: 'Catering', cost: 480, owensPaid: false, thorntonPaid: false },
-    { item: 'Decorations', cost: 95, owensPaid: false, thorntonPaid: true },
-  ];
-
-  function loadData() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) return JSON.parse(raw);
-    } catch (e) {
-      console.warn('Could not read saved data, using defaults.', e);
-    }
-    return defaultData;
-  }
-
-  function saveData() {
-    const data = Array.from(tbody.children).map(tr => ({
-      item: tr._getItem(),
-      cost: tr._cost(),
-      owensPaid: tr._isOwensPaid(),
-      thorntonPaid: tr._isThorntonPaid(),
-    }));
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      flashSaveNote();
-    } catch (e) {
-      console.warn('Could not save data.', e);
-    }
-  }
-
-  let saveNoteTimer = null;
-  function flashSaveNote() {
-    saveNote.classList.add('visible');
-    clearTimeout(saveNoteTimer);
-    saveNoteTimer = setTimeout(() => saveNote.classList.remove('visible'), 1200);
-  }
-
-  function formatMoney(n) {
-    const num = isNaN(n) ? 0 : n;
-    return '$' + num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  }
-
-  function makePaidToggle(initialPaid) {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'paid-toggle';
-    let paid = !!initialPaid;
-    function render() {
-      btn.textContent = paid ? 'Paid' : 'Unpaid';
-      btn.classList.toggle('is-paid', paid);
-      btn.classList.toggle('is-unpaid', !paid);
-    }
-    render();
-    btn.addEventListener('click', () => {
-      paid = !paid;
-      render();
-      updateTotals();
-      saveData();
-    });
-    btn.isPaid = () => paid;
-    return btn;
-  }
-
-  function createRow(data = { item: '', cost: '', owensPaid: false, thorntonPaid: false }) {
-    const tr = document.createElement('tr');
-
-    const tdItem = document.createElement('td');
-    const itemInput = document.createElement('input');
-    itemInput.type = 'text';
-    itemInput.placeholder = 'Item name';
-    itemInput.value = data.item;
-    itemInput.addEventListener('input', () => { updateTotals(); saveData(); });
-    tdItem.appendChild(itemInput);
-
-    const tdCost = document.createElement('td');
-    tdCost.className = 'col-cost';
-    const costInput = document.createElement('input');
-    costInput.type = 'number';
-    costInput.step = '0.01';
-    costInput.placeholder = '0.00';
-    costInput.value = data.cost;
-    costInput.addEventListener('input', () => { updateTotals(); saveData(); });
-    tdCost.appendChild(costInput);
-
-    const tdOwens = document.createElement('td');
-    tdOwens.className = 'col-paid';
-    const owensBtn = makePaidToggle(data.owensPaid);
-    tdOwens.appendChild(owensBtn);
-
-    const tdThornton = document.createElement('td');
-    tdThornton.className = 'col-paid';
-    const thorntonBtn = makePaidToggle(data.thorntonPaid);
-    tdThornton.appendChild(thorntonBtn);
-
-    tr.appendChild(tdItem);
-    tr.appendChild(tdCost);
-    tr.appendChild(tdOwens);
-    tr.appendChild(tdThornton);
-
-    tr._getItem = () => itemInput.value;
-    tr._cost = () => parseFloat(costInput.value) || 0;
-    tr._isOwensPaid = () => owensBtn.isPaid();
-    tr._isThorntonPaid = () => thorntonBtn.isPaid();
-
-    return tr;
-  }
-
-  function updateTotals() {
-    let total = 0;
-    let owensPaidTotal = 0;
-    let thorntonPaidTotal = 0;
-    let count = 0;
-    Array.from(tbody.children).forEach(tr => {
-      const cost = tr._cost();
-      total += cost;
-      count += 1;
-      if (tr._isOwensPaid()) owensPaidTotal += cost;
-      if (tr._isThorntonPaid()) thorntonPaidTotal += cost;
-    });
-    totalCostEl.textContent = formatMoney(total);
-    const remaining = total - owensPaidTotal - thorntonPaidTotal;
-    summaryText.innerHTML =
-      `<strong>${count}</strong> item${count === 1 ? '' : 's'} &middot; ` +
-      `Owens' paid ${formatMoney(owensPaidTotal)} &middot; ` +
-      `Thornton paid ${formatMoney(thorntonPaidTotal)} &middot; ` +
-      `${formatMoney(remaining)} remaining`;
-  }
-
-  loadData().forEach(d => tbody.appendChild(createRow(d)));
-  updateTotals();
-</script>
 </body>
 </html>
