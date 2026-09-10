@@ -3,7 +3,12 @@
 <!DOCTYPE html>
 <html lang="en">
 
-{% include header.html %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sicily - October 2026</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
 
 <body>
 
@@ -45,6 +50,7 @@
                 <a href="#day15">Day 15 - Thursday</a>
                 <a href="#day16">Day 16 - Friday</a>
                 <hr />
+                <a href="#info">Additional Info</a>
                 <a href="#links">Links</a> 
             </aside>
         </nav>
@@ -72,7 +78,6 @@
                     <img src="images/image006.png" />
             
                 </p>
-            
                 <p>
 
                     As a bonus, enjoy 2 days in Sorrento, tour the picturesque Amalfi Coast, visit Pompeii - the famous
@@ -87,19 +92,7 @@
 
             </section>
 
-            <section class="card day" id="day1">
-                <h2>Day 1 — Thursday, October 1, 2026</h2>
-                <h3>Flights</h3>
-                <ul>
-                    <li>Depart Raleigh-Durham (RDU)/Richmond (RIC)</li>
-                    <li>Connect in Philadelphia</li>
-                    <li>4:45 PM – Depart Philadelphia for Rome on American Airlines Flight 718</li>
-                </ul>
-
-                <div class="meals">
-                    Dinner (plane)
-                </div>     
-            </section>
+            {% include day1.html %}
 
             <section class="card day" id="day2">
                 <h2>Day 2 — Friday, October 2</h2>
