@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rome — Possible Itinerary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --travertine: #EFE7D6;
+    --travertine-deep: #E4D9C2;
+    --card: #FBF7EE;
+    --ink: #2B231C;
+    --ink-soft: #5C5245;
+    --pompeian: #9A3324;
+    --pompeian-deep: #7A2A1D;
+    --pine: #556B4A;
+    --gold: #B8863A;
+    --rain: #5C7285;
+    --rain-bg: #EAF0F2;
+    --rule: rgba(43,35,28,0.14);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--travertine);
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(184,134,58,0.06), transparent 40%),
+      radial-gradient(circle at 90% 60%, rgba(154,51,36,0.05), transparent 45%);
+    color:var(--ink);
+    font-family:'Karla', sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .wrap{max-width:840px; margin:0 auto; padding:0 24px 120px;}
+
+  /* ---------- Header ---------- */
+  header{
+    padding:76px 0 48px;
+    text-align:center;
+    position:relative;
+  }
+  .eyebrow{
+    font-family:'Karla', sans-serif;
+    font-weight:600;
+    letter-spacing:0.22em;
+    text-transform:uppercase;
+    font-size:12px;
+    color:var(--pompeian);
+    margin-bottom:18px;
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-optical-sizing:auto;
+    font-weight:600;
+    font-size:clamp(40px, 7vw, 64px);
+    letter-spacing:-0.01em;
+    margin:0 0 14px;
+  }
+  header .sub{
+    color:var(--ink-soft);
+    font-size:16px;
+    max-width:520px;
+    margin:0 auto;
+  }
+  .meander{
+    width:100%;
+    height:14px;
+    margin-top:40px;
+    opacity:0.55;
+  }
+
+  /* ---------- Intro blurb (Via Giulia) ---------- */
+  .intro{
+    background:var(--card);
+    border:1px solid var(--rule);
+    border-radius:2px;
+    padding:32px 36px;
+    margin:8px 0 56px;
+    position:relative;
+  }
+  .intro::before{
+    content:"";
+    position:absolute;
+    top:0; left:0;
+    width:4px; height:100%;
+    background:var(--gold);
+  }
+  .intro h2{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:22px;
+    margin:0 0 10px;
+  }
+  .intro p{margin:0; color:var(--ink-soft); font-size:15.5px;}
+
+  /* ---------- Day sections ---------- */
+  .day{
+    margin-bottom:64px;
+  }
+  .day-head{
+    display:flex;
+    align-items:baseline;
+    gap:20px;
+    margin-bottom:6px;
+    border-bottom:2px solid var(--ink);
+    padding-bottom:14px;
+  }
+  .day-num{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:15px;
+    letter-spacing:0.02em;
+    color:var(--pompeian);
+    background:var(--card);
+    border:1.5px solid var(--pompeian);
+    border-radius:2px;
+    padding:5px 12px;
+    white-space:nowrap;
+  }
+  .day-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(24px,3.6vw,30px);
+  }
+  .day-date{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin-left:auto;
+    white-space:nowrap;
+    padding-bottom:2px;
+  }
+  .day-intro{
+    font-style:italic;
+    color:var(--ink-soft);
+    font-size:15px;
+    margin:16px 0 22px;
+  }
+
+  /* ---------- Beat blocks (morning/lunch/etc) ---------- */
+  .beat{
+    display:grid;
+    grid-template-columns:120px 1fr;
+    gap:22px;
+    padding:16px 0;
+    border-top:1px solid var(--rule);
+  }
+  .beat:first-of-type{border-top:none;}
+  .beat-label{
+    font-family:'Karla', sans-serif;
+    font-weight:700;
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--pine);
+    padding-top:2px;
+  }
+  .beat-body p{margin:0 0 8px; font-size:15.5px;}
+  .beat-body p:last-child{margin-bottom:0;}
+  .beat-body strong{color:var(--ink); font-weight:700;}
+
+  /* rain / backup styling */
+  .beat.rain{
+    background:var(--rain-bg);
+    margin:18px -20px 0;
+    padding:16px 20px;
+    border-top:1px dashed rgba(92,114,133,0.4);
+    border-radius:2px;
+  }
+  .beat.rain .beat-label{color:var(--rain);}
+
+  /* find / hidden-gem callouts */
+  .find{
+    background:linear-gradient(0deg, rgba(184,134,58,0.07), rgba(184,134,58,0.07)), var(--card);
+    border:1px solid rgba(184,134,58,0.4);
+    border-radius:2px;
+    padding:18px 20px;
+    margin:18px 0;
+  }
+  .find .beat-label{color:var(--gold);}
+  .find p{margin:0; font-size:15.5px;}
+
+  footer{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:13px;
+    padding-top:24px;
+    border-top:1px solid var(--rule);
+  }
+
+  @media (max-width:560px){
+    .beat{grid-template-columns:1fr; gap:6px;}
+    .day-head{flex-wrap:wrap;}
+    .day-date{margin-left:0;}
+    .intro{padding:24px 22px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Possible Itinerary</div>
+    <h1>Rome</h1>
+    <p class="sub">A free day ahead of Sicily, then three full days based out of Via Giulia.</p>
+    <svg class="meander" viewBox="0 0 400 14" preserveAspectRatio="none">
+      <path d="M0,7 H30 V0 H60 V14 H90 V0 H120 V14 H150 V0 H180 V14 H210 V0 H240 V14 H270 V0 H300 V14 H330 V0 H360 V14 H400"
+        fill="none" stroke="#9A3324" stroke-width="2"/>
+    </svg>
+  </header>
+
+  <!-- DAY 0 -->
+  <section class="day">
+    <div class="day-head">
+      <span class="day-num">DAY 0</span>
+      <span class="day-title">Ancient Rome</span>
+      <span class="day-date">Free day, prior to Sicily</span>
+    </div>
+
+    <div class="beat">
+      <div class="beat-label">Morning</div>
+      <div class="beat-body">
+        <p>Colosseum + Roman Forum + Palatine Hill on the combined ticket, timed entry booked ahead. Go early — by midday in October it's still warm and the site has zero shade.</p>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-label">Lunch</div>
+      <div class="beat-body">
+        <p>Walk 10 minutes uphill into <strong>Monti</strong>, Rome's oldest neighborhood, and eat there instead of anywhere adjacent to the Colosseum — prices right at the exit are inflated for what you get. <strong>Ai Tre Scalini</strong> is a good, unfussy option.</p>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-label">Afternoon</div>
+      <div class="beat-body">
+        <p>Wander Monti itself — vintage shops, small ateliers, none of the souvenir-shop density of the center. A good "get a little lost on purpose" stretch.</p>
+        <p><strong>Optional add:</strong> Circus Maximus, a flat green expanse where the chariot races happened — free, especially nice near sunset, five minutes from Monti.</p>
+      </div>
+    </div>
+
+    <div class="find">
+      <div class="beat-label">The find most tourists skip</div>
+      <p><strong>Basilica di San Clemente</strong>, a few minutes from the Colosseum. Three buildings stacked on top of each other — a 12th-century church over a 4th-century basilica, over a 1st-century Roman house with an active underground spring. You walk down through 1,700 years of Rome. Small entry fee, rarely crowded, genuinely one of the best things in the city.</p>
+    </div>
+
+    <div class="beat">
+      <div class="beat-label">Dinner</div>
+      <div class="beat-body">
+        <p>Stay in Monti — <strong>Trattoria Monti</strong> or <strong>La Taverna dei Fori Imperiali</strong>.</p>
+      </div>
+    </div>
+
+    <div class="beat rain">
+      <div class="beat-label">Rain / closure backup</div>
+      <div class="beat-body">
+        <p>Colosseum/Forum are outdoor and can close briefly for weather. Fall back to the <strong>Capitoline Museums</strong>, right on the same hill, indoor, home to ancient sculpture without the crowds.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTRO -->
+  <div class="intro">
+    <h2>Via Giulia, 105</h2>
+    <p>One arrival evening plus three full days, based out of Via Giulia — one of the best streets in Rome to be staying on. Renaissance-era, quiet at night, cobblestoned, lined with antique dealers and artisan workshops, and within a 15-minute walk of almost everything except the Colosseum. You lucked out on location.</p>
+  </div>
+
+  <!-- DAY 1 -->
+  <section class="day">
+    <div class="day-head">
+      <span class="day-num">DAY I</span>
+      <span class="day-title">Arrival Afternoon</span>
+      <span class="day-date">Monday, Oct. 12</span>
+    </div>
+    <p class="day-intro">Low-key and entirely on foot.</p>
+
+    <div class="find">
+      <div class="beat-label">Before you even leave the street</div>
+      <p>Via Giulia itself has three things most visitors staying elsewhere never notice: the <strong>Fontana del Mascherone</strong> (a grotesque stone face fountain, mid-street), the ivy-draped arch near Palazzo Farnese that used to connect it to the Farnesina gardens across the river, and <strong>Santa Maria dell'Orazione e Morte</strong>, a small church with a skull-and-crossbones motif carved into the door — it belonged to a confraternity that buried Rome's unclaimed dead. Ten minutes, sets the tone for the trip.</p>
+    </div>
+
+    <div class="beat">
+      <div class="beat-label">Wander</div>
+      <div class="beat-body">
+        <p>Campo de' Fiori (5 min). The morning market will be packed up, but by early evening it turns into an open-air aperitivo scene — locals, not tour groups.</p>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-label">Wine</div>
+      <div class="beat-body">
+        <p><strong>Il Goccetto</strong>, a couple minutes off Via Giulia — one of Rome's oldest wine bars, tiny, wood-paneled, no pretension. Order by the glass and let the guy behind the counter steer you.</p>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-label">Dinner</div>
+      <div class="beat-body">
+        <p><strong>Trattoria da Sergio alla Grotte</strong>, near Campo de' Fiori, family-run since the '60s, no English-menu theatrics, excellent cacio e pepe. Reserve if you can — it's small.</p>
+      </div>
+    </div>
+
+    <div class="beat rain">
+      <div class="beat-label">If it's raining, or you just want to collapse</div>
+      <div class="beat-body">
+        <p>Skip straight to dinner. Nothing above requires good weather except the outdoor wandering, and none of it is booked — zero cost to cutting it short.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DAY 2 -->
+  <section class="day">
+    <div class="day-head">
+      <span class="day-num">DAY II</span>
+      <span class="day-title">Vatican &amp; Prati</span>
+      <span class="day-date">Tuesday, Oct. 13</span>
+    </div>
+
+    <div class="beat">
+      <div class="beat-label">Morning</div>
+      <div class="beat-body">
+        <p>Vatican Museums + Sistine Chapel + St. Peter's Basilica. Book timed entry directly through the official Vatican Museums site, not a reseller — resellers routinely charge double for the same ticket. Go for the earliest slot you can get; the crowd builds fast, and by 11am the Sistine Chapel is a shuffling crowd, not an experience.</p>
+        <p>Skip the dome climb unless you specifically want the view — it's 500+ narrow steps, extra cost, and the same vantage is arguably beaten by Gianicolo Hill later in the trip, for free.</p>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-label">Lunch</div>
+      <div class="beat-body">
+        <p><strong>Pizzarium (Bonci)</strong>, a short walk from the Vatican. Pizza al taglio, and it's the real deal — Romans line up here too; this isn't a tourist-only spot that happens to be near the Vatican.</p>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-label">Afternoon</div>
+      <div class="beat-body">
+        <p>Real downtime — don't schedule anything. Either head back to Via Giulia to rest, or drift through <strong>Prati</strong>, the residential neighborhood behind the Vatican: wide boulevards, real bakeries, no monuments, just a normal Roman afternoon.</p>
+      </div>
+    </div>
+
+    <div class="find">
+      <div class="beat-label">Evening</div>
+      <p>Walk back toward the center via <strong>Ponte Sant'Angelo</strong> right around sunset — the bridge with the sculpted angels, dome of St. Peter's behind you, river in front. One of the best free views in the city, and almost nobody stops to actually look.</p>
+    </div>
+
+    <div class="beat">
+      <div class="beat-label">Dinner</div>
+      <div class="beat-body">
+        <p>Back in the Ghetto or Trastevere (see Day 4), or simply Via Giulia's own neighborhood.</p>
+      </div>
+    </div>
+
+    <div class="beat rain">
+      <div class="beat-label">Rain / closure backup</div>
+      <div class="beat-body">
+        <p>The Vatican Museums are almost entirely indoors, so this day is naturally rain-proof. If the Vatican itself is closed (it happens occasionally for events), swap in the Galleria Doria Pamphilj from Day 3.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DAY 3 -->
+  <section class="day">
+    <div class="day-head">
+      <span class="day-num">DAY III</span>
+      <span class="day-title">Centro Storico</span>
+      <span class="day-date">Wednesday, Oct. 14</span>
+    </div>
+    <p class="day-intro">The wandering day — build this one loose on purpose. Start late, no fixed order.</p>
+
+    <div class="beat">
+      <div class="beat-label">Late morning</div>
+      <div class="beat-body">
+        <p><strong>Pantheon</strong> — go before 10am if you can. Small entry fee (7 Euros), but it fills with tour groups fast.</p>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-label">Coffee</div>
+      <div class="beat-body">
+        <p>Skip the cafés directly on Piazza della Rotonda — you're paying for the view. Walk two minutes to <strong>Sant'Eustachio Il Caffè</strong> or <strong>Tazza d'Oro</strong> for the same espresso locals actually drink, at local prices.</p>
+      </div>
+    </div>
+
+    <div class="find">
+      <div class="beat-label">Then just walk</div>
+      <p><strong>Via del Governo Vecchio</strong> and <strong>Via dei Coronari</strong> — narrow lanes, antique shops, small galleries, no destination required. Your best shot at stumbling onto something on your own.</p>
+    </div>
+
+    <div class="beat">
+      <div class="beat-label">Piazza Navona</div>
+      <div class="beat-body">
+        <p>Go midday rather than evening — same fountains, a fraction of the crowd. Don't eat here; it's the most notorious tourist-price zone in the center.</p>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-label">Trevi Fountain</div>
+      <div class="beat-body">
+        <p>Either very early (before 8am) or after 10pm. Midday it's a wall of people and phones — not worth it unless you catch it quiet.</p>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-label">Spanish Steps</div>
+      <div class="beat-body">
+        <p>The steps themselves are mobbed, but <strong>Via Margutta</strong> just off them is quiet, art-studio-lined, and very photogenic — locals call it Rome's most romantic street.</p>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-label">Gelato</div>
+      <div class="beat-body">
+        <p>Real gelato sits flat and matte in covered metal tins, not piled into bright mounds — that's a sign of added stabilizers/color. <strong>Fatamorgana</strong> (a few locations around the center) is consistently the real thing, and less swamped than the famous names.</p>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-label">Dinner</div>
+      <div class="beat-body">
+        <p>Head to the <strong>Jewish Ghetto</strong>, ten minutes from Via Giulia — <strong>Nonna Betta</strong> or <strong>Ba'Ghetto</strong> for carciofi alla giudia (Roman-Jewish fried artichoke), a dish this neighborhood basically invented.</p>
+      </div>
+    </div>
+
+    <div class="beat rain">
+      <div class="beat-label">Rain backup</div>
+      <div class="beat-body">
+        <p><strong>Galleria Doria Pamphilj</strong>, a private art museum still owned by the family. Indoor, stunning, and consistently far less crowded than the Vatican — genuinely doubles as a hidden gem even in good weather.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DAY 4 -->
+  <section class="day">
+    <div class="day-head">
+      <span class="day-num">DAY IV</span>
+      <span class="day-title">Trastevere, Gianicolo &amp; Testaccio</span>
+      <span class="day-date">Thursday, Oct. 15</span>
+    </div>
+
+    <div class="beat">
+      <div class="beat-label">Morning</div>
+      <div class="beat-body">
+        <p>Cross Ponte Sisto into <strong>Trastevere</strong> before the crowds arrive — quiet cobbled lanes, laundry strung between buildings, Piazza Santa Maria in Trastevere with its mosaic-covered church.</p>
+      </div>
+    </div>
+
+    <div class="find">
+      <div class="beat-label">Climb the Gianicolo</div>
+      <p>The best panoramic view of Rome, and far less crowded than other viewpoints because most tourists don't realize it's there. Great for photos of the whole skyline and the dome of St. Peter's.</p>
+    </div>
+
+    <div class="beat">
+      <div class="beat-label">Lunch</div>
+      <div class="beat-body">
+        <p><strong>Cesare al Casaletto</strong> if you don't mind a short bus ride out — genuinely local, few tourists, excellent. If you'd rather stay close, <strong>Da Enzo al 29</strong> is well-loved but small; go right at opening or expect a wait.</p>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-label">Afternoon</div>
+      <div class="beat-body">
+        <p><strong>Testaccio</strong>, Rome's old slaughterhouse district turned real, unpolished, food-obsessed neighborhood. Mercato Testaccio has stalls Romans actually eat at, not staged for visitors.</p>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-label">Aventine Hill</div>
+      <div class="beat-body">
+        <p>The Giardino degli Aranci (Orange Garden) for another free view, then the keyhole at <strong>Villa del Priorato di Malta</strong> a couple minutes away — look through it and St. Peter's dome appears perfectly framed by a garden hedge. Quick, free, worth the short line if there is one.</p>
+      </div>
+    </div>
+
+    <div class="beat">
+      <div class="beat-label">Last dinner</div>
+      <div class="beat-body">
+        <p>The night to spend a bit more, if you want to — <strong>Roscioli</strong> (book ahead, it's excellent and popular) or loop back to Da Enzo — either an easy walk from Via Giulia.</p>
+      </div>
+    </div>
+
+    <div class="beat rain">
+      <div class="beat-label">Rain backup</div>
+      <div class="beat-body">
+        <p><strong>Centrale Montemartini</strong> — an archaeology museum inside a decommissioned early-1900s power plant. Ancient marble statues staged among the original turbines and machinery. Striking, indoor, and almost nobody knows about it.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Possible Itinerary — Rome, 1 August 2026
+  </footer>
+
+</div>
+</body>
+</html>
