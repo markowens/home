@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Helpful Hints and Useful Info</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+
+<body>
+
+    <div class="page-layout">
+
+        <nav>
+            <aside class="sidebar">
+                <a href="#calling">Calling the USA</a>
+            </aside>
+        </nav>
+
+        <main class="container">
+
+            <section class="card" id="calling">
+                <p>
+                    It is strongly recommended that you discuss with your cell phone provider a plan that will enable you to have
+                    international calling capabilities. It is imperative that you can be reached, or you can reach others throughout the
+                    duration of the tour. If you wish to call somebody in your contacts using your mobile device, you only need to go to
+                    your contacts and call – there is no need to dial “001”.
+                </p>
+            </section>
+
+        </main>
+
+    </div>
+
+    <footer>
+        <h3>Rome &amp; Sicily Adventure</h3>
+        <p>
+            October 1–16, 2026
+        </p>
+    </footer>
+
+    <script>
+        const links = document.querySelectorAll(".sidebar a");
+        const sections = document.querySelectorAll("section");
+        window.addEventListener("scroll", () => {
+            let current = "";
+            sections.forEach(section => {
+                const top = section.offsetTop - 120;
+                if (scrollY >= top) {
+                    current = section.getAttribute("id");
+                }
+            });
+            links.forEach(link => {
+                link.style.background = "";
+                if (link.getAttribute("href") === "#" + current) {
+                    link.style.background = "#4ea5dd";
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
