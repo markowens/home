@@ -31,8 +31,10 @@
                 <a href="#day15">Day 15 - Thursday</a>
                 <a href="#day16">Day 16 - Friday</a>
                 <hr />
-                <a href="#info">Additional Info</a>
-                <a href="#links">Links</a> 
+                <a href="#info">Helpful Info</a>
+                <a href="#guides">Links</a> 
+                <a href="#blogs">Various Blogs</a>
+                <a href="#points">Other Points of Interest</a>
             </aside>
         </nav>
 
@@ -96,15 +98,26 @@
             {% include day15.html %}
             {% include day16.html %}
 
-            <section class="card day" id="links">
-
+            <section class="card day" id="itinerary">
                 <h3><a href="./rome.html" target="_blank">Possible Rome Itinerary</a></h3>
-
-                {% include visitor_guides.html %}
-                {% include other_links.html %}
-                {% include points.html %}
-                
             </section>
+
+            <section class="card day" id="info">
+                HELPFUL INFO goes HERE
+            </section>                
+
+            <section class="card day" id="guides">
+                {% include visitor_guides.html %}
+            </section>
+
+            <section class="card day" id="blogs">
+                {% include other_links.html %}
+            </section>
+
+            <section class="card day" id="points">
+                {% include points.html %}
+            </section>
+
 
         </main>
 
