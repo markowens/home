@@ -1,0 +1,19 @@
+    <script>
+        const links = document.querySelectorAll(".sidebar a");
+        const sections = document.querySelectorAll("section");
+        window.addEventListener("scroll", () => {
+            let current = "";
+            sections.forEach(section => {
+                const top = section.offsetTop - 120;
+                if (scrollY >= top) {
+                    current = section.getAttribute("id");
+                }
+            });
+            links.forEach(link => {
+                link.style.background = "";
+                if (link.getAttribute("href") === "#" + current) {
+                    link.style.background = "#4ea5dd";
+                }
+            });
+        });
+    </script>
