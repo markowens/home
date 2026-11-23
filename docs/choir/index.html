@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Music</title>
+<style>
+  :root {
+    --bg1: #1f2a44;
+    --bg2: #3b2a55;
+    --card: rgba(255, 255, 255, 0.08);
+    --card-hover: rgba(255, 255, 255, 0.16);
+    --text: #f3f4f8;
+    --muted: #b8bdd0;
+    --accent: #ffb347;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    color: var(--text);
+    background: linear-gradient(135deg, var(--bg1), var(--bg2)) fixed;
+    display: flex;
+    justify-content: center;
+    padding: 48px 16px;
+  }
+  main { width: 100%; max-width: 560px; }
+  h1 { font-size: 2rem; margin: 0 0 4px; letter-spacing: 0.01em; }
+  p.sub { margin: 0 0 28px; color: var(--muted); }
+
+  ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  li a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    background: var(--card);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: var(--text);
+    text-decoration: none;
+    transition: background 0.15s, transform 0.15s;
+  }
+  li a:hover { background: var(--card-hover); transform: translateY(-1px); }
+  li a .num {
+    width: 28px; height: 28px; flex: none;
+    display: grid; place-items: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    font-size: 0.85rem; color: var(--muted);
+  }
+  li a .title { flex: 1; font-size: 1.05rem; }
+  li a .state { font-size: 0.8rem; color: var(--accent); opacity: 0; }
+  li a.playing { border-color: var(--accent); background: var(--card-hover); }
+  li a.playing .num { background: var(--accent); color: #1f2a44; }
+  li a.playing .state { opacity: 1; }
+
+  .player {
+    margin-top: 28px;
+    padding: 16px 18px;
+    background: var(--card);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+  }
+  .now { margin: 0 0 10px; color: var(--muted); font-size: 0.9rem; }
+  .now strong { color: var(--text); }
+  audio { width: 100%; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Choir Selections</h1>
+  <p class="sub">Click a track to play it.</p>
+
+  <ol id="tracks"></ol>
+
+  <div class="player">
+    <p class="now" id="now">Nothing playing yet</p>
+    <audio id="audio" controls></audio>
+  </div>
+</main>
+
+<script>
+  // Edit this list to change names or add more tracks.
+  // "file" is the mp3's name inside the 'mps' folder.
+  const tracks = [
+    { title: "Gloria in Excelsis Deo", file: "gloria-in-excelsis-deo.mp3" },
+    { title: "On Christmas Day", file: "on-christmas-day.mp3" },
+    { title: "Once in Royal Davids City", file: "once-in-royal-davids-city.mp3" },
+    { title: "O Come All Ye Faithful", file: "o-come-all-ye-faithful.mp3" },
+    { title: "Joy to the World", file: "joy-to-the-world.mp3" }
+  ];
+  const FOLDER = "mps/";
+
+  const list = document.getElementById("tracks");
+  const audio = document.getElementById("audio");
+  const now = document.getElementById("now");
+
+  tracks.forEach((t, i) => {
+    const li = document.createElement("li");
+    const a = document.createElement("a");
+    a.href = FOLDER + encodeURIComponent(t.file);
+    a.innerHTML = '<span class="num">' + (i + 1) + '</span>' +
+                  '<span class="title"></span><span class="state">&#9654; Playing</span>';
+    a.querySelector(".title").textContent = t.title;
+    a.addEventListener("click", (e) => {
+      e.preventDefault();
+      document.querySelectorAll("#tracks a").forEach(x => x.classList.remove("playing"));
+      a.classList.add("playing");
+      audio.src = a.href;
+      audio.play();
+      now.innerHTML = "Now playing: <strong></strong>";
+      now.querySelector("strong").textContent = t.title;
+    });
+    li.appendChild(a);
+    list.appendChild(li);
+  });
+</script>
+</body>
+</html>
