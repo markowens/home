@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<title>Topics</title>
+<style>
+  :root { --bg:#faf7f2; --card:#fff; --ink:#2b2b2b; --accent:#b5543c; --muted:#8a8479; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#1d1b19; --card:#2a2724; --ink:#f0ebe3; --accent:#e0795f; --muted:#a39d92; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family: Georgia, serif;
+         min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:24px 16px; }
+  h1 { font-weight:normal; margin:8px 0 20px; font-size:1.6rem; }
+  .cards { display:grid; gap:16px; width:100%; max-width:760px; grid-template-columns:1fr 1fr; }
+  @media (max-width:560px) { .cards { grid-template-columns:1fr; } }
+  .card { background:var(--card); border-radius:14px; padding:22px; min-height:160px;
+          box-shadow:0 2px 10px rgba(0,0,0,.08); font-size:1.25rem; line-height:1.4; }
+  button { margin-top:24px; font:inherit; font-size:1.1rem; background:var(--accent); color:#fff;
+           border:0; border-radius:999px; padding:14px 34px; cursor:pointer; }
+  button:active { transform:scale(.98); }
+  .status { margin-top:16px; color:var(--muted); font-size:.9rem; text-align:center; }
+  .link { background:none; color:var(--muted); font-size:.85rem; text-decoration:underline; margin-top:6px; padding:4px; }
+</style>
+</head>
+<body>
+<h1>Conversation Topics</h1>
+<div class="cards">
+  <div class="card" id="t1">Press the button to begin.</div>
+  <div class="card" id="t2"></div>
+</div>
+<button id="go">Give us topics</button>
+<div class="status" id="status"></div>
+<button class="link" id="reset">Reshuffle everything</button>
+
+<script src="topics.js"></script>
+<script>
+const KEY = "usedTopics.v2";
+let used = new Set();
+try { used = new Set(JSON.parse(localStorage.getItem(KEY) || "[]")); } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify([...used])); } catch (e) {} };
+
+const remaining = (exclude) => TOPICS.filter(t => !used.has(t) && t !== exclude);
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+
+function draw() {
+  if (TOPICS.length < 2) return null;
+  const out = [];
+  for (let i = 0; i < 2; i++) {
+    let c = remaining(out[0]);
+    if (!c.length) { used.clear(); c = remaining(out[0]); }   // exhausted: reshuffle
+    const t = pick(c);
+    out.push(t);
+    used.add(t);
+  }
+  save();
+  return out;
+}
+
+function updateStatus() {
+  document.getElementById("status").textContent =
+    `${remaining().length} of ${TOPICS.length} topics left before the next reshuffle`;
+}
+
+document.getElementById("go").onclick = () => {
+  const r = draw();
+  if (!r) { document.getElementById("t1").textContent = "Add at least two topics in topics.js."; return; }
+  document.getElementById("t1").textContent = r[0];
+  document.getElementById("t2").textContent = r[1];
+  updateStatus();
+};
+document.getElementById("reset").onclick = () => { used.clear(); save(); updateStatus(); };
+updateStatus();
+</script>
+</body>
+</html>
